@@ -4,14 +4,14 @@
 :root {
   /* COLOR */
   /* primitive */
-  --color-white: 255, 255, 255;
-  --color-black-primary: 17, 24, 39;
-  --color-black-second: 55, 65, 81;
-  --color-black-third: 75, 85, 99;
-  --color-green: 168, 213, 186;
-  --color-gray-primary: 209, 213, 219;
-  --color-gray-second: 229, 231, 235;
-  --color-gray-text: 156, 163, 175;
+  --color-white: 255 255 255;
+  --color-black-primary: 17 24 39;
+  --color-black-second: 55 65 81;
+  --color-black-third: 75 85 99;
+  --color-green: 168 213 186;
+  --color-gray-primary: 209 213 219;
+  --color-gray-second: 229 231 235;
+  --color-gray-text: 156 163 175;
   /* dark 모드 시 변경되어야할 color 들 */
   --color-bg-primary: var(--color-white);
   --color-text-primary: var(--color-black-primary);

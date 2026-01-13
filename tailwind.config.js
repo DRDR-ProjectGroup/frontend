@@ -32,6 +32,10 @@ module.exports = {
           },
         },
       },
+
+      maxWidth: {
+        layout: '1050px',
+      },
     },
   },
 };
