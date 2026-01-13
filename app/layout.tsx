@@ -31,7 +31,7 @@ export default function RootLayout({
           <Header />
 
           {/* 메인 */}
-          <Main children={children} />
+          <Main>{children}</Main>
 
           {/* 푸터 */}
           <Footer />

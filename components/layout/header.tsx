@@ -1,6 +1,6 @@
 import Link from 'next/link';
 
-export default function Page() {
+export default function Header() {
   return (
     <header className="shadow-xs">
       <div className="max-w-layout mx-auto border-b">
