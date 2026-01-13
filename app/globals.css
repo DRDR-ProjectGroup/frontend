@@ -2,31 +2,30 @@
 @import 'tailwindcss';
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* COLOR */
+  /* primitive */
+  --color-white: 255 255 255;
+  --color-black-primary: 17 24 39;
+  --color-black-second: 55 65 81;
+  --color-black-third: 75 85 99;
+  --color-green: 168 213 186;
+  --color-gray-primary: 209 213 219;
+  --color-gray-second: 229 231 235;
+  --color-gray-text: 156 163 175;
+  /* dark 모드 시 변경되어야할 color 들 */
+  --color-bg-primary: var(--color-white);
+  --color-text-primary: var(--color-black-primary);
+  --color-text-second: var(--color-black-second);
+  --color-text-third: var(--color-black-third);
+  --color-button-bg-primary: var(--color-black-primary);
+  --color-button-bg-second: var(--color-white);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-/* @media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-} */
-/* ✅ OS(media) 기준 제거하고, class 기준으로 */
 .dark {
-  --background: #0a0a0a;
-  --foreground: #ededed;
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  --color-bg-primary: var(--color-black-primary);
+  --color-text-primary: var(--color-white);
+  --color-text-second: var(--color-white);
+  --color-text-third: var(--color-white);
+  --color-button-bg-primary: var(--color-gray-primary);
+  --color-button-bg-second: var(--color-gray-second);
 }

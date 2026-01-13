@@ -1,7 +1,6 @@
+// 메인 페이지 구성
+// : 인기글 리스트 목록
+
 export default function Home() {
-  return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      페이지 페이지
-    </div>
-  );
+  return <div className="">메인 페이지</div>;
 }
