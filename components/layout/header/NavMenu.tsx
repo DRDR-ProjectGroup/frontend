@@ -60,7 +60,7 @@ export default function NavMenu() {
               setActiveNav('');
             }}
           >
-            <span className="text-bold text-sm">{navMenu.title}</span>
+            <span className="text-sm font-bold">{navMenu.title}</span>
             {activeNav === navMenu.title && (
               <div className="absolute top-12.5 left-2.5 z-10">
                 <Popover>
