@@ -5,7 +5,7 @@ import UserMenu from './UserMenu';
 export default function Header() {
   return (
     <header className="shadow-xs">
-      <div className="px-6 flex items-center max-w-layout mx-auto border-b">
+      <div className="max-w-layout mx-auto flex items-center px-6">
         {/* 로고 */}
         <Logo />
 

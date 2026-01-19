@@ -24,7 +24,7 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body
-        className={`${roboto.variable} font-sans antialiased bg-bg-primary text-text-primary`}
+        className={`${roboto.variable} bg-bg-primary text-text-primary font-sans antialiased`}
       >
         <div className="wrap">
           {/* 헤더 */}

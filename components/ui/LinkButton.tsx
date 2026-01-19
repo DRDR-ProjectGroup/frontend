@@ -17,7 +17,8 @@ export default function LinkButton({
   className,
   disabled = false,
 }: LinkButtonProps) {
-  const base = 'flex items-center justify-center px-4 py-2 text-sm rounded-md';
+  const base =
+    'inline-flex items-center justify-center px-4 py-2 text-sm rounded-md cursor-pointer';
   const variants: Record<NonNullable<LinkButtonProps['variant']>, string> = {
     primary: 'bg-primitive-green hover:bg-primitive-green/90',
     secondary:
