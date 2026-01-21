@@ -2,16 +2,28 @@
 
 import Button from '@/components/ui/Button';
 import InputText from '@/components/ui/InputText';
-import { loginAction } from '../../actions/auth/LoginAction';
-import { useActionState, useState } from 'react';
+import { loginAction } from '../../actions/auth/loginAction';
+import { useActionState, useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function LoginForm() {
+  const router = useRouter();
   const [formValues, setFormValues] = useState({
     username: '',
     password: '',
   });
 
   const [state, action, pending] = useActionState(loginAction, null);
+
+  // 로그인 성공 시 토큰 저장 후 리다이렉트
+  useEffect(() => {
+    if (state?.ok && state.accessToken) {
+      // localStorage에 accessToken 저장
+      localStorage.setItem('accessToken', state.accessToken);
+      // 홈으로 리다이렉트
+      router.push('/');
+    }
+  }, [state, router]);
 
   return (
     <form className="space-y-5" action={action}>
