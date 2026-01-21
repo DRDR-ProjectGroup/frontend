@@ -13,6 +13,7 @@ module.exports = {
           blackSecond: 'rgb(var(--color-black-second) / <alpha-value>)',
           blackThird: 'rgb(var(--color-black-third) / <alpha-value>)',
           green: 'rgb(var(--color-green) / <alpha-value>)',
+          red: 'rgb(var(--color-red) / <alpha-value>)',
           grayPrimary: 'rgb(var(--color-gray-primary) / <alpha-value>)',
           graySecond: 'rgb(var(--color-gray-second) / <alpha-value>)',
           grayText: 'rgb(var(--color-gray-text) / <alpha-value>)',
