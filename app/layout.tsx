@@ -4,6 +4,7 @@ import './globals.css';
 import Header from '../components/layout/header/Header';
 import Main from '../components/layout/Main';
 import Footer from '../components/layout/Footer';
+import Providers from './providers';
 
 const roboto = Roboto({
   variable: '--font-sans',
@@ -26,16 +27,18 @@ export default function RootLayout({
       <body
         className={`${roboto.variable} bg-bg-primary text-text-primary font-sans antialiased`}
       >
-        <div className="wrap">
-          {/* 헤더 */}
-          <Header />
+        <Providers>
+          <div className="wrap">
+            {/* 헤더 */}
+            <Header />
 
-          {/* 메인 */}
-          <Main>{children}</Main>
+            {/* 메인 */}
+            <Main>{children}</Main>
 
-          {/* 푸터 */}
-          <Footer />
-        </div>
+            {/* 푸터 */}
+            <Footer />
+          </div>
+        </Providers>
       </body>
     </html>
   );
