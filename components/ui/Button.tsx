@@ -1,18 +1,17 @@
-import { ReactNode } from 'react';
+import { ButtonHTMLAttributes, ReactNode } from 'react';
 
 // primary초록 / secondary검정 / tertiary / disabled회색
-type ButtonProps = {
+type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   variant?: 'primary' | 'secondary' | 'tertiary';
-  children: ReactNode;
-  className?: string;
-  disabled?: boolean;
 };
 
 export default function Button({
   variant = 'primary',
+  type = 'button',
   children,
   className,
   disabled = false,
+  ...props
 }: ButtonProps) {
   const base =
     'inline-flex items-center justify-center px-4 py-2 text-sm rounded-md cursor-pointer';
@@ -28,8 +27,10 @@ export default function Button({
 
   return (
     <button
+      type={type}
       className={`${base} ${variants[variant]} ${className ?? ''} ${disabled ? disabledStyle : ''}`}
       disabled={disabled}
+      {...props}
     >
       {children}
     </button>
