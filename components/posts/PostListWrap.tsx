@@ -3,7 +3,7 @@
 import PostList from './PostList';
 import PostSearch from './PostSearch';
 import PostListPagination from './PostListPagination';
-import { PostListParamsProvider } from './postListParamsContext';
+import { PostListParamsProvider } from './PostListParamsContext';
 
 type PostListWrapProps = {
   category: string;

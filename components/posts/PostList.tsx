@@ -3,7 +3,8 @@
 import Link from 'next/link';
 import { Heading } from '../ui/Heading';
 import { usePostListQuery } from '@/query/post/usePostListQuery';
-import { usePostListParams } from './postListParamsContext';
+import { usePostListParams } from './PostListParamsContext';
+import Tag from '../ui/Tag';
 
 export default function PostList() {
   const { params } = usePostListParams();
@@ -43,7 +44,7 @@ export default function PostList() {
         <tbody className="h-[50px] text-sm">
           {postList.map((post) => (
             <tr key={post.postId} className="border border-primitive-graySecond hover:bg-primitive-grayThird">
-              <td className="px-4 py-3"><span className="font-bold text-text-second px-2 py-1 bg-primitive-grayThird rounded-sm">{post.category}</span></td>
+              <td className="px-4 py-3"><Tag>{post.category}</Tag></td>
               <td className="px-4 py-3"><Link href={`/posts/${post.postId}`} className="font-bold hover:underline">{post.title}</Link></td>
               <td className="px-4 py-3 text-text-second">{post.author}</td>
               <td className="px-4 py-3 text-text-third">{post.createdAt}</td>
