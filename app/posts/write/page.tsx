@@ -24,12 +24,6 @@ function extractAndReplaceImages(html: string): {
   images.forEach((img, index) => {
     const src = img.getAttribute('src')
     if (src && src.startsWith('blob:')) {
-      // blob URL에 해당하는 파일 찾기
-      const matchingFile = savedFiles.find((_, i) => {
-        // savedFiles 배열 순서대로 매칭 (업로드 순서 유지)
-        return savedFiles.length > 0
-      })
-      
       // placeholder로 교체
       img.setAttribute('src', `{{IMG_${index}}}`)
       img.setAttribute('data-image-index', String(index))
