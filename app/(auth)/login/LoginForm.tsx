@@ -2,7 +2,7 @@
 
 import Button from '@/components/ui/Button';
 import InputText from '@/components/ui/InputText';
-import { loginAction } from '../../actions/auth/loginAction';
+import { loginAction } from '../../../actions/auth/login.actions';
 import { useActionState, useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
