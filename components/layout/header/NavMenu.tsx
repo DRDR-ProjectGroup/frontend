@@ -68,9 +68,14 @@ export default function NavMenu() {
                     {navMenu.subMenu.map((sub) => (
                       <li
                         key={sub.path}
-                        className="hover:bg-primitive-graySecond px-4 py-2"
+                        onClick={() => {
+                          console.log(`${sub.path} 클릭`);
+                        }}
                       >
-                        <Link href={sub.path}>{sub.title}</Link>
+                        <Link 
+                          href={`/category/${sub.path}`}
+                          className='block hover:bg-primitive-graySecond px-4 py-2'
+                        >{sub.title}</Link>
                       </li>
                     ))}
                   </ul>

@@ -12,6 +12,8 @@
   --color-red: 239 68 68;
   --color-gray-primary: 209 213 219;
   --color-gray-second: 229 231 235;
+  --color-gray-third: 243 244 246;
+  --color-gray-weakest: 249 250 251;
   --color-gray-text: 156 163 175;
   /* dark 모드 시 변경되어야할 color 들 */
   --color-bg-primary: var(--color-white);

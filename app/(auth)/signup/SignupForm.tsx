@@ -2,8 +2,8 @@
 
 import Button from '@/components/ui/Button';
 import InputText from '@/components/ui/InputText';
-import { signupAction } from '../../actions/auth/signupAction';
-import { sendEmailAction, verifyCodeAction } from '../../actions/auth/emailAction';
+import { signupAction } from '../../../actions/auth/signup.actions';
+import { sendEmailAction, verifyCodeAction } from '../../../actions/auth/email.actions';
 import { useActionState, useState, useTransition } from 'react';
 
 export default function SignupForm() {
