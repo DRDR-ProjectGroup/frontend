@@ -24,7 +24,7 @@ function getApiBaseUrl(): string {
 async function refreshAccessToken(): Promise<string | null> {
   try {
     const baseUrl = getApiBaseUrl();
-    const res = await fetch(`${baseUrl}/api/v1/auth/reissue`, {
+    const res = await fetch(`${baseUrl}/auth/reissue`, {
       method: 'POST',
       credentials: 'include', // 쿠키의 refreshToken 포함
     });
@@ -60,12 +60,8 @@ export async function apiRequest(
   // 요청 헤더 구성
   const headers: HeadersInit = {
     ...options.headers,
+    ...(token && { Authorization: `Bearer ${token}` }),
   };
-
-  // 토큰이 있으면 Authorization 헤더 추가
-  if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
-  }
 
   // 첫 번째 요청
   let response = await fetch(url, {
@@ -84,11 +80,15 @@ export async function apiRequest(
     if (newToken) {
       // 재발급 성공 -> 원래 요청 재시도
       console.log('Token refreshed successfully, retrying request...');
-      headers['Authorization'] = `Bearer ${newToken}`;
+      
+      const retryHeaders: HeadersInit = {
+        ...options.headers,
+        Authorization: `Bearer ${newToken}`,
+      };
       
       response = await fetch(url, {
         ...options,
-        headers,
+        headers: retryHeaders,
         credentials: 'include',
       });
     } else {
@@ -225,11 +225,8 @@ export async function apiPostFormData<T = any>(
 
   const headers: HeadersInit = {
     ...options?.headers,
+    ...(token && { Authorization: `Bearer ${token}` }),
   };
-
-  if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
-  }
 
   const response = await apiRequest(`${baseUrl}${endpoint}`, {
     ...options,
@@ -259,11 +256,8 @@ export async function apiPutFormData<T = any>(
 
   const headers: HeadersInit = {
     ...options?.headers,
+    ...(token && { Authorization: `Bearer ${token}` }),
   };
-
-  if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
-  }
 
   const response = await apiRequest(`${baseUrl}${endpoint}`, {
     ...options,

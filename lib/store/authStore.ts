@@ -1,6 +1,4 @@
-/**
- * 인증 상태 관리 스토어 (Zustand)
- */
+// 인증 상태 관리 스토어 (Zustand)
 
 import { create } from 'zustand';
 import {
@@ -24,15 +22,13 @@ interface AuthState {
   initAuth: () => Promise<void>;
 }
 
-/**
- * 토큰 재발급 API 호출
- */
+// 토큰 재발급 API 호출
 async function refreshToken(): Promise<string | null> {
   try {
     const baseUrl = process.env.NEXT_PUBLIC_BACKEND_API_BASE_URL?.replace(/\/$/, '');
     if (!baseUrl) return null;
 
-    const res = await fetch(`${baseUrl}/api/v1/auth/reissue`, {
+    const res = await fetch(`${baseUrl}/auth/reissue`, {
       method: 'POST',
       credentials: 'include',
     });
@@ -57,10 +53,8 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   userId: null,
   isInitialized: false,
 
-  /**
-   * 로그인 시 호출
-   * - 토큰을 저장하고 사용자 정보 추출
-   */
+  // 로그인 시 호출
+  // - 토큰을 저장하고 사용자 정보 추출
   setAuth: (token: string) => {
     setAccessToken(token);
     const userId = getUserIdFromToken(token);
@@ -73,10 +67,8 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     });
   },
 
-  /**
-   * 로그아웃 시 호출
-   * - 토큰 삭제 및 상태 초기화
-   */
+  // 로그아웃 시 호출
+  // - 토큰 삭제 및 상태 초기화
   clearAuth: () => {
     removeAccessToken();
     
@@ -88,11 +80,9 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     });
   },
 
-  /**
-   * 앱 초기화 시 호출 (페이지 새로고침 등)
-   * - localStorage에서 토큰 확인
-   * - 토큰 만료 시 재발급 시도
-   */
+  // 앱 초기화 시 호출 (페이지 새로고침 등)
+  // - localStorage에서 토큰 확인
+  // - 토큰 만료 시 재발급 시도
   initAuth: async () => {
     const token = getAccessToken();
 
