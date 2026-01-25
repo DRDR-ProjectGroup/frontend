@@ -5,9 +5,12 @@ import InputText from '@/components/ui/InputText';
 import { loginAction } from '../../../actions/auth/login.actions';
 import { useActionState, useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { useAuthStore } from '@/lib/store/authStore';
 
 export default function LoginForm() {
   const router = useRouter();
+  const setAuth = useAuthStore((state) => state.setAuth);
+  
   const [formValues, setFormValues] = useState({
     username: '',
     password: '',
@@ -15,15 +18,16 @@ export default function LoginForm() {
 
   const [state, action, pending] = useActionState(loginAction, null);
 
-  // 로그인 성공 시 토큰 저장 후 리다이렉트
+  // 로그인 성공 시 Zustand store 업데이트 후 리다이렉트
   useEffect(() => {
     if (state?.ok && state.accessToken) {
-      // localStorage에 accessToken 저장
-      localStorage.setItem('accessToken', state.accessToken);
+      // Zustand store에 토큰 저장 (자동으로 localStorage에도 저장됨)
+      setAuth(state.accessToken);
+      
       // 홈으로 리다이렉트
       router.push('/');
     }
-  }, [state, router]);
+  }, [state, router, setAuth]);
 
   return (
     <form className="space-y-5" action={action}>

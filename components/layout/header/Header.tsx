@@ -1,24 +1,21 @@
-import Logo from './Logo';
-import NavMenu from './NavMenu';
-import UserMenu from './UserMenu';
+import { NavMenuData } from "@/types/api/navMenu";
+import HeaderClient from "./HeaderClient";
 
-export default function Header() {
-  return (
-    <header className="shadow-xs">
-      <div className="max-w-layout mx-auto flex items-center px-6">
-        {/* 로고 */}
-        <Logo />
+export default async function Header() {
+  let navMenus: NavMenuData[] = [];
+  
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_API_BASE_URL}/categories`,
+      { cache: 'force-cache' }
+    );
+    if (response.ok) {
+      const data = await response.json();
+      navMenus = data.data as NavMenuData[];
+    }
+  } catch (error) {
+    console.error('Failed to fetch nav menus:', error);
+  }
 
-        {/* 네비게이션 메뉴 */}
-        <div className="ml-8">
-          <NavMenu />
-        </div>
-
-        {/* 유저 메뉴 */}
-        <div className="ml-auto">
-          <UserMenu />
-        </div>
-      </div>
-    </header>
-  );
+  return <HeaderClient navMenus={navMenus} />;
 }
