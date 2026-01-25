@@ -2,7 +2,7 @@
  
  import Pagination from '@/components/common/Pagination';
  import { usePostListQuery } from '@/query/post/usePostListQuery';
- import { usePostListParams } from './postListParamsContext';
+ import { usePostListParams } from './PostListParamsContext';
  
  export default function PostListPagination() {
    const { params, setPage } = usePostListParams();

@@ -3,7 +3,7 @@
 import { FiSearch } from 'react-icons/fi';
 import { useState } from 'react';
 import InputText from '../ui/InputText';
-import { usePostListParams } from './postListParamsContext';
+import { usePostListParams } from './PostListParamsContext';
 
 export default function PostSearch() {
   const { params, applySearch, clearSearch } = usePostListParams();
