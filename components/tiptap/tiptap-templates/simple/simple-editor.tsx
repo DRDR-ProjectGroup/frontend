@@ -67,10 +67,17 @@ import { useCursorVisibility } from "@/hooks/use-cursor-visibility"
 // --- Components ---
 
 // --- Lib ---
-import { handleImageUpload, MAX_FILE_SIZE } from "@/lib/tiptap-utils"
+import { MAX_FILE_SIZE } from "@/lib/tiptap-utils"
 
 // --- Styles ---
 import "@/components/tiptap/tiptap-templates/simple/simple-editor.scss"
+
+// --- Types ---
+type ImageUploadHandler = (
+  file: File,
+  onProgress?: (event: { progress: number }) => void,
+  abortSignal?: AbortSignal
+) => Promise<string>
 
 // import content from "@/components/tiptap-templates/simple/data/content.json"
 
@@ -179,7 +186,13 @@ const MobileToolbarContent = ({
   </>
 )
 
-export function SimpleEditor({ onEditorReady }: { onEditorReady: (editor: Editor) => void }) {
+export function SimpleEditor({ 
+  onEditorReady,
+  onImageUpload
+}: { 
+  onEditorReady: (editor: Editor) => void
+  onImageUpload: ImageUploadHandler
+}) {
   const isMobile = useIsBreakpoint()
   const { height } = useWindowSize()
   const [mobileView, setMobileView] = useState<"main" | "highlighter" | "link">(
@@ -220,7 +233,7 @@ export function SimpleEditor({ onEditorReady }: { onEditorReady: (editor: Editor
         accept: "image/*",
         maxSize: MAX_FILE_SIZE,
         limit: 3,
-        upload: handleImageUpload,
+        upload: onImageUpload, // props로 받은 핸들러 사용
         onError: (error) => console.error("Upload failed:", error),
       }),
     ],

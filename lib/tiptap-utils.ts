@@ -351,59 +351,6 @@ export function selectionWithinConvertibleTypes(
   return false
 }
 
-// 이미지 파일을 저장하는 Map (제출 시 사용)
-const imageFilesMap = new Map<string, File>()
-
-/**
- * 저장된 이미지 파일들을 가져오고 초기화
- */
-export const getAndClearImageFiles = (): File[] => {
-  const files = Array.from(imageFilesMap.values())
-  imageFilesMap.clear()
-  return files
-}
-
-/**
- * Handles image upload with progress tracking and abort capability
- * @param file The file to upload
- * @param onProgress Optional callback for tracking upload progress
- * @param abortSignal Optional AbortSignal for cancelling the upload
- * @returns Promise resolving to the blob URL for preview
- */
-export const handleImageUpload = async (
-  file: File,
-  onProgress?: (event: { progress: number }) => void,
-  abortSignal?: AbortSignal
-): Promise<string> => {
-  // Validate file
-  if (!file) {
-    throw new Error("No file provided")
-  }
-
-  if (file.size > MAX_FILE_SIZE) {
-    throw new Error(
-      `File size exceeds maximum allowed (${MAX_FILE_SIZE / (1024 * 1024)}MB)`
-    )
-  }
-
-  // 진행률 시뮬레이션 (미리보기용)
-  for (let progress = 0; progress <= 100; progress += 20) {
-    if (abortSignal?.aborted) {
-      throw new Error("Upload cancelled")
-    }
-    await new Promise((resolve) => setTimeout(resolve, 100))
-    onProgress?.({ progress })
-  }
-
-  // Blob URL 생성 (미리보기용)
-  const blobUrl = URL.createObjectURL(file)
-  
-  // 나중에 제출 시 사용하기 위해 File 저장
-  imageFilesMap.set(blobUrl, file)
-
-  return blobUrl
-}
-
 type ProtocolOptions = {
   /**
    * The protocol scheme to be registered.
