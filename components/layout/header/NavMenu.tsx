@@ -3,48 +3,13 @@
 import Popover from '@/components/ui/Popover';
 import Link from 'next/link';
 import { useState } from 'react';
+// import { dummy_navMenu } from '@/dummy/navMenu';
+import { NavMenuData } from '@/types/api/navMenu';
 
-export default function NavMenu() {
+export default function NavMenu({ navMenus }: { navMenus: NavMenuData[] }) {
   const [activeNav, setActiveNav] = useState('');
 
-  const navMenus = [
-    {
-      title: '테크',
-      subMenu: [
-        { title: '프로그래밍', path: 'prog' },
-        { title: '하드웨어', path: 'hardware' },
-        { title: '소프트웨어', path: 'software' },
-        { title: '모바일', path: 'mobile' },
-      ],
-    },
-    {
-      title: '게임',
-      subMenu: [
-        { title: 'PC 게임', path: 'pc-game' },
-        { title: '콘솔 게임', path: 'console-game' },
-        { title: '모바일 게임', path: 'mobile-game' },
-        { title: 'Esports', path: 'esports' },
-      ],
-    },
-    {
-      title: '일상',
-      subMenu: [
-        { title: '여행', path: 'travel' },
-        { title: '음식', path: 'food' },
-        { title: '건강', path: 'health' },
-        { title: '취미', path: 'hobby' },
-      ],
-    },
-    {
-      title: '문화',
-      subMenu: [
-        { title: '영화', path: 'movie' },
-        { title: '음악', path: 'music' },
-        { title: '책', path: 'book' },
-        { title: '예술', path: 'art' },
-      ],
-    },
-  ];
+  // const navMenus = dummy_navMenu;
 
   return (
     <nav>
@@ -52,30 +17,30 @@ export default function NavMenu() {
         {navMenus.map((navMenu) => (
           <li
             className="relative flex h-[65px] cursor-pointer items-center justify-center px-4 text-sm"
-            key={navMenu.title}
+            key={navMenu.groupName}
             onMouseEnter={() => {
-              setActiveNav(navMenu.title);
+              setActiveNav(navMenu.groupName);
             }}
             onMouseLeave={() => {
               setActiveNav('');
             }}
           >
-            <span className="text-sm font-bold">{navMenu.title}</span>
-            {activeNav === navMenu.title && (
+            <span className="text-sm font-bold">{navMenu.groupName}</span>
+            {activeNav === navMenu.groupName && (
               <div className="absolute top-12.5 left-2.5 z-10">
                 <Popover>
                   <ul>
-                    {navMenu.subMenu.map((sub) => (
+                    {navMenu.categories.map((category) => (
                       <li
-                        key={sub.path}
+                        key={category.categoryAddress}
                         onClick={() => {
-                          console.log(`${sub.path} 클릭`);
+                          console.log(`${category.categoryAddress} 클릭`);
                         }}
                       >
                         <Link 
-                          href={`/category/${sub.path}`}
+                          href={`/category/${category.categoryAddress}`}
                           className='block hover:bg-primitive-graySecond px-4 py-2'
-                        >{sub.title}</Link>
+                        >{category.categoryName}</Link>
                       </li>
                     ))}
                   </ul>

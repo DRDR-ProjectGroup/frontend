@@ -9,11 +9,13 @@ import Button from "@/components/ui/Button";
 import { useState, useRef, useCallback } from "react";
 import { MAX_FILE_SIZE } from "@/lib/tiptap-utils";
 import { useRouter } from "next/navigation";
+import { useCreatePostMutation } from "@/query/post/usePostMutations";
 
 export default function Page() {
   const router = useRouter();
+  const createPostMutate = useCreatePostMutation();
+  
   const [editor, setEditor] = useState<Editor | null>(null)
-  const [isSubmitting, setIsSubmitting] = useState(false)
   const [title, setTitle] = useState('')
   const [category, setCategory] = useState('')
   
@@ -94,8 +96,6 @@ export default function Page() {
       return
     }
 
-    setIsSubmitting(true)
-
     try {
       const html = editor.getHTML()
       
@@ -123,26 +123,24 @@ export default function Page() {
       console.log('Content (with placeholders):', processedHtml)
       console.log('Image files:', imageFiles.map(f => f.name))
 
-      // TODO: 실제 API 호출
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_API_BASE_URL}/posts/${category}`, 
-          {
-          method: 'POST',
-          body: formData
-        }
-      )
-      const result = await response.json()
-      if (result.code === 201) {
-        router.push(`/posts/${result.data.postId}`)
-      }
-
-      alert('제출 준비 완료! (콘솔 확인)')
+      // React Query Mutation 사용
+      createPostMutate.mutate(formData, {
+        onSuccess: (data) => {
+          alert('글 작성 완료!')
+          if (data.code === 201 && data.data?.postId) {
+            router.push(`/posts/${data.data.postId}`)
+          }
+        },
+        onError: (error) => {
+          console.error('글 작성 실패:', error)
+          alert('글 작성에 실패했습니다.')
+        },
+      });
 
     } catch (error) {
       console.error('글 작성 실패:', error)
       alert('글 작성에 실패했습니다.')
     } finally {
-      setIsSubmitting(false)
       // 제출 후 이미지 맵 초기화
       imageFilesMap.current.clear()
     }
@@ -186,9 +184,9 @@ export default function Page() {
         <Button 
           variant="primary"
           onClick={handleSubmit}
-          disabled={isSubmitting || !title || !category}
+          disabled={createPostMutate.isPending || !title || !category}
         >
-          {isSubmitting ? '작성 중...' : '작성 완료'}
+          {createPostMutate.isPending ? '작성 중...' : '작성 완료'}
         </Button>
       </div>
     </div>

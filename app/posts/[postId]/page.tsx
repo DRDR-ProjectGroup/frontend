@@ -1,6 +1,6 @@
-import Comments from "./Comments.client";
-import PostMeta from "./PostMeta.server";
-import PostReactions from "./PostReactions.client";
+import Comments from "./Comments";
+import PostMeta from "./PostMeta";
+import PostReactions from "./PostReactions";
 
 export default async function Page(
   { params }: { params: Promise<{ postId: string }> }

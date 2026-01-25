@@ -1,11 +1,12 @@
+'use client'
+
 import Tag from "@/components/ui/Tag";
 import { Heading } from "@/components/ui/Heading";
 import UserChip from "@/components/common/UserChip";
 import { BsDot } from "react-icons/bs";
-import PostContent from "./PostContent.client";
-import { getPostDetail } from "@/actions/posts/postDetail.actions";
+import PostContent from "./PostContent";
 import type { MediaItem } from "@/types/api/postDetail";
-import { postDetail_dummy } from "@/dummy/postDetail";
+import { usePostDetailQuery } from "@/query/post/usePostDetailQuery";
 
 // placeholder를 실제 이미지 URL로 교체
 function replacePlaceholders(content: string, mediaList: MediaItem[]) {
@@ -20,13 +21,18 @@ function replacePlaceholders(content: string, mediaList: MediaItem[]) {
 }
 
 // 글 상세 조회 렌더링 컴포넌트
-export default async function PostMeta({ postId }: { postId: string }) {
-  // const post = await getPostDetail(postId);
+export default function PostMeta({ postId }: { postId: string }) {
+  const { data, isLoading, error } = usePostDetailQuery(postId);
 
-  // 더미 테스트
-  const post = postDetail_dummy.data;
+  if (isLoading) {
+    return (
+      <div className="py-8 text-center text-text-third">
+        <p>로딩 중...</p>
+      </div>
+    );
+  }
 
-  if (!post) {
+  if (error || !data || data.code !== 200 || !data.data) {
     return (
       <div className="py-8 text-center text-text-third">
         <p>게시글을 찾을 수 없습니다.</p>
@@ -34,6 +40,8 @@ export default async function PostMeta({ postId }: { postId: string }) {
       </div>
     );
   }
+
+  const post = data.data;
 
   // placeholder를 실제 이미지 URL로 교체
   const displayContent = replacePlaceholders(post.content, post.mediaList || []);

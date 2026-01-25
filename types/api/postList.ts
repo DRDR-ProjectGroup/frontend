@@ -22,3 +22,13 @@ export interface PostListData extends Pagination {
 
 // 게시글 리스트 조회 API 응답 타입
 export type PostListResponse = ApiResponse<PostListData>;
+
+// 게시글 리스트 조회 파라미터 타입
+export interface PostListParams {
+  category?: string;
+  page?: number;
+  size?: number;
+  searchTarget?: string;
+  searchKeyword?: string;
+  sort?: 'POPULAR' | 'LATEST';
+}
