@@ -1,10 +1,10 @@
 'use client';
 
 import Link from 'next/link';
-import { Heading } from '../ui/Heading';
+import { Heading } from '@/components/ui/Heading';
 import { usePostListQuery } from '@/query/post/usePostListQuery';
 import { usePostListParams } from './PostListParamsContext';
-import Tag from '../ui/Tag';
+import Tag from '@/components/ui/Tag';
 
 export default function PostList() {
   const { params } = usePostListParams();

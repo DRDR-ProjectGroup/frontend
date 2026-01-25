@@ -1,9 +1,8 @@
 import type { PostListResponse, PostListParams } from '@/types/api/postList';
 import type { PostDetailResponse } from '@/types/api/postDetail';
+import { apiRequest } from '@/lib/api/apiClient';
 
-/**
- * 환경변수에서 API Base URL 가져오기
- */
+// 환경변수에서 API Base URL 가져오기
 function getApiBaseUrl() {
   const url = process.env.NEXT_PUBLIC_BACKEND_API_BASE_URL;
   if (!url) {
@@ -12,9 +11,7 @@ function getApiBaseUrl() {
   return url.replace(/\/$/, '');
 }
 
-/**
- * 글 리스트 조회용 쿼리 파라미터 생성
- */
+// 글 리스트 조회용 쿼리 파라미터 생성
 function buildSearchParams(params: PostListParams) {
   const sp = new URLSearchParams();
 
@@ -30,16 +27,14 @@ function buildSearchParams(params: PostListParams) {
   return sp;
 }
 
-/**
- * 글 리스트 조회
- */
+// 글 리스트 조회
 export async function fetchPostList(
   params: PostListParams = {}
 ): Promise<PostListResponse> {
   const baseUrl = getApiBaseUrl();
   const sp = buildSearchParams(params);
 
-  const res = await fetch(`${baseUrl}/posts?${sp.toString()}`, {
+  const res = await apiRequest(`${baseUrl}/posts?${sp.toString()}`, {
     method: 'GET',
     headers: { 'Content-Type': 'application/json' },
   });
@@ -53,13 +48,11 @@ export async function fetchPostList(
   return data;
 }
 
-/**
- * 글 상세 조회
- */
+// 글 상세 조회
 export async function fetchPostDetail(postId: string): Promise<PostDetailResponse> {
   const baseUrl = getApiBaseUrl();
 
-  const res = await fetch(`${baseUrl}/posts/${postId}`, {
+  const res = await apiRequest(`${baseUrl}/posts/${postId}`, {
     method: 'GET',
     headers: { 'Content-Type': 'application/json' },
   });
@@ -73,9 +66,7 @@ export async function fetchPostDetail(postId: string): Promise<PostDetailRespons
   return data;
 }
 
-/**
- * 글 작성
- */
+// 글 작성
 export async function createPost(formData: FormData): Promise<any> {
   const baseUrl = getApiBaseUrl();
   
@@ -83,7 +74,7 @@ export async function createPost(formData: FormData): Promise<any> {
   const postData = JSON.parse(formData.get('post') as string);
   const category = postData.category;
 
-  const res = await fetch(`${baseUrl}/posts/${category}`, {
+  const res = await apiRequest(`${baseUrl}/posts/${category}`, {
     method: 'POST',
     body: formData,
   });
@@ -97,13 +88,11 @@ export async function createPost(formData: FormData): Promise<any> {
   return data;
 }
 
-/**
- * 글 수정
- */
+// 글 수정
 export async function updatePost(postId: string, formData: FormData): Promise<any> {
   const baseUrl = getApiBaseUrl();
 
-  const res = await fetch(`${baseUrl}/posts/${postId}`, {
+  const res = await apiRequest(`${baseUrl}/posts/${postId}`, {
     method: 'PUT',
     body: formData,
   });
@@ -117,13 +106,11 @@ export async function updatePost(postId: string, formData: FormData): Promise<an
   return data;
 }
 
-/**
- * 글 삭제
- */
+// 글 삭제
 export async function deletePost(postId: string): Promise<void> {
   const baseUrl = getApiBaseUrl();
 
-  const res = await fetch(`${baseUrl}/posts/${postId}`, {
+  const res = await apiRequest(`${baseUrl}/posts/${postId}`, {
     method: 'DELETE',
     headers: { 'Content-Type': 'application/json' },
   });

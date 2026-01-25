@@ -30,6 +30,7 @@ export async function loginAction(
     const res = await fetch(`${process.env.BACKEND_API_BASE_URL}/members/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
+      credentials: 'include', // 쿠키(refreshToken) 받기 위해 필수!
       body: JSON.stringify({
         username,
         password,
@@ -53,8 +54,6 @@ export async function loginAction(
     const accessToken = authHeader.replace('Bearer ', '');
 
     // refreshToken은 백엔드에서 httpOnly cookie로 설정해주므로 따로 처리 불필요
-    // (단, fetch에 credentials: 'include' 옵션이 필요할 수 있음)
-
     return { ok: true, message: '로그인 성공', accessToken };
 
   } catch (error) {

@@ -1,9 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createPost, updatePost, deletePost } from '@/lib/api/client/post';
 
-/**
- * 글 작성 Mutation Hook
- */
+// 글 작성 Mutation Hook
 export function useCreatePostMutation() {
   const queryClient = useQueryClient();
 
@@ -16,9 +14,7 @@ export function useCreatePostMutation() {
   });
 }
 
-/**
- * 글 수정 Mutation Hook
- */
+// 글 수정 Mutation Hook
 export function useUpdatePostMutation() {
   const queryClient = useQueryClient();
 
@@ -33,9 +29,7 @@ export function useUpdatePostMutation() {
   });
 }
 
-/**
- * 글 삭제 Mutation Hook
- */
+// 글 삭제 Mutation Hook
 export function useDeletePostMutation() {
   const queryClient = useQueryClient();
 

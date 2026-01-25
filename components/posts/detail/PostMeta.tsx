@@ -7,6 +7,10 @@ import { BsDot } from "react-icons/bs";
 import PostContent from "./PostContent";
 import type { MediaItem } from "@/types/api/postDetail";
 import { usePostDetailQuery } from "@/query/post/usePostDetailQuery";
+import Button from "@/components/ui/Button";
+import { useAuthStore } from "@/lib/store/authStore";
+import { useDeletePostMutation } from "@/query/post/usePostMutations";
+import { useRouter } from "next/navigation";
 
 // placeholder를 실제 이미지 URL로 교체
 function replacePlaceholders(content: string, mediaList: MediaItem[]) {
@@ -20,9 +24,13 @@ function replacePlaceholders(content: string, mediaList: MediaItem[]) {
   return processedContent;
 }
 
-// 글 상세 조회 렌더링 컴포넌트
+// 렌더링 컴포넌트
 export default function PostMeta({ postId }: { postId: string }) {
+  const router = useRouter();
+  const { mutate: deletePostMutation } = useDeletePostMutation();
   const { data, isLoading, error } = usePostDetailQuery(postId);
+  const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
+  const userId = useAuthStore((state) => state.userId);
 
   if (isLoading) {
     return (
@@ -49,7 +57,32 @@ export default function PostMeta({ postId }: { postId: string }) {
   return (
     <div>
       <div className="py-4">
-        <Tag>{post.category}</Tag>
+        <div>
+          <div className="flex items-center justify-between">
+            <Tag>{post.category}</Tag>
+            {isLoggedIn && post.author === userId && (
+              <div className="flex items-center gap-2">
+                <Button variant="primary">수정</Button>
+                <Button 
+                  variant="secondary"
+                  onClick={ () => {
+                    deletePostMutation(postId, {
+                      onSuccess: () => {
+                        router.push('/');
+                      },
+                      onError: (error) => {
+                        alert("글 삭제에 실패하였습니다.");
+                        router.push('/');
+                        console.error(error);
+                      },
+                    });
+                }}
+                >삭제</Button>
+              </div>
+            )}
+          </div>
+
+        </div>
         <Heading level={1} className="mt-3">{post.title}</Heading>
         <div className="flex items-center gap-2 text-sm mt-4 text-text-third">
           <UserChip name={post.author} />
