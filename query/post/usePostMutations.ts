@@ -1,12 +1,12 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { createPost, updatePost, deletePost } from '@/lib/api/client/post';
+import { createPost, updatePost, deletePost, likePost } from '@/lib/api/client/post';
 
 // 글 작성 Mutation Hook
 export function useCreatePostMutation() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (formData: FormData) => createPost(formData),
+    mutationFn: ({formData, category}: {formData: FormData, category: string}) => createPost(formData, category),
     onSuccess: () => {
       // 글 목록 캐시 무효화
       queryClient.invalidateQueries({ queryKey: ['postList'] });
@@ -38,6 +38,20 @@ export function useDeletePostMutation() {
     onSuccess: () => {
       // 글 목록 캐시 무효화
       queryClient.invalidateQueries({ queryKey: ['postList'] });
+    },
+  });
+}
+
+// 글 좋아요/싫어요 Mutation Hook
+export function useLikePostMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ postId, likeType }: { postId: string; likeType: "like" | "dislike" }) => likePost(postId, likeType),
+    onSuccess: (_, variables) => {
+      // 글 목록 및 상세 캐시 무효화
+      queryClient.invalidateQueries({ queryKey: ['postList'] });
+      queryClient.invalidateQueries({ queryKey: ['postDetail', variables.postId] });
     },
   });
 }

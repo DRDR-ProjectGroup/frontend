@@ -67,12 +67,8 @@ export async function fetchPostDetail(postId: string): Promise<PostDetailRespons
 }
 
 // 글 작성
-export async function createPost(formData: FormData): Promise<any> {
+export async function createPost(formData: FormData, category: string): Promise<any> {
   const baseUrl = getApiBaseUrl();
-  
-  // formData에서 category 추출 (URL에 필요)
-  const postData = JSON.parse(formData.get('post') as string);
-  const category = postData.category;
 
   const res = await apiRequest(`${baseUrl}/posts/${category}`, {
     method: 'POST',
@@ -119,4 +115,25 @@ export async function deletePost(postId: string): Promise<void> {
     const data = await res.json();
     throw new Error(data?.message || 'Failed to delete post');
   }
+}
+
+
+// 좋아요 기능
+export async function likePost(postId: string, likeType: "like" | "dislike"): Promise<any> {
+  console.log("likePost", postId, likeType);
+  const baseUrl = getApiBaseUrl();
+
+  const res = await apiRequest(`${baseUrl}/posts/${postId}/like`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ likeType }),
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw new Error(data?.message || 'Failed to like post');
+  }
+
+  return data;
 }

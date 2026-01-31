@@ -11,24 +11,13 @@ import Button from "@/components/ui/Button";
 import { useAuthStore } from "@/lib/store/authStore";
 import { useDeletePostMutation } from "@/query/post/usePostMutations";
 import { useRouter } from "next/navigation";
+import { formatDate } from "@/lib/utils/formatDate";
 
-// placeholder를 실제 이미지 URL로 교체
-function replacePlaceholders(content: string, mediaList: MediaItem[]) {
-  let processedContent = content;
-  
-  mediaList.forEach((media) => {
-    const placeholder = `{{IMG_${media.order}}}`;
-    processedContent = processedContent.replace(placeholder, media.url);
-  });
-  
-  return processedContent;
-}
-
-// 렌더링 컴포넌트
+// 게시글 메타 정보 컴포넌트
 export default function PostMeta({ postId }: { postId: string }) {
   const router = useRouter();
   const { mutate: deletePostMutation } = useDeletePostMutation();
-  const { data, isLoading, error } = usePostDetailQuery(postId);
+  const { data: postDetailResponse, isLoading, error } = usePostDetailQuery(postId);
   const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
   const userId = useAuthStore((state) => state.userId);
 
@@ -40,7 +29,7 @@ export default function PostMeta({ postId }: { postId: string }) {
     );
   }
 
-  if (error || !data || data.code !== 200 || !data.data) {
+  if (error || !postDetailResponse || postDetailResponse.code !== 200 || !postDetailResponse.data) {
     return (
       <div className="py-8 text-center text-text-third">
         <p>게시글을 찾을 수 없습니다.</p>
@@ -49,7 +38,7 @@ export default function PostMeta({ postId }: { postId: string }) {
     );
   }
 
-  const post = data.data;
+  const post = postDetailResponse.data;
 
   // placeholder를 실제 이미지 URL로 교체
   const displayContent = replacePlaceholders(post.content, post.mediaList || []);
@@ -59,8 +48,8 @@ export default function PostMeta({ postId }: { postId: string }) {
       <div className="py-4">
         <div>
           <div className="flex items-center justify-between">
-            <Tag>{post.category}</Tag>
-            {isLoggedIn && post.author === userId && (
+            <Tag>{post.category.categoryName}</Tag>
+            {isLoggedIn && post.author.memberId === Number(userId) && (
               <div className="flex items-center gap-2">
                 <Button variant="primary">수정</Button>
                 <Button 
@@ -85,9 +74,9 @@ export default function PostMeta({ postId }: { postId: string }) {
         </div>
         <Heading level={1} className="mt-3">{post.title}</Heading>
         <div className="flex items-center gap-2 text-sm mt-4 text-text-third">
-          <UserChip name={post.author} />
+          <UserChip name={post.author.nickname} />
           <BsDot />
-          <span>{post.createdAt}</span>
+          <span>{formatDate(post.createdAt)}</span>
           <BsDot />
           <span>{`Views ${post.viewCount}`}</span>
           <BsDot />
@@ -100,4 +89,16 @@ export default function PostMeta({ postId }: { postId: string }) {
       </div>
     </div>
   );
+}
+
+// placeholder를 실제 이미지 URL로 교체
+function replacePlaceholders(content: string, mediaList: MediaItem[]) {
+  let processedContent = content;
+  
+  mediaList.forEach((media) => {
+    const placeholder = `{{IMG_${media.order}}}`;
+    processedContent = processedContent.replace(placeholder, (process.env.NEXT_PUBLIC_BACKEND_BASE_URL + media.url));
+  });
+  
+  return processedContent;
 }

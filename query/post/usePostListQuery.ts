@@ -2,9 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { fetchPostList } from '@/lib/api/client/post';
 import type { PostListParams } from '@/types/api/postList';
 
-/**
- * 글 리스트 조회 Query Hook
- */
+// 글 리스트 조회
 export function usePostListQuery(params: PostListParams = {}) {
   const {
     category = 'all',
@@ -12,7 +10,7 @@ export function usePostListQuery(params: PostListParams = {}) {
     size = 20,
     searchTarget = '',
     searchKeyword = '',
-    sort = 'POPULAR',
+    sort = 'LATEST',
   } = params;
 
   return useQuery({

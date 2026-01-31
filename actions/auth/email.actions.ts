@@ -32,10 +32,11 @@ export async function sendEmailAction(email: string): Promise<EmailActionResult>
 
     const data: EmailAPIResult = await res.json();
 
+    console.log(data);
+
     if (!res.ok) {
       return { ok: false, message: data.message };
     }
-
     return { ok: true, message: data.message };
   } catch (error) {
     return { ok: false, message: '이메일 전송 중 오류가 발생했습니다.' };
@@ -53,7 +54,7 @@ export async function verifyCodeAction(
   }
 
   try {
-    const res = await fetch(`${process.env.BACKEND_API_BASE_URL}/members/verifyCode`, {
+    const res = await fetch(`${process.env.BACKEND_API_BASE_URL}/members/verifyEmail`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, code }),

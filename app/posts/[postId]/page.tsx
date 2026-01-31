@@ -9,11 +9,13 @@ export default async function Page(
 
   return (
     <div>
+      {/* 게시글 메타 정보 */}
       <PostMeta postId={postId} />
 
-      {/* <PostReactions /> */}
+      {/* 좋아요, 싫어요 */}
+      <PostReactions postId={postId} />
 
-      {/* 추후 개발 */}
+      {/* 댓글 */}
       {/* <Comments /> */}
     </div>
   );

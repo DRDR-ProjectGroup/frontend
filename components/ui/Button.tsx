@@ -20,7 +20,7 @@ export default function Button({
     secondary:
       'bg-primitive-blackPrimary text-primitive-white hover:bg-primitive-blackPrimary/90',
     tertiary:
-      'bg-primitive-white border border-primitive-graySecond text-primitive-blackPrimary hover:bg-primitive-graySecond/20',
+      'bg-primitive-white border border-primitive-grayPrimary text-primitive-blackPrimary hover:bg-primitive-graySecond/20',
   };
 
   const disabledStyle = 'pointer-events-none opacity-50 cursor-not-allowed';

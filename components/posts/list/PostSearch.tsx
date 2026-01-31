@@ -26,14 +26,15 @@ export default function PostSearch() {
         onChange={(e) => setTarget(e.target.value)}
         className="border-primitive-grayPrimary h-[36px] w-[131px] rounded-md border px-3 text-sm"
       >
-        <option value="Title">제목</option>
-        <option value="Content">내용</option>
-        <option value="Author">작성자</option>
+        <option value="title">제목</option>
+        <option value="content">내용</option>
+        <option value="author">작성자</option>
       </select>
       <div className="flex-1 h-[36px] relative">
         <InputText
           className="h-full w-full"
           value={keyword}
+          placeholder="검색어를 입력해주세요."
           onChange={(e) => setKeyword(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === 'Enter') onSubmit();

@@ -4,7 +4,7 @@ import Button from '@/components/ui/Button';
 import InputText from '@/components/ui/InputText';
 import { signupAction } from '../../../actions/auth/signup.actions';
 import { sendEmailAction, verifyCodeAction } from '../../../actions/auth/email.actions';
-import { useActionState, useState, useTransition } from 'react';
+import { useActionState, useEffect, useState, useTransition } from 'react';
 
 export default function SignupForm() {
   const [formValues, setFormValues] = useState({
@@ -28,6 +28,10 @@ export default function SignupForm() {
 
   const [state, action, pending] = useActionState(signupAction, null);
 
+  useEffect(() => {
+    console.log(formValues);
+  }, [formValues]);
+
   return (
     <form className="space-y-5" action={action}>
       <div>
@@ -40,7 +44,7 @@ export default function SignupForm() {
             onChange={(e) =>
               setFormValues({ ...formValues, email: e.target.value })
             }
-            disabled={isEmailVerified}
+            readOnly={isEmailVerified}
           />
           <Button
             variant="secondary"
@@ -89,6 +93,7 @@ export default function SignupForm() {
                   setCodeMessage(result.message);
                   if (result.ok) {
                     setIsEmailVerified(true);
+                    setEmailMessage('이메일 인증이 완료되었습니다.');
                   }
                 });
               }}
@@ -103,11 +108,6 @@ export default function SignupForm() {
             </p>
           )}
         </div>
-      )}
-
-      {/* 이메일 인증 완료 표시 */}
-      {isEmailVerified && (
-        <p className="text-green-500 text-sm">이메일 인증이 완료되었습니다.</p>
       )}
 
       <InputText
