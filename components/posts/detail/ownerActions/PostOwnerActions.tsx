@@ -4,7 +4,7 @@ import Edit from './Edit';
 export default function PostOwnerActions({ postId }: { postId: string }) {
   return (
     <div className="flex items-center gap-2">
-      <Edit />
+      <Edit postId={postId} />
       <Delete postId={postId} />
 
       {/* <Notice /> */}

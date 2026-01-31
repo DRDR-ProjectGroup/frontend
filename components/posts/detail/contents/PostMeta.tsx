@@ -5,18 +5,14 @@ import { Heading } from '@/components/ui/Heading';
 import UserChip from '@/components/common/UserChip';
 import { BsDot } from 'react-icons/bs';
 import PostContent from './PostContent';
-import type { MediaItem } from '@/types/api/postDetail';
 import { usePostDetailQuery } from '@/query/post/usePostDetailQuery';
 import { useAuthStore } from '@/lib/store/authStore';
-import { useDeletePostMutation } from '@/query/post/usePostMutations';
-import { useRouter } from 'next/navigation';
 import { formatDate } from '@/lib/utils/formatDate';
 import PostOwnerActions from '../ownerActions/PostOwnerActions';
+import { replacePlaceholdersWithUrls } from '@/components/posts/write/utils/imageProcessor';
 
 // 게시글 메타 정보 컴포넌트
 export default function PostMeta({ postId }: { postId: string }) {
-  const router = useRouter();
-  const { mutate: deletePostMutation } = useDeletePostMutation();
   const {
     data: postDetailResponse,
     isLoading,
@@ -50,7 +46,7 @@ export default function PostMeta({ postId }: { postId: string }) {
   const post = postDetailResponse.data;
 
   // placeholder를 실제 이미지 URL로 교체
-  const displayContent = replacePlaceholders(
+  const displayContent = replacePlaceholdersWithUrls(
     post.content,
     post.mediaList || [],
   );
@@ -85,19 +81,4 @@ export default function PostMeta({ postId }: { postId: string }) {
       </div>
     </div>
   );
-}
-
-// placeholder를 실제 이미지 URL로 교체
-function replacePlaceholders(content: string, mediaList: MediaItem[]) {
-  let processedContent = content;
-
-  mediaList.forEach((media) => {
-    const placeholder = `{{IMG_${media.order}}}`;
-    processedContent = processedContent.replace(
-      placeholder,
-      process.env.NEXT_PUBLIC_BACKEND_BASE_URL + media.url,
-    );
-  });
-
-  return processedContent;
 }

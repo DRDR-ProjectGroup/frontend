@@ -2,7 +2,13 @@ import Select from "@/components/ui/Select";
 import { CategoryGroup } from "@/types/api/category";
 import { useEffect, useState } from "react";
 
-export default function SelectCategory({ category, setCategory }: { category: string, setCategory: (category: string) => void }) {
+export default function SelectCategory({ 
+  category, 
+  setCategory 
+}: { 
+  category: string; 
+  setCategory: (category: string) => void;
+}) {
   const [categoryGroups, setCategoryGroups] = useState<CategoryGroup[]>([]);
 
   useEffect(() => {
@@ -30,5 +36,5 @@ export default function SelectCategory({ category, setCategory }: { category: st
         ))}
       </Select>
     </div>
-  )
+  );
 }
