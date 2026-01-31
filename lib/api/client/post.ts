@@ -29,7 +29,7 @@ function buildSearchParams(params: PostListParams) {
 
 // 글 리스트 조회
 export async function fetchPostList(
-  params: PostListParams = {}
+  params: PostListParams = {},
 ): Promise<PostListResponse> {
   const baseUrl = getApiBaseUrl();
   const sp = buildSearchParams(params);
@@ -49,7 +49,9 @@ export async function fetchPostList(
 }
 
 // 글 상세 조회
-export async function fetchPostDetail(postId: string): Promise<PostDetailResponse> {
+export async function fetchPostDetail(
+  postId: string,
+): Promise<PostDetailResponse> {
   const baseUrl = getApiBaseUrl();
 
   const res = await apiRequest(`${baseUrl}/posts/${postId}`, {
@@ -67,7 +69,10 @@ export async function fetchPostDetail(postId: string): Promise<PostDetailRespons
 }
 
 // 글 작성
-export async function createPost(formData: FormData, category: string): Promise<any> {
+export async function createPost(
+  formData: FormData,
+  category: string,
+): Promise<any> {
   const baseUrl = getApiBaseUrl();
 
   const res = await apiRequest(`${baseUrl}/posts/${category}`, {
@@ -85,7 +90,10 @@ export async function createPost(formData: FormData, category: string): Promise<
 }
 
 // 글 수정
-export async function updatePost(postId: string, formData: FormData): Promise<any> {
+export async function updatePost(
+  postId: string,
+  formData: FormData,
+): Promise<any> {
   const baseUrl = getApiBaseUrl();
 
   const res = await apiRequest(`${baseUrl}/posts/${postId}`, {
@@ -117,10 +125,12 @@ export async function deletePost(postId: string): Promise<void> {
   }
 }
 
-
 // 좋아요 기능
-export async function likePost(postId: string, likeType: "like" | "dislike"): Promise<any> {
-  console.log("likePost", postId, likeType);
+export async function likePost(
+  postId: string,
+  likeType: 'like' | 'dislike',
+): Promise<any> {
+  console.log('likePost', postId, likeType);
   const baseUrl = getApiBaseUrl();
 
   const res = await apiRequest(`${baseUrl}/posts/${postId}/like`, {

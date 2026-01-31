@@ -29,9 +29,13 @@ export interface PostListParams {
   category?: string;
   page?: number;
   size?: number;
-  searchTarget?: string;
+  searchTarget?: PostListSearchTargetType;
   searchKeyword?: string;
   sort?: PostListSortType;
 }
 
+// sort
 export type PostListSortType = 'POPULAR' | 'LATEST';
+
+// searchTarget
+export type PostListSearchTargetType = 'ALL' | 'TITLE' | 'CONTENT' | 'AUTHOR';

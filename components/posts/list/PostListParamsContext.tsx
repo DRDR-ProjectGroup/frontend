@@ -1,6 +1,10 @@
 'use client';
 
-import type { PostListParams, PostListSortType } from '@/types/api/postList';
+import type {
+  PostListParams,
+  PostListSearchTargetType,
+  PostListSortType,
+} from '@/types/api/postList';
 import { createContext, ReactNode, useContext, useMemo, useState } from 'react';
 
 type PostListParamsWithDefaults = Required<
@@ -11,7 +15,10 @@ type PostListParamsWithDefaults = Required<
 type PostListParamsContextValue = {
   params: PostListParamsWithDefaults;
   setPage: (page: number) => void;
-  applySearch: (searchTarget: string, searchKeyword: string) => void;
+  applySearch: (
+    searchTarget: PostListSearchTargetType,
+    searchKeyword: string,
+  ) => void;
   clearSearch: () => void;
   setSort: (sort: PostListSortType) => void;
 };
@@ -32,7 +39,8 @@ export function PostListParamsProvider({
   const [page, setPage] = useState<number>(1);
   const [size] = useState<number>(5);
   const [sort, setSort] = useState<PostListSortType>('LATEST');
-  const [searchTarget, setSearchTarget] = useState<string>('');
+  const [searchTarget, setSearchTarget] =
+    useState<PostListSearchTargetType>('ALL');
   const [searchKeyword, setSearchKeyword] = useState<string>('');
 
   const value = useMemo<PostListParamsContextValue>(() => {
@@ -54,7 +62,7 @@ export function PostListParamsProvider({
         setPage(1);
       },
       clearSearch: () => {
-        setSearchTarget('');
+        setSearchTarget('ALL');
         setSearchKeyword('');
         setPage(1);
       },

@@ -3,7 +3,10 @@
 import Button from '@/components/ui/Button';
 import InputText from '@/components/ui/InputText';
 import { signupAction } from '../../../actions/auth/signup.actions';
-import { sendEmailAction, verifyCodeAction } from '../../../actions/auth/email.actions';
+import {
+  sendEmailAction,
+  verifyCodeAction,
+} from '../../../actions/auth/email.actions';
 import { useActionState, useEffect, useState, useTransition } from 'react';
 
 export default function SignupForm() {
@@ -27,10 +30,6 @@ export default function SignupForm() {
   const [isVerifyingCode, startVerifyingCode] = useTransition();
 
   const [state, action, pending] = useActionState(signupAction, null);
-
-  useEffect(() => {
-    console.log(formValues);
-  }, [formValues]);
 
   return (
     <form className="space-y-5" action={action}>
@@ -61,11 +60,17 @@ export default function SignupForm() {
             }}
             disabled={isSendingEmail || isEmailVerified}
           >
-            {isSendingEmail ? 'Sending...' : isEmailSent ? 'Resend' : 'Send Code'}
+            {isSendingEmail
+              ? 'Sending...'
+              : isEmailSent
+                ? 'Resend'
+                : 'Send Code'}
           </Button>
         </div>
         {emailMessage && (
-          <p className={`text-sm mt-1 ${isEmailSent ? 'text-green-500' : 'text-primitive-red'}`}>
+          <p
+            className={`text-sm mt-1 ${isEmailSent ? 'text-green-500' : 'text-primitive-red'}`}
+          >
             {emailMessage}
           </p>
         )}
@@ -103,7 +108,9 @@ export default function SignupForm() {
             </Button>
           </div>
           {codeMessage && (
-            <p className={`text-sm mt-1 ${isEmailVerified ? 'text-green-500' : 'text-primitive-red'}`}>
+            <p
+              className={`text-sm mt-1 ${isEmailVerified ? 'text-green-500' : 'text-primitive-red'}`}
+            >
               {codeMessage}
             </p>
           )}

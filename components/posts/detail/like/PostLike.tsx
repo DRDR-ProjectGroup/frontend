@@ -26,7 +26,6 @@ export default function PostReactions({ postId }: { postId: string }) {
   if (!post) {
     return <div>게시글 상세 정보를 불러오지 못했습니다.</div>;
   }
-  console.log(post);
 
   return (
     <div className="flex items-stretch justify-center gap-2 py-8">
