@@ -3,13 +3,10 @@
 import Popover from '@/components/ui/Popover';
 import Link from 'next/link';
 import { useState } from 'react';
-// import { dummy_navMenu } from '@/dummy/navMenu';
 import { NavMenuData } from '@/types/api/navMenu';
 
 export default function NavMenu({ navMenus }: { navMenus: NavMenuData[] }) {
   const [activeNav, setActiveNav] = useState('');
-
-  // const navMenus = dummy_navMenu;
 
   return (
     <nav>

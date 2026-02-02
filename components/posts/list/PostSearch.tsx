@@ -4,11 +4,22 @@ import { FiSearch } from 'react-icons/fi';
 import { useState } from 'react';
 import InputText from '@/components/ui/InputText';
 import { usePostListParams } from './PostListParamsContext';
+import { PostListSearchTargetType } from '@/types/api/postList';
 
 export default function PostSearch() {
   const { params, applySearch, clearSearch } = usePostListParams();
-  const [target, setTarget] = useState(params.searchTarget || 'Title');
+  const [target, setTarget] = useState<PostListSearchTargetType>(
+    params.searchTarget || 'ALL',
+  );
   const [keyword, setKeyword] = useState(params.searchKeyword || '');
+
+  // searchTarget 변수
+  const searchTargetOptions = [
+    { value: 'ALL', label: '전체' },
+    { value: 'TITLE', label: '제목' },
+    { value: 'CONTENT', label: '내용' },
+    { value: 'AUTHOR', label: '작성자' },
+  ];
 
   const onSubmit = () => {
     // 빈 키워드면 검색 해제
@@ -23,17 +34,20 @@ export default function PostSearch() {
     <div className="flex items-center gap-2 mt-6 mb-4">
       <select
         value={target}
-        onChange={(e) => setTarget(e.target.value)}
+        onChange={(e) => setTarget(e.target.value as PostListSearchTargetType)}
         className="border-primitive-grayPrimary h-[36px] w-[131px] rounded-md border px-3 text-sm"
       >
-        <option value="Title">제목</option>
-        <option value="Content">내용</option>
-        <option value="Author">작성자</option>
+        {searchTargetOptions.map((option) => (
+          <option key={option.value} value={option.value}>
+            {option.label}
+          </option>
+        ))}
       </select>
       <div className="flex-1 h-[36px] relative">
         <InputText
           className="h-full w-full"
           value={keyword}
+          placeholder="검색어를 입력해주세요."
           onChange={(e) => setKeyword(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === 'Enter') onSubmit();

@@ -21,6 +21,7 @@ module.exports = {
           grayText: 'rgb(var(--color-gray-text) / <alpha-value>)',
         },
         bg: {
+          white: 'rgb(var(--color-white) / <alpha-value>)',
           primary: 'rgb(var(--color-bg-primary) / <alpha-value>)',
         },
         text: {

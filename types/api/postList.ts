@@ -1,12 +1,14 @@
 import { ApiResponse, Pagination } from './common';
+import { Author } from './author';
+import { Category } from './category';
 
 // 게시글 아이템 타입
 export interface PostItem {
   postId: string;
   title: string;
   content: string;
-  author: string;
-  category: string;
+  author: Author; // 작성자 정보
+  category: Category; // 게시글 카테고리
   viewCount: number;
   likeCount: number;
   commentCount: number;
@@ -14,13 +16,12 @@ export interface PostItem {
   notice: boolean;
 }
 
-// 게시글 리스트 데이터 타입
+// 페이지네이션션
 export interface PostListData extends Pagination {
-  category: string;
   posts: PostItem[];
 }
 
-// 게시글 리스트 조회 API 응답 타입
+// API 공통 응답 타입
 export type PostListResponse = ApiResponse<PostListData>;
 
 // 게시글 리스트 조회 파라미터 타입
@@ -28,7 +29,13 @@ export interface PostListParams {
   category?: string;
   page?: number;
   size?: number;
-  searchTarget?: string;
+  searchTarget?: PostListSearchTargetType;
   searchKeyword?: string;
-  sort?: 'POPULAR' | 'LATEST';
+  sort?: PostListSortType;
 }
+
+// sort
+export type PostListSortType = 'POPULAR' | 'LATEST';
+
+// searchTarget
+export type PostListSearchTargetType = 'ALL' | 'TITLE' | 'CONTENT' | 'AUTHOR';

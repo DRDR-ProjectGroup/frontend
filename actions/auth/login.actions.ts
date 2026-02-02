@@ -27,6 +27,7 @@ export async function loginAction(
   }
 
   try {
+    // API 요청
     const res = await fetch(`${process.env.BACKEND_API_BASE_URL}/members/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

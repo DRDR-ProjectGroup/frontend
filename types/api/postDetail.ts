@@ -1,14 +1,16 @@
 import { ApiResponse, Pagination } from './common';
+import { Author } from './author';
+import { Category } from './category';
 
 // 게시글 상세 타입
 export interface PostDetailData {
   postId: string;
   title: string;
   content: string;
-  author: string;
+  author: Author;
+  category: Category;
   viewCount: number;
   likeCount: number;
-  category: string;
   mediaList: MediaItem[];
   createdAt: string;
   notice: boolean;

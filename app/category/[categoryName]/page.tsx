@@ -1,4 +1,4 @@
-import PostListWrap from "@/components/posts/PostListWrap";
+import PostListWrap from "@/components/posts/list/PostListWrap";
 
 export default async function CategoryPage({
   params,
