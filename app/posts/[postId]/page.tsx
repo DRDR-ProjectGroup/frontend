@@ -8,17 +8,18 @@ export default async function Page({
   params: Promise<{ postId: string }>;
 }) {
   const { postId } = await params;
+  const postIdNumber = Number(postId);
 
   return (
     <div>
       {/* 게시글 메타 정보 */}
-      <PostMeta postId={postId} />
+      <PostMeta postId={postIdNumber} />
 
       {/* 좋아요, 싫어요 */}
-      <PostReactions postId={postId} />
+      <PostReactions postId={postIdNumber} />
 
       {/* 댓글 */}
-      {/* <Comments /> */}
+      <Comments postId={postIdNumber} />
     </div>
   );
 }

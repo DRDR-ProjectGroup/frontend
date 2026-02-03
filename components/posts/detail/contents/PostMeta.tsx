@@ -12,7 +12,7 @@ import PostOwnerActions from '../ownerActions/PostOwnerActions';
 import { replacePlaceholdersWithUrls } from '@/components/posts/write/utils/imageProcessor';
 
 // 게시글 메타 정보 컴포넌트
-export default function PostMeta({ postId }: { postId: string }) {
+export default function PostMeta({ postId }: { postId: number }) {
   const {
     data: postDetailResponse,
     isLoading,
@@ -55,16 +55,16 @@ export default function PostMeta({ postId }: { postId: string }) {
     <div>
       <div className="py-4">
         <div>
+          <Tag>{post.category.categoryName}</Tag>
           <div className="flex items-center justify-between">
-            <Tag>{post.category.categoryName}</Tag>
+            <Heading level={1} className="mt-3">
+              {post.title}
+            </Heading>
             {isLoggedIn && post.author.memberId === Number(userId) && (
               <PostOwnerActions postId={postId} />
             )}
           </div>
         </div>
-        <Heading level={1} className="mt-3">
-          {post.title}
-        </Heading>
         <div className="flex items-center gap-2 text-sm mt-4 text-text-third">
           <UserChip name={post.author.nickname} />
           <BsDot />

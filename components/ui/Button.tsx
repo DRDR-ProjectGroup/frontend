@@ -1,3 +1,4 @@
+import { twMerge } from 'tailwind-merge';
 import { ButtonHTMLAttributes, ReactNode } from 'react';
 
 // primary초록 / secondary검정 / tertiary / disabled회색
@@ -38,7 +39,13 @@ export default function Button({
   return (
     <button
       type={type}
-      className={`${base} ${variants[variant]} ${sizes[size]} ${className ?? ''} ${disabled ? disabledStyle : ''}`}
+      className={twMerge(
+        base,
+        variants[variant],
+        sizes[size],
+        className,
+        disabled && disabledStyle,
+      )}
       disabled={disabled}
       {...props}
     >

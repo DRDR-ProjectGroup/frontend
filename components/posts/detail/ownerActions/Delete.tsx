@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import DeleteModal from '@/components/common/modal/DeleteModal';
 
-export default function Delete({ postId }: { postId: string }) {
+export default function Delete({ postId }: { postId: number }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const router = useRouter();
   const { mutate: deletePostMutation } = useDeletePostMutation();
