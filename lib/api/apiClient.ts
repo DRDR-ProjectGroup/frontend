@@ -5,12 +5,16 @@
  * - 재발급 실패 시 로그아웃 처리
  */
 
-import { getAccessToken, setAccessToken, removeAccessToken } from '@/lib/utils/auth-token';
+import {
+  getAccessToken,
+  setAccessToken,
+  removeAccessToken,
+} from '@/lib/utils/auth-token';
 
 /**
  * 환경변수에서 API Base URL 가져오기
  */
-function getApiBaseUrl(): string {
+export function getApiBaseUrl(): string {
   const url = process.env.NEXT_PUBLIC_BACKEND_API_BASE_URL;
   if (!url) {
     throw new Error('NEXT_PUBLIC_BACKEND_API_BASE_URL is not set');
@@ -53,7 +57,7 @@ async function refreshAccessToken(): Promise<string | null> {
  */
 export async function apiRequest(
   url: string,
-  options: RequestInit = {}
+  options: RequestInit = {},
 ): Promise<Response> {
   const token = getAccessToken();
 
@@ -73,19 +77,19 @@ export async function apiRequest(
   // 401 에러 처리 (토큰 만료)
   if (response.status === 401) {
     console.log('Token expired, attempting to refresh...');
-    
+
     // 토큰 재발급 시도
     const newToken = await refreshAccessToken();
 
     if (newToken) {
       // 재발급 성공 -> 원래 요청 재시도
       console.log('Token refreshed successfully, retrying request...');
-      
+
       const retryHeaders: HeadersInit = {
         ...options.headers,
         Authorization: `Bearer ${newToken}`,
       };
-      
+
       response = await fetch(url, {
         ...options,
         headers: retryHeaders,
@@ -95,12 +99,12 @@ export async function apiRequest(
       // 재발급 실패 -> 로그아웃 처리
       console.error('Token refresh failed, logging out...');
       removeAccessToken();
-      
+
       // 로그인 페이지로 리다이렉트 (클라이언트 사이드에서만)
       if (typeof window !== 'undefined') {
         window.location.href = '/login';
       }
-      
+
       throw new Error('인증이 만료되었습니다. 다시 로그인해주세요.');
     }
   }
@@ -113,7 +117,8 @@ export async function apiRequest(
  */
 export async function apiGet<T = any>(
   endpoint: string,
-  options?: RequestInit
+  options?: RequestInit,
+  errorMessage?: string,
 ): Promise<T> {
   const baseUrl = getApiBaseUrl();
   const response = await apiRequest(`${baseUrl}${endpoint}`, {
@@ -127,7 +132,7 @@ export async function apiGet<T = any>(
 
   if (!response.ok) {
     const error = await response.json().catch(() => ({}));
-    throw new Error(error.message || 'API request failed');
+    throw new Error(error.message || errorMessage || 'API request failed');
   }
 
   return response.json();
@@ -139,7 +144,8 @@ export async function apiGet<T = any>(
 export async function apiPost<T = any>(
   endpoint: string,
   body?: any,
-  options?: RequestInit
+  options?: RequestInit,
+  errorMessage?: string,
 ): Promise<T> {
   const baseUrl = getApiBaseUrl();
   const response = await apiRequest(`${baseUrl}${endpoint}`, {
@@ -154,7 +160,7 @@ export async function apiPost<T = any>(
 
   if (!response.ok) {
     const error = await response.json().catch(() => ({}));
-    throw new Error(error.message || 'API request failed');
+    throw new Error(error.message || errorMessage || 'API request failed');
   }
 
   return response.json();
@@ -166,7 +172,8 @@ export async function apiPost<T = any>(
 export async function apiPut<T = any>(
   endpoint: string,
   body?: any,
-  options?: RequestInit
+  options?: RequestInit,
+  errorMessage?: string,
 ): Promise<T> {
   const baseUrl = getApiBaseUrl();
   const response = await apiRequest(`${baseUrl}${endpoint}`, {
@@ -181,7 +188,35 @@ export async function apiPut<T = any>(
 
   if (!response.ok) {
     const error = await response.json().catch(() => ({}));
-    throw new Error(error.message || 'API request failed');
+    throw new Error(error.message || errorMessage || 'API request failed');
+  }
+
+  return response.json();
+}
+
+/**
+ * PATCH 요청 헬퍼
+ */
+export async function apiPatch<T = any>(
+  endpoint: string,
+  body?: any,
+  options?: RequestInit,
+  errorMessage?: string,
+): Promise<T> {
+  const baseUrl = getApiBaseUrl();
+  const response = await apiRequest(`${baseUrl}${endpoint}`, {
+    ...options,
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      ...options?.headers,
+    },
+    body: body ? JSON.stringify(body) : undefined,
+  });
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({}));
+    throw new Error(error.message || errorMessage || 'API request failed');
   }
 
   return response.json();
@@ -192,7 +227,8 @@ export async function apiPut<T = any>(
  */
 export async function apiDelete<T = any>(
   endpoint: string,
-  options?: RequestInit
+  options?: RequestInit,
+  errorMessage?: string,
 ): Promise<T> {
   const baseUrl = getApiBaseUrl();
   const response = await apiRequest(`${baseUrl}${endpoint}`, {
@@ -206,7 +242,7 @@ export async function apiDelete<T = any>(
 
   if (!response.ok) {
     const error = await response.json().catch(() => ({}));
-    throw new Error(error.message || 'API request failed');
+    throw new Error(error.message || errorMessage || 'API request failed');
   }
 
   return response.json();
@@ -218,7 +254,8 @@ export async function apiDelete<T = any>(
 export async function apiPostFormData<T = any>(
   endpoint: string,
   formData: FormData,
-  options?: RequestInit
+  options?: RequestInit,
+  errorMessage?: string,
 ): Promise<T> {
   const baseUrl = getApiBaseUrl();
   const token = getAccessToken();
@@ -237,7 +274,7 @@ export async function apiPostFormData<T = any>(
 
   if (!response.ok) {
     const error = await response.json().catch(() => ({}));
-    throw new Error(error.message || 'API request failed');
+    throw new Error(error.message || errorMessage || 'API request failed');
   }
 
   return response.json();
@@ -249,7 +286,8 @@ export async function apiPostFormData<T = any>(
 export async function apiPutFormData<T = any>(
   endpoint: string,
   formData: FormData,
-  options?: RequestInit
+  options?: RequestInit,
+  errorMessage?: string,
 ): Promise<T> {
   const baseUrl = getApiBaseUrl();
   const token = getAccessToken();
@@ -268,7 +306,7 @@ export async function apiPutFormData<T = any>(
 
   if (!response.ok) {
     const error = await response.json().catch(() => ({}));
-    throw new Error(error.message || 'API request failed');
+    throw new Error(error.message || errorMessage || 'API request failed');
   }
 
   return response.json();

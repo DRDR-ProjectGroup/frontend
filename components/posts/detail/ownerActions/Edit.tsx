@@ -1,7 +1,7 @@
 import Button from '@/components/ui/Button';
 import { useRouter } from 'next/navigation';
 
-export default function Edit({ postId }: { postId: string }) {
+export default function Edit({ postId }: { postId: number }) {
   const router = useRouter();
   const handleEdit = () => {
     router.push(`/posts/${postId}/edit`);

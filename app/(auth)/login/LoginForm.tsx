@@ -4,13 +4,15 @@ import Button from '@/components/ui/Button';
 import InputText from '@/components/ui/InputText';
 import { loginAction } from '../../../actions/auth/login.actions';
 import { useActionState, useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuthStore } from '@/lib/store/authStore';
 
 export default function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirect = searchParams.get('redirect');
   const setAuth = useAuthStore((state) => state.setAuth);
-  
+
   const [formValues, setFormValues] = useState({
     username: '',
     password: '',
@@ -23,11 +25,11 @@ export default function LoginForm() {
     if (state?.ok && state.accessToken) {
       // Zustand store에 토큰 저장 (자동으로 localStorage에도 저장됨)
       setAuth(state.accessToken);
-      
-      // 홈으로 리다이렉트
-      router.push('/');
+
+      if (redirect) router.push(redirect);
+      else router.push('/');
     }
-  }, [state, router, setAuth]);
+  }, [state, router, setAuth, redirect]);
 
   return (
     <form className="space-y-5" action={action}>
@@ -48,14 +50,19 @@ export default function LoginForm() {
           setFormValues({ ...formValues, password: e.target.value })
         }
       />
-      <Button type="submit" variant="secondary" className="h-[46px] w-full"
+      <Button
+        type="submit"
+        variant="secondary"
+        className="h-[46px] w-full"
         disabled={pending}
       >
         Login
       </Button>
-      {state && !state.ok && (<div className="text-primitive-red text-sm p-2 text-center">
-        {state.message}
-      </div>)}
+      {state && !state.ok && (
+        <div className="text-primitive-red text-sm p-2 text-center">
+          {state.message}
+        </div>
+      )}
     </form>
   );
 }

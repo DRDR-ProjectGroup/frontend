@@ -1,4 +1,5 @@
-import { SelectHTMLAttributes } from "react";
+import { twMerge } from 'tailwind-merge';
+import { SelectHTMLAttributes } from 'react';
 
 type SelectProps = SelectHTMLAttributes<HTMLSelectElement> & {
   children: React.ReactNode;
@@ -8,10 +9,13 @@ type SelectProps = SelectHTMLAttributes<HTMLSelectElement> & {
 export default function Select({ children, className, ...props }: SelectProps) {
   return (
     <select
-        {...props}
-        className={`border-primitive-grayPrimary h-[36px] w-[131px] rounded-md border px-3 text-sm ${className ?? ''}`}
-      >
-        {children}
-      </select>
+      {...props}
+      className={twMerge(
+        'border-primitive-grayPrimary h-[36px] w-[131px] rounded-md border px-3 text-sm',
+        className,
+      )}
+    >
+      {children}
+    </select>
   );
 }

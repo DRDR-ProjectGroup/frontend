@@ -4,7 +4,7 @@ import { fetchPostDetail } from '@/lib/api/client/post';
 /**
  * 글 상세 조회 Query Hook
  */
-export function usePostDetailQuery(postId: string) {
+export function usePostDetailQuery(postId: number) {
   return useQuery({
     queryKey: ['postDetail', postId],
     queryFn: () => fetchPostDetail(postId),

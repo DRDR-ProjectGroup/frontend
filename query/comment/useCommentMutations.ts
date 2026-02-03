@@ -1,0 +1,53 @@
+import {
+  createComment,
+  deleteComment,
+  updateComment,
+} from '@/lib/api/client/comment';
+import {
+  CreateCommentRequest,
+  DeleteCommentRequest,
+  UpdateCommentRequest,
+} from '@/types/api/comment';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+
+// 댓글 작성
+export function useCreateCommentMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (request: CreateCommentRequest) => createComment(request),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: ['commentList', variables.postId],
+      });
+    },
+  });
+}
+
+// 댓글 수정
+export function useUpdateCommentMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (request: UpdateCommentRequest) => updateComment(request),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: ['commentList', variables.postId],
+      });
+    },
+  });
+}
+
+// 댓글 삭제
+export function useDeleteCommentMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (request: DeleteCommentRequest) => deleteComment(request),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: ['commentList', variables.postId],
+      });
+    },
+  });
+}

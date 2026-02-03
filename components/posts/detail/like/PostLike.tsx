@@ -6,7 +6,7 @@ import { useLikePostMutation } from '@/query/post/usePostMutations';
 import { AiOutlineLike, AiOutlineDislike } from 'react-icons/ai';
 import { useAuthStore } from '@/lib/store/authStore';
 
-export default function PostReactions({ postId }: { postId: string }) {
+export default function PostReactions({ postId }: { postId: number }) {
   const {
     data: postDetailResponse,
     isLoading,

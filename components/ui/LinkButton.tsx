@@ -1,3 +1,4 @@
+import { twMerge } from 'tailwind-merge';
 import Link from 'next/link';
 import { ReactNode } from 'react';
 
@@ -20,7 +21,8 @@ export default function LinkButton({
   const base =
     'inline-flex items-center justify-center px-4 py-2 text-sm rounded-md cursor-pointer';
   const variants: Record<NonNullable<LinkButtonProps['variant']>, string> = {
-    primary: 'bg-primitive-green text-primitive-white hover:bg-primitive-green/90',
+    primary:
+      'bg-primitive-green text-primitive-white hover:bg-primitive-green/90',
     secondary:
       'bg-primitive-blackPrimary text-primitive-white hover:bg-primitive-blackPrimary/90',
     tertiary:
@@ -32,7 +34,12 @@ export default function LinkButton({
   return (
     <Link
       href={href}
-      className={`${base} ${variants[variant]} ${className ?? ''} ${disabled ? disabledStyle : ''}`}
+      className={twMerge(
+        base,
+        variants[variant],
+        className,
+        disabled && disabledStyle,
+      )}
     >
       {children}
     </Link>

@@ -34,7 +34,7 @@ export default function SignupForm() {
   return (
     <form className="space-y-5" action={action}>
       <div>
-        <div className="flex gap-x-2">
+        <div className="flex gap-x-2 items-stretch h-[46px]">
           <InputText
             name="email"
             placeholder="Email (naver 메일만 이용 가능)"
@@ -46,6 +46,7 @@ export default function SignupForm() {
             readOnly={isEmailVerified}
           />
           <Button
+            className="h-full"
             variant="secondary"
             onClick={(e) => {
               e.preventDefault();
@@ -79,7 +80,7 @@ export default function SignupForm() {
       {/* 이메일 발송 성공 시에만 인증번호 입력 필드 노출 */}
       {isEmailSent && !isEmailVerified && (
         <div>
-          <div className="flex gap-x-2">
+          <div className="flex gap-x-2 items-stretch h-[46px]">
             <InputText
               name="code"
               placeholder="인증번호 입력"
@@ -90,6 +91,7 @@ export default function SignupForm() {
             <Button
               type="button"
               variant="secondary"
+              className="h-full"
               onClick={(e) => {
                 e.preventDefault();
                 setCodeMessage('');
