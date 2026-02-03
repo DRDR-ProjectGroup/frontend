@@ -8,7 +8,7 @@ import { useState } from 'react';
 type ReplyFormProps = {
   mode?: 'create' | 'update';
   postId: number;
-  commentId: number;
+  commentId?: number;
   parentCommentId: number | null;
   onCancel: () => void;
   initialContent?: string;
@@ -35,6 +35,7 @@ export default function ReplyForm({
     if (mode === 'create') {
       createCommentMutate({ postId, parentCommentId, content }, { onSuccess });
     } else {
+      if (!commentId) return; // 'update' 모드에서 commentId가 없으면 오류 발생
       updateCommentMutate({ postId, commentId, content }, { onSuccess });
     }
   };
