@@ -29,16 +29,20 @@ const PostListParamsContext = createContext<PostListParamsContextValue | null>(
 
 export function PostListParamsProvider({
   initialCategory = 'all',
+  initialPage,
+  initialSort,
   children,
 }: {
   initialCategory?: string;
+  initialPage?: number;
+  initialSort?: PostListSortType;
   children: ReactNode;
 }) {
   // category는 상위에서 내려주는 값을 그대로 사용 (Provider remount로 초기화 처리)
   const category = initialCategory;
-  const [page, setPage] = useState<number>(1);
+  const [page, setPage] = useState<number>(initialPage || 1);
   const [size] = useState<number>(5);
-  const [sort, setSort] = useState<PostListSortType>('LATEST');
+  const [sort, setSort] = useState<PostListSortType>(initialSort || 'LATEST');
   const [searchTarget, setSearchTarget] =
     useState<PostListSearchTargetType>('ALL');
   const [searchKeyword, setSearchKeyword] = useState<string>('');

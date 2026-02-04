@@ -102,7 +102,8 @@ export async function apiRequest(
 
       // 로그인 페이지로 리다이렉트 (클라이언트 사이드에서만)
       if (typeof window !== 'undefined') {
-        window.location.href = '/login';
+        // window.location.href = '/login';
+        alert('토큰 재발급 실패.');
       }
 
       throw new Error('인증이 만료되었습니다. 다시 로그인해주세요.');

@@ -1,10 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import {
-  createPost,
-  updatePost,
-  deletePost,
-  likePost,
-} from '@/lib/api/client/post';
+import { createPost, updatePost, deletePost, likePost } from '@/lib/api/post';
 
 // 글 작성 Mutation Hook
 export function useCreatePostMutation() {
@@ -72,7 +67,8 @@ export function useLikePostMutation() {
       postId: number;
       likeType: 'like' | 'dislike';
     }) => likePost(postId, likeType),
-    onSuccess: (_, variables) => {
+    onSuccess: (data, variables) => {
+      console.log('좋아요 api 응답', data);
       // 글 목록 및 상세 캐시 무효화
       queryClient.invalidateQueries({ queryKey: ['postList'] });
       queryClient.invalidateQueries({

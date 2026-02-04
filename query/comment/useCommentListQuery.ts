@@ -1,6 +1,6 @@
 import { CommentListParams } from '@/types/api/comment';
 import { useQuery } from '@tanstack/react-query';
-import { fetchCommentList } from '@/lib/api/client/comment';
+import { fetchCommentList } from '@/lib/api/comment';
 
 // 댓글 리스트 조회
 export function useCommentListQuery(params: CommentListParams) {

@@ -9,7 +9,11 @@ import { PostItem } from '@/types/api/postList';
 import { formatDate } from '@/lib/utils/formatDate';
 import Sort from './Sort';
 
-export default function PostList() {
+export default function PostList({
+  currentPostId,
+}: {
+  currentPostId?: number;
+}) {
   const { params } = usePostListParams();
   const {
     data: postListResponse,
@@ -55,14 +59,15 @@ export default function PostList() {
           {postList.map((post: PostItem) => (
             <tr
               key={post.postId}
-              className="border border-primitive-graySecond hover:bg-primitive-grayThird"
+              className={`border border-primitive-graySecond hover:bg-primitive-grayThird 
+                ${Number(post.postId) === currentPostId ? 'bg-primitive-grayThird' : ''}`}
             >
               <td className="px-4 py-3">
                 <Tag>{post.category.categoryName}</Tag>
               </td>
               <td className="px-4 py-3">
                 <Link
-                  href={`/posts/${post.postId}`}
+                  href={`/posts/${post.postId}?category=${params.category}&page=${params.page}&sort=${params.sort}`}
                   className="font-bold hover:underline"
                 >
                   {post.title}

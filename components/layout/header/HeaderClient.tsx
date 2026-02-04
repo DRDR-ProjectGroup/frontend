@@ -1,11 +1,11 @@
 'use client';
 
-import Logo from "./Logo";
-import NavMenu from "./NavMenu";
-import AfterLogin from "./AfterLogin";
-import BeforeLogin from "./BeforeLogin";
-import { useAuthStore } from "@/lib/store/authStore";
-import { NavMenuData } from "@/types/api/navMenu";
+import Logo from './Logo';
+import NavMenu from './NavMenu';
+import AfterLogin from './AfterLogin';
+import BeforeLogin from './BeforeLogin';
+import { useAuthStore } from '@/lib/store/authStore';
+import { NavMenuData } from '@/types/api/navMenu';
 
 interface HeaderClientProps {
   navMenus: NavMenuData[];
@@ -13,7 +13,6 @@ interface HeaderClientProps {
 
 export default function HeaderClient({ navMenus }: HeaderClientProps) {
   const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
-  const userId = useAuthStore((state) => state.userId);
 
   return (
     <header className="shadow-xs h-[65px]">

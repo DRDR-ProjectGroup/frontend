@@ -34,6 +34,8 @@ export default function Delete({ postId }: { postId: number }) {
         삭제
       </Button>
       <DeleteModal
+        title="글 삭제"
+        message="정말 글을 삭제하시겠습니까?"
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onDelete={handleDelete}

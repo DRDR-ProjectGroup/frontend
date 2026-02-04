@@ -3,7 +3,7 @@ import { ButtonHTMLAttributes, ReactNode } from 'react';
 
 // primary초록 / secondary검정 / tertiary / disabled회색
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
-  variant?: 'primary' | 'secondary' | 'tertiary' | 'warning';
+  variant?: 'primary' | 'secondary' | 'tertiary' | 'warning' | 'icon';
   size?: 'sm' | 'md' | 'lg';
 };
 
@@ -26,6 +26,7 @@ export default function Button({
     tertiary:
       'bg-primitive-white border border-primitive-grayPrimary text-primitive-blackPrimary hover:bg-primitive-graySecond/20',
     warning: 'bg-primitive-red text-primitive-white hover:bg-primitive-red/90',
+    icon: 'w-9 h-9 bg-transparent border-none hover:bg-primitive-graySecond/50 p-0',
   };
 
   const sizes: Record<NonNullable<ButtonProps['size']>, string> = {
@@ -41,8 +42,8 @@ export default function Button({
       type={type}
       className={twMerge(
         base,
-        variants[variant],
         sizes[size],
+        variants[variant],
         className,
         disabled && disabledStyle,
       )}

@@ -20,10 +20,6 @@ export default function CommentList({ postId }: { postId: number }) {
 
   const commentListData = commentListResponse?.data;
   const commentList = commentListData?.comments;
-  console.log('commentList', commentList);
-  console.log('commentListData', commentListData);
-
-  // return <div>test</div>;
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);

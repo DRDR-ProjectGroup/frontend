@@ -2,37 +2,51 @@
 
 import Button from '@/components/ui/Button';
 import InputText from '@/components/ui/InputText';
-import { loginAction } from '../../../actions/auth/login.actions';
-import { useActionState, useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useAuthStore } from '@/lib/store/authStore';
+import { useLoginMutation } from '@/query/auth/useAuthMutations';
 
 export default function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirect = searchParams.get('redirect');
-  const setAuth = useAuthStore((state) => state.setAuth);
+  const {
+    mutate: loginMutation,
+    isPending: isLoginPending,
+    error: loginError,
+  } = useLoginMutation();
 
   const [formValues, setFormValues] = useState({
     username: '',
     password: '',
   });
 
-  const [state, action, pending] = useActionState(loginAction, null);
+  const [isEmpty, setIsEmpty] = useState(false);
 
-  // 로그인 성공 시 Zustand store 업데이트 후 리다이렉트
-  useEffect(() => {
-    if (state?.ok && state.accessToken) {
-      // Zustand store에 토큰 저장 (자동으로 localStorage에도 저장됨)
-      setAuth(state.accessToken);
-
-      if (redirect) router.push(redirect);
-      else router.push('/');
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (formValues.username === '' || formValues.password === '') {
+      setIsEmpty(true);
+      return;
     }
-  }, [state, router, setAuth, redirect]);
+    setIsEmpty(false);
+
+    loginMutation(
+      {
+        username: formValues.username,
+        password: formValues.password,
+      },
+      {
+        onSuccess: () => {
+          if (redirect) router.push(redirect);
+          else router.push('/');
+        },
+      },
+    );
+  };
 
   return (
-    <form className="space-y-5" action={action}>
+    <form className="space-y-5" onSubmit={handleSubmit}>
       <InputText
         name="username"
         placeholder="ID"
@@ -54,13 +68,18 @@ export default function LoginForm() {
         type="submit"
         variant="secondary"
         className="h-[46px] w-full"
-        disabled={pending}
+        disabled={isLoginPending}
       >
         Login
       </Button>
-      {state && !state.ok && (
+      {isEmpty && (
         <div className="text-primitive-red text-sm p-2 text-center">
-          {state.message}
+          아이디와 비밀번호를 입력해주세요.
+        </div>
+      )}
+      {loginError && (
+        <div className="text-primitive-red text-sm p-2 text-center">
+          아이디와 비밀번호를 확인해주세요.
         </div>
       )}
     </form>

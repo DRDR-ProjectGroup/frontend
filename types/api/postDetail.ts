@@ -14,6 +14,7 @@ export interface PostDetailData {
   mediaList: MediaItem[];
   createdAt: string;
   notice: boolean;
+  memberLikeType: 'LIKE' | 'DISLIKE' | null;
 }
 
 // 미디어 아이템 타입
