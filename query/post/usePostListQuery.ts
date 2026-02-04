@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { fetchPostList } from '@/lib/api/client/post';
+import { fetchPostList } from '@/lib/api/post';
 import type { PostListParams } from '@/types/api/postList';
 
 // 글 리스트 조회

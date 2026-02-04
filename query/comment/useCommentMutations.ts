@@ -1,8 +1,4 @@
-import {
-  createComment,
-  deleteComment,
-  updateComment,
-} from '@/lib/api/client/comment';
+import { createComment, deleteComment, updateComment } from '@/lib/api/comment';
 import {
   CreateCommentRequest,
   DeleteCommentRequest,

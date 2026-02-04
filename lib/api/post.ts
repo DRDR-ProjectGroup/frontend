@@ -62,7 +62,7 @@ export async function createPost(
 
 // 글 수정
 export async function updatePost(
-  postId: string,
+  postId: number,
   formData: FormData,
 ): Promise<any> {
   return apiPutFormData(
@@ -74,16 +74,15 @@ export async function updatePost(
 }
 
 // 글 삭제
-export async function deletePost(postId: string): Promise<void> {
+export async function deletePost(postId: number): Promise<void> {
   await apiDelete(`/posts/${postId}`, undefined, 'Failed to delete post');
 }
 
 // 좋아요 기능
 export async function likePost(
-  postId: string,
+  postId: number,
   likeType: 'like' | 'dislike',
 ): Promise<any> {
-  console.log('likePost', postId, likeType);
   return apiPost(
     `/posts/${postId}/like`,
     { likeType },

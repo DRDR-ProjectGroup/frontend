@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { fetchPostDetail } from '@/lib/api/client/post';
+import { fetchPostDetail } from '@/lib/api/post';
 
 /**
  * 글 상세 조회 Query Hook

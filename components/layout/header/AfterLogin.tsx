@@ -2,52 +2,45 @@
 
 import Button from '@/components/ui/Button';
 import LinkButton from '@/components/ui/LinkButton';
-import { useAuthStore } from '@/lib/store/authStore';
-import { logoutAction } from '@/actions/auth/logout.actions';
+import { useLogoutMutation } from '@/query/auth/useAuthMutations';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
-
+import { RiUser3Line, RiLogoutBoxLine } from 'react-icons/ri';
+import { HiOutlinePencilAlt } from 'react-icons/hi';
 
 export default function AfterLogin() {
   const router = useRouter();
-  const clearAuth = useAuthStore((state) => state.clearAuth);
-  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const { mutate: logoutMutation, isPending: isLoggingOut } =
+    useLogoutMutation();
 
-  const handleLogout = async () => {
-    setIsLoggingOut(true);
-    
-    try {
-      // 백엔드 로그아웃 API 호출
-      const result = await logoutAction();
-      if(!result.ok) {
-        alert(result.message + ', 로그아웃에 실패했습니다.');
-      }
-      router.push('/');
-    } 
-    catch (error) {
-      console.error('로그아웃 실패:', error);
-      router.push('/login');
-    } 
-    finally {
-      clearAuth();
-      setIsLoggingOut(false);
-    }
+  const handleLogout = () => {
+    logoutMutation(undefined, {
+      onSuccess: () => {
+        router.push('/');
+      },
+      onError: () => {
+        alert('로그아웃에 실패했습니다.');
+      },
+    });
   };
 
   return (
-    <div className="flex gap-2 items-center">
-      <LinkButton href="/posts/write" variant="primary">
-        글쓰기
+    <div className="flex gap-1 items-center">
+      <LinkButton href="/posts/write" variant="icon" title="글쓰기">
+        <HiOutlinePencilAlt />
+        <span className="sr-only">글쓰기</span>
       </LinkButton>
-      <LinkButton href="/mypage" variant="tertiary">
-        마이페이지
+      <LinkButton href="/mypage" variant="icon" title="마이페이지">
+        <RiUser3Line />
+        <span className="sr-only">마이페이지</span>
       </LinkButton>
-      <Button 
-        variant="secondary" 
+      <Button
+        variant="icon"
         onClick={handleLogout}
         disabled={isLoggingOut}
+        title="로그아웃"
       >
-        {isLoggingOut ? '로그아웃 중...' : '로그아웃'}
+        <RiLogoutBoxLine />
+        <span className="sr-only">로그아웃</span>
       </Button>
     </div>
   );
