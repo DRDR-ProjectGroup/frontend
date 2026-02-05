@@ -7,6 +7,7 @@ type ConfirmModalProps = {
   onConfirm: () => void;
   title: string;
   message: string;
+  className?: string;
 };
 
 export default function ConfirmModal({
@@ -15,9 +16,10 @@ export default function ConfirmModal({
   onConfirm,
   title,
   message,
+  className,
 }: ConfirmModalProps) {
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal isOpen={isOpen} onClose={onClose} className={className}>
       <h2 className="text-lg font-bold">{title}</h2>
       <p className="text-sm text-text-second mt-3">{message}</p>
       <div className="flex justify-end gap-3 mt-6">

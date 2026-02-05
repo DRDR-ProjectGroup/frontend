@@ -29,7 +29,7 @@ export default function AfterLogin() {
         <HiOutlinePencilAlt />
         <span className="sr-only">글쓰기</span>
       </LinkButton>
-      <LinkButton href="/mypage" variant="icon" title="마이페이지">
+      <LinkButton href="/mypage/info" variant="icon" title="마이페이지">
         <RiUser3Line />
         <span className="sr-only">마이페이지</span>
       </LinkButton>
