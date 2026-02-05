@@ -5,6 +5,7 @@
  * - 재발급 실패 시 로그아웃 처리
  */
 
+import { refreshAccessToken } from './auth';
 import {
   getAccessToken,
   setAccessToken,
@@ -20,34 +21,6 @@ export function getApiBaseUrl(): string {
     throw new Error('NEXT_PUBLIC_BACKEND_API_BASE_URL is not set');
   }
   return url.replace(/\/$/, '');
-}
-
-/**
- * 토큰 재발급 API 호출
- */
-async function refreshAccessToken(): Promise<string | null> {
-  try {
-    const baseUrl = getApiBaseUrl();
-    const res = await fetch(`${baseUrl}/auth/reissue`, {
-      method: 'POST',
-      credentials: 'include', // 쿠키의 refreshToken 포함
-    });
-
-    if (!res.ok) {
-      return null;
-    }
-
-    // 응답 헤더에서 새 액세스 토큰 추출
-    const authHeader = res.headers.get('Authorization');
-    if (!authHeader) return null;
-
-    const newToken = authHeader.replace('Bearer ', '');
-    setAccessToken(newToken);
-    return newToken;
-  } catch (error) {
-    console.error('Token refresh failed:', error);
-    return null;
-  }
 }
 
 /**
@@ -102,8 +75,8 @@ export async function apiRequest(
 
       // 로그인 페이지로 리다이렉트 (클라이언트 사이드에서만)
       if (typeof window !== 'undefined') {
-        // window.location.href = '/login';
         alert('토큰 재발급 실패.');
+        window.location.href = '/login';
       }
 
       throw new Error('인증이 만료되었습니다. 다시 로그인해주세요.');
@@ -228,6 +201,7 @@ export async function apiPatch<T = any>(
  */
 export async function apiDelete<T = any>(
   endpoint: string,
+  body?: any,
   options?: RequestInit,
   errorMessage?: string,
 ): Promise<T> {
@@ -239,6 +213,7 @@ export async function apiDelete<T = any>(
       'Content-Type': 'application/json',
       ...options?.headers,
     },
+    body: body ? JSON.stringify(body) : undefined,
   });
 
   if (!response.ok) {

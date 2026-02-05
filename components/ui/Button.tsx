@@ -17,7 +17,7 @@ export default function Button({
   ...props
 }: ButtonProps) {
   const base =
-    'inline-flex items-center justify-center px-4 py-2 text-sm rounded-md cursor-pointer box-sizing-border';
+    'inline-flex items-center justify-center px-4 py-2 text-sm rounded-md cursor-pointer box-sizing-border whitespace-nowrap';
   const variants: Record<NonNullable<ButtonProps['variant']>, string> = {
     primary:
       'bg-primitive-green text-primitive-white hover:bg-primitive-green/90',

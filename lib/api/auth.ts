@@ -1,5 +1,6 @@
 import { LoginRequest, LoginResponse, LogoutResponse } from '@/types/api/auth';
 import { apiRequest, getApiBaseUrl } from './apiClient';
+import { setAccessToken } from '../utils/auth-token';
 
 // 로그인
 export async function login(
@@ -46,4 +47,30 @@ export async function logout(): Promise<LogoutResponse> {
     throw new Error(data.message || '로그아웃 실패');
   }
   return data;
+}
+
+// 토큰 재발급 API 호출
+export async function refreshAccessToken(): Promise<string | null> {
+  try {
+    const baseUrl = getApiBaseUrl();
+    const res = await fetch(`${baseUrl}/auth/reissue`, {
+      method: 'POST',
+      credentials: 'include', // 쿠키의 refreshToken 포함
+    });
+
+    if (!res.ok) {
+      return null;
+    }
+
+    // 응답 헤더에서 새 액세스 토큰 추출
+    const authHeader = res.headers.get('Authorization');
+    if (!authHeader) return null;
+
+    const newToken = authHeader.replace('Bearer ', '');
+    setAccessToken(newToken);
+    return newToken;
+  } catch (error) {
+    console.error('Token refresh failed:', error);
+    return null;
+  }
 }

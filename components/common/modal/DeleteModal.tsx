@@ -6,6 +6,7 @@ type DeleteModalProps = {
   isOpen: boolean;
   onClose: () => void;
   onDelete: () => void;
+  className?: string;
 };
 
 export default function DeleteModal({
@@ -14,6 +15,7 @@ export default function DeleteModal({
   isOpen,
   onClose,
   onDelete,
+  className,
 }: DeleteModalProps) {
   return (
     <ConfirmModal
@@ -22,6 +24,7 @@ export default function DeleteModal({
       onConfirm={onDelete}
       title={title}
       message={message}
+      className={className}
     />
   );
 }

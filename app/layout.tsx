@@ -5,6 +5,7 @@ import Header from '../components/layout/header/Header';
 import Main from '../components/layout/Main';
 import Footer from '../components/layout/Footer';
 import Providers from './providers';
+import TopButton from '@/components/common/TopButton';
 
 const roboto = Roboto({
   variable: '--font-sans',
@@ -39,6 +40,8 @@ export default function RootLayout({
             <Footer />
           </div>
         </Providers>
+
+        <TopButton />
       </body>
     </html>
   );

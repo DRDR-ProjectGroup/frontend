@@ -25,7 +25,7 @@ export function useLogoutMutation() {
 
   return useMutation({
     mutationFn: () => logout(),
-    onSuccess: () => {
+    onSettled: () => {
       clearAuth();
     },
   });

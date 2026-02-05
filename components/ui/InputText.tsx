@@ -10,6 +10,7 @@ export default function InputText({ className, ...props }: InputTextProps) {
       {...props}
       className={twMerge(
         'border-primitive-grayPrimary h-[46px] w-full rounded-md border px-4 text-sm',
+        props.readOnly ? 'bg-primitive-grayThird' : '',
         className,
       )}
     />

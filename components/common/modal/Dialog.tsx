@@ -2,19 +2,14 @@
 
 import { createPortal } from 'react-dom';
 import { useEffect, useState } from 'react';
-import { twMerge } from 'tailwind-merge';
 
-// 기본 모달
-export default function Modal({
-  isOpen,
-  onClose,
+// 페이지 대체용 모달
+export default function Dialog({
+  onCancel,
   children,
-  className,
 }: {
-  isOpen: boolean;
-  onClose: () => void;
+  onCancel: () => void;
   children: React.ReactNode;
-  className?: string;
 }) {
   const [mounted, setMounted] = useState(false);
 
@@ -26,32 +21,25 @@ export default function Modal({
 
   // body 스크롤 막기
   useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
+    document.body.style.overflow = 'hidden';
     return () => {
       document.body.style.overflow = 'unset';
     };
-  }, [isOpen]);
+  }, []);
 
-  if (!mounted || !isOpen) return null;
+  if (!mounted) return null;
 
   return createPortal(
     <div
       className="fixed inset-0 z-50 flex items-center justify-center"
-      onClick={onClose}
+      onClick={onCancel}
     >
       {/* Dim 배경 */}
       <div className="absolute inset-0 bg-black/50" />
 
       {/* 팝업 내용 */}
       <div
-        className={twMerge(
-          'relative bg-bg-white rounded-lg p-6 max-w-md w-full shadow-xl',
-          className,
-        )}
+        className="relative bg-bg-white rounded-lg p-6 max-w-md w-full shadow-xl"
         onClick={(e) => e.stopPropagation()}
       >
         {children}
