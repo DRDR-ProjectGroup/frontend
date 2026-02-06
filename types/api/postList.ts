@@ -16,7 +16,7 @@ export interface PostItem {
   notice: boolean;
 }
 
-// 페이지네이션션
+// 페이지네이션
 export interface PostListData extends Pagination {
   posts: PostItem[];
 }

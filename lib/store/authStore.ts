@@ -8,6 +8,7 @@ import {
   getUserIdFromToken,
   isTokenExpired,
 } from '@/lib/utils/auth-token';
+import { refreshAccessToken } from '../api/auth';
 
 interface AuthState {
   // 상태
@@ -22,30 +23,6 @@ interface AuthState {
   initAuth: () => Promise<void>;
 }
 
-// 토큰 재발급 API 호출
-async function refreshToken(): Promise<string | null> {
-  try {
-    const baseUrl = process.env.NEXT_PUBLIC_BACKEND_API_BASE_URL?.replace(/\/$/, '');
-    if (!baseUrl) return null;
-
-    const res = await fetch(`${baseUrl}/auth/reissue`, {
-      method: 'POST',
-      credentials: 'include',
-    });
-
-    if (!res.ok) return null;
-
-    const authHeader = res.headers.get('Authorization');
-    if (!authHeader) return null;
-
-    const newToken = authHeader.replace('Bearer ', '');
-    setAccessToken(newToken);
-    return newToken;
-  } catch {
-    return null;
-  }
-}
-
 export const useAuthStore = create<AuthState>((set, get) => ({
   // 초기 상태
   accessToken: null,
@@ -58,7 +35,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   setAuth: (token: string) => {
     setAccessToken(token);
     const userId = getUserIdFromToken(token);
-    
+
     set({
       accessToken: token,
       isLoggedIn: true,
@@ -71,7 +48,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   // - 토큰 삭제 및 상태 초기화
   clearAuth: () => {
     removeAccessToken();
-    
+
     set({
       accessToken: null,
       isLoggedIn: false,
@@ -100,9 +77,9 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     // 토큰 만료 확인
     if (isTokenExpired(token)) {
       console.log('Token expired, attempting to refresh...');
-      
+
       // 토큰 재발급 시도
-      const newToken = await refreshToken();
+      const newToken = await refreshAccessToken();
 
       if (newToken) {
         // 재발급 성공

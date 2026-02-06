@@ -75,7 +75,7 @@ export async function apiRequest(
 
       // 로그인 페이지로 리다이렉트 (클라이언트 사이드에서만)
       if (typeof window !== 'undefined') {
-        alert('토큰 재발급 실패.');
+        console.log('토큰 재발급 실패. 로그아웃 처리.');
         window.location.href = '/login';
       }
 
