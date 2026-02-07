@@ -12,7 +12,7 @@ export default function Table({ comments }: { comments: MyCommentItem[] }) {
       </colgroup>
       <thead className="bg-primitive-grayWeakest/80 h-[40px] text-xs text-text-second font-bold">
         <tr className="border-b border-primitive-graySecond">
-          <th className="px-4 text-left">댓글 내용</th>
+          <th className="px-4">댓글 내용</th>
           <th className="px-4">작성일</th>
         </tr>
       </thead>

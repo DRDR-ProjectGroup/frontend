@@ -8,11 +8,11 @@ export default function Table({ posts }: { posts: MyPostItem[] }) {
     <table className="table-fixed w-full border-collapse text-center ">
       <caption className="sr-only">내 작성글 목록</caption>
       <colgroup>
-        <col className="w-1/10" />
+        <col className="w-[120px]" />
         <col />
-        <col className="w-1/10" />
-        <col className="w-1/10" />
-        <col className="w-1/10" />
+        <col className="w-[120px]" />
+        <col className="w-[100px]" />
+        <col className="w-[100px]" />
       </colgroup>
       <thead className="bg-primitive-grayWeakest/80 h-[40px] text-xs text-text-second font-bold">
         <tr className="border-b border-primitive-graySecond">
