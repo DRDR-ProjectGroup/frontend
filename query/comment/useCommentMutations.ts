@@ -12,10 +12,9 @@ export function useCreateCommentMutation() {
 
   return useMutation({
     mutationFn: (request: CreateCommentRequest) => createComment(request),
-    onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({
-        queryKey: ['commentList', variables.postId],
-      });
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['commentList'] });
+      queryClient.invalidateQueries({ queryKey: ['myComments'] });
     },
   });
 }

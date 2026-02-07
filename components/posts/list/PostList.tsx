@@ -44,7 +44,16 @@ export default function PostList({
         <Sort />
       </div>
 
-      <table className="w-full border-collapse border border-primitive-graySecond rounded-lg text-center ">
+      <table className="table-fixed w-full border-collapse border border-primitive-graySecond rounded-lg text-center ">
+        <caption className="sr-only">게시글 목록</caption>
+        <colgroup>
+          <col className="w-[100px]" />
+          <col />
+          <col className="w-[120px]" />
+          <col className="w-[120px]" />
+          <col className="w-[80px]" />
+          <col className="w-[80px]" />
+        </colgroup>
         <thead className="bg-primitive-grayWeakest h-[40px] text-xs text-text-second font-bold">
           <tr>
             <th className="px-4">카테고리</th>
@@ -66,12 +75,17 @@ export default function PostList({
                 <Tag>{post.category.categoryName}</Tag>
               </td>
               <td className="px-4 py-3">
-                <Link
-                  href={`/posts/${post.postId}?category=${params.category}&page=${params.page}&sort=${params.sort}`}
-                  className="font-bold hover:underline"
-                >
-                  {post.title}
-                </Link>
+                <div className="flex gap-2 items-center">
+                  <Link
+                    href={`/posts/${post.postId}?category=${params.category}&page=${params.page}&sort=${params.sort}`}
+                    className="truncate max-w-[calc(100%-16px)] font-bold hover:underline text-left"
+                  >
+                    {post.title}
+                  </Link>
+                  <span className="text-xs text-primitive-green w-fit">
+                    {`(${post.likeCount})`}
+                  </span>
+                </div>
               </td>
               <td className="px-4 py-3 text-text-second">
                 {post.author.nickname}
@@ -79,10 +93,10 @@ export default function PostList({
               <td className="px-4 py-3 text-text-third">
                 {formatDate(post.createdAt)}
               </td>
-              <td className="px-4 py-3 text-primitive-green">
-                {post.viewCount}
+              <td className="px-4 py-3 text-text-third">{post.viewCount}</td>
+              <td className="px-4 py-3 text-primitive-green font-bold">
+                {post.likeCount}
               </td>
-              <td className="px-4 py-3 text-text-third">{post.likeCount}</td>
             </tr>
           ))}
         </tbody>

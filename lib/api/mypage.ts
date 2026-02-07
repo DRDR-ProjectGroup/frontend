@@ -1,14 +1,17 @@
 import {
   MemberInfoResponse,
+  MyPostListResponse,
   NicknameRequest,
   NicknameResponse,
   PasswordRequest,
   PasswordResponse,
   ResignRequest,
   ResignResponse,
+  MyCommentListResponse,
 } from '@/types/api/member';
 import { apiDelete, apiGet, apiPatch } from './apiClient';
 
+/* 내 정보 */
 // 내 정보 조회
 export async function fetchMemberInfo(): Promise<MemberInfoResponse> {
   return apiGet<MemberInfoResponse>(
@@ -53,5 +56,33 @@ export async function resign({
     { password },
     undefined,
     '회원 탈퇴 실패',
+  );
+}
+
+/* 내 작성글 */
+// 내 작성글 조회
+export async function fetchMyPosts({
+  page,
+}: {
+  page: number;
+}): Promise<MyPostListResponse> {
+  return apiGet<MyPostListResponse>(
+    `/members/me/posts?page=${page}&size=2`,
+    undefined,
+    '내 작성글 조회 실패',
+  );
+}
+
+/* 내 댓글 */
+// 내 댓글 조회
+export async function fetchMyComments({
+  page,
+}: {
+  page: number;
+}): Promise<MyCommentListResponse> {
+  return apiGet<MyCommentListResponse>(
+    `/members/me/comments?page=${page}&size=2`,
+    undefined,
+    '내 댓글 조회 실패',
   );
 }

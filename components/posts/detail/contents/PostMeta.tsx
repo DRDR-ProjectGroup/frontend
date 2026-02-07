@@ -56,8 +56,8 @@ export default function PostMeta({ postId }: { postId: number }) {
       <div className="py-4">
         <div>
           <Tag>{post.category.categoryName}</Tag>
-          <div className="flex items-center justify-between">
-            <Heading level={1} className="mt-3">
+          <div className="mt-3 flex items-center justify-between">
+            <Heading level={1} className="truncate">
               {post.title}
             </Heading>
             {isLoggedIn && post.author.memberId === Number(userId) && (
