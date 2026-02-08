@@ -1,15 +1,15 @@
 'use client';
 
-import Dialog from '@/components/common/modal/Dialog';
 import NicknameForm from '@/app/mypage/info/nickname/page';
 import { useRouter } from 'next/navigation';
+import Modal from '@/components/common/modal/Modal';
 
 export default function Page() {
   const router = useRouter();
 
   return (
-    <Dialog onCancel={() => router.back()}>
+    <Modal isOpen={true} onClose={() => router.back()}>
       <NicknameForm />
-    </Dialog>
+    </Modal>
   );
 }

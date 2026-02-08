@@ -40,6 +40,10 @@ module.exports = {
       maxWidth: {
         layout: '1050px',
       },
+
+      boxShadow: {
+        popover: '0 0 10px rgba(0,0,0,0.1)',
+      },
     },
   },
 };

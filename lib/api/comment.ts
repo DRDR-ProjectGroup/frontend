@@ -52,6 +52,5 @@ export async function deleteComment(
   return apiDelete<DeleteCommentResponse>(
     `/posts/${request.postId}/comments/${request.commentId}`,
     undefined,
-    '댓글 삭제 실패',
   );
 }

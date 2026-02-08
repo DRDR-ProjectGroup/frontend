@@ -10,7 +10,6 @@ export default function Delete({ postId }: { postId: number }) {
   const { mutate: deletePostMutation } = useDeletePostMutation();
 
   const handleDelete = () => {
-    console.log(postId, ' postId in PostOwnerActions');
     deletePostMutation(postId, {
       onSuccess: () => {
         router.push('/');

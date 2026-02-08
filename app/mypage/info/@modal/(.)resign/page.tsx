@@ -1,15 +1,15 @@
 'use client';
 
-import Dialog from '@/components/common/modal/Dialog';
 import ResignForm from '@/app/mypage/info/resign/page';
 import { useRouter } from 'next/navigation';
+import Modal from '@/components/common/modal/Modal';
 
 export default function Page() {
   const router = useRouter();
 
   return (
-    <Dialog onCancel={() => router.back()}>
+    <Modal isOpen={true} onClose={() => router.back()}>
       <ResignForm />
-    </Dialog>
+    </Modal>
   );
 }
