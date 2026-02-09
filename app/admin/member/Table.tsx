@@ -1,6 +1,6 @@
 import Button from '@/components/ui/Button';
 import { formatDate } from '@/lib/utils/formatDate';
-import { useChangeAdminMemberStatusMutation } from '@/query/adminMember/useAdminMemberMutations';
+import { useChangeAdminMemberStatusMutation } from '@/query/admin/member/useAdminMemberMutations';
 import { AdminMemberItem } from '@/types/api/adminMember';
 
 export default function Table({

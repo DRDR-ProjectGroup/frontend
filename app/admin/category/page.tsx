@@ -2,8 +2,8 @@
 
 import Button from '@/components/ui/Button';
 import CategoryBox from './CategoryBox';
-import { useGroupAndCategoryQuery } from '@/query/category/useCategoryQuery';
-import { useAddGroupMutation } from '@/query/category/useCategoryMutations';
+import { useGroupAndCategoryQuery } from '@/query/admin/category/useCategoryQuery';
+import { useAddGroupMutation } from '@/query/admin/category/useCategoryMutations';
 import Modal from '@/components/common/modal/Modal';
 import { Heading } from '@/components/ui/Heading';
 import InputText from '@/components/ui/InputText';

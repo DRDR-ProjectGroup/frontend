@@ -2,7 +2,7 @@ import Modal from '@/components/common/modal/Modal';
 import Button from '@/components/ui/Button';
 import { Heading } from '@/components/ui/Heading';
 import InputText from '@/components/ui/InputText';
-import { useAddCategoryMutation } from '@/query/category/useCategoryMutations';
+import { useAddCategoryMutation } from '@/query/admin/category/useCategoryMutations';
 import { useState } from 'react';
 
 interface ModalCategoryAddProps {

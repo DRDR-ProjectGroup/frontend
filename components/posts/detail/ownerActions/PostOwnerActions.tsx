@@ -1,5 +1,6 @@
 import Delete from './Delete';
 import Edit from './Edit';
+import Notice from './Notice';
 
 export default function PostOwnerActions({ postId }: { postId: number }) {
   return (
@@ -7,7 +8,7 @@ export default function PostOwnerActions({ postId }: { postId: number }) {
       <Edit postId={postId} />
       <Delete postId={postId} />
 
-      {/* <Notice /> */}
+      <Notice postId={postId} />
     </div>
   );
 }

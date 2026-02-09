@@ -3,7 +3,7 @@
 import Popover from '@/components/ui/Popover';
 import Link from 'next/link';
 import { useState } from 'react';
-import { useGroupAndCategoryQuery } from '@/query/category/useCategoryQuery';
+import { useGroupAndCategoryQuery } from '@/query/admin/category/useCategoryQuery';
 
 export default function NavMenu() {
   const [activeNav, setActiveNav] = useState('');

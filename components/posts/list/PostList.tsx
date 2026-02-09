@@ -9,13 +9,11 @@ import Sort from './Sort';
 import UserChip from '@/components/common/UserChip';
 
 interface PostListProps extends PostListParams {
-  searchMode: boolean;
   postList: PostItem[];
   currentPostId?: number;
 }
 
 export default function PostList({
-  searchMode,
   postList,
   currentPostId,
   category,
@@ -68,7 +66,11 @@ export default function PostList({
                 ${Number(post.postId) === Number(currentPostId) ? 'bg-primitive-grayThird' : ''}`}
             >
               <td className="px-4 py-3">
-                <Tag>{post.category.categoryName}</Tag>
+                {post.notice ? (
+                  <Tag variant="notice">공지</Tag>
+                ) : (
+                  <Tag>{post.category.categoryName}</Tag>
+                )}
               </td>
               <td className="px-4 py-3">
                 <div className="flex gap-2 items-center">
