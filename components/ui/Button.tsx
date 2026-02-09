@@ -17,15 +17,13 @@ export default function Button({
   ...props
 }: ButtonProps) {
   const base =
-    'inline-flex items-center justify-center px-4 py-2 text-sm rounded-md cursor-pointer box-sizing-border whitespace-nowrap';
+    'inline-flex items-center justify-center px-4 py-2 text-sm rounded-md cursor-pointer box-sizing-border leading-none whitespace-nowrap hover:shadow-buttonHover';
   const variants: Record<NonNullable<ButtonProps['variant']>, string> = {
-    primary:
-      'bg-primitive-green text-primitive-white hover:bg-primitive-green/90',
-    secondary:
-      'bg-primitive-blackPrimary text-primitive-white hover:bg-primitive-blackPrimary/90',
+    primary: 'bg-primitive-green text-primitive-white',
+    secondary: 'bg-primitive-blackPrimary text-primitive-white',
     tertiary:
-      'bg-primitive-white border border-primitive-grayPrimary text-primitive-blackPrimary hover:bg-primitive-graySecond/20',
-    warning: 'bg-primitive-red text-primitive-white hover:bg-primitive-red/90',
+      'bg-primitive-white border border-primitive-grayPrimary text-primitive-blackPrimary',
+    warning: 'bg-primitive-red text-primitive-white',
     icon: 'w-9 h-9 bg-transparent border-none hover:bg-primitive-graySecond/50 p-0',
   };
 

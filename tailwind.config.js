@@ -42,6 +42,7 @@ module.exports = {
       },
 
       boxShadow: {
+        categoryBox: '0 0 5px rgba(0,0,0,0.07)',
         popover: '0 0 10px rgba(0,0,0,0.1)',
       },
     },
