@@ -2,46 +2,42 @@
 
 import Link from 'next/link';
 import { Heading } from '@/components/ui/Heading';
-import { usePostListQuery } from '@/query/post/usePostListQuery';
-import { usePostListParams } from './PostListParamsContext';
 import Tag from '@/components/ui/Tag';
-import { PostItem } from '@/types/api/postList';
+import { PostItem, PostListParams } from '@/types/api/postList';
 import { formatDate } from '@/lib/utils/formatDate';
 import Sort from './Sort';
+import UserChip from '@/components/common/UserChip';
+
+interface PostListProps extends PostListParams {
+  searchMode: boolean;
+  postList: PostItem[];
+  currentPostId?: number;
+}
 
 export default function PostList({
+  searchMode,
+  postList,
   currentPostId,
-}: {
-  currentPostId?: number;
-}) {
-  const { params } = usePostListParams();
-  const {
-    data: postListResponse,
-    isLoading,
-    isError,
-    error,
-  } = usePostListQuery(params);
-
-  if (isLoading) return <div>Loading...</div>;
-  if (isError) {
-    return (
-      <div className="text-primitive-red">
-        {error instanceof Error
-          ? error.message
-          : '데이터를 불러오지 못했습니다.'}
-      </div>
-    );
-  }
-
-  const postList = postListResponse?.data?.posts || [];
-
+  category,
+  searchTarget,
+  searchKeyword,
+  page,
+  sort,
+}: PostListProps) {
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
         <Heading level={1}>
-          {params.category === 'all' ? '전체 인기글' : params.category}
+          {category === 'all' ? '전체 인기글' : category}
         </Heading>
-        <Sort />
+        <Sort
+          currentPostId={currentPostId}
+          category={category}
+          searchTarget={searchTarget}
+          searchKeyword={searchKeyword}
+          page={page}
+          sort={sort}
+        />
       </div>
 
       <table className="table-fixed w-full border-collapse border border-primitive-graySecond rounded-lg text-center ">
@@ -69,7 +65,7 @@ export default function PostList({
             <tr
               key={post.postId}
               className={`border border-primitive-graySecond hover:bg-primitive-grayThird 
-                ${Number(post.postId) === currentPostId ? 'bg-primitive-grayThird' : ''}`}
+                ${Number(post.postId) === Number(currentPostId) ? 'bg-primitive-grayThird' : ''}`}
             >
               <td className="px-4 py-3">
                 <Tag>{post.category.categoryName}</Tag>
@@ -77,7 +73,7 @@ export default function PostList({
               <td className="px-4 py-3">
                 <div className="flex gap-2 items-center">
                   <Link
-                    href={`/posts/${post.postId}?category=${params.category}&page=${params.page}&sort=${params.sort}`}
+                    href={`/posts/${post.postId}?category=${category}&page=${page}&sort=${sort}&currentPostId=${post.postId}&size=5`}
                     className="truncate max-w-[calc(100%-16px)] font-bold hover:underline text-left"
                   >
                     {post.title}
@@ -88,7 +84,11 @@ export default function PostList({
                 </div>
               </td>
               <td className="px-4 py-3 text-text-second">
-                {post.author.nickname}
+                <UserChip
+                  status={post.author.status}
+                  userId={post.author.memberId.toString()}
+                  name={post.author.nickname}
+                />
               </td>
               <td className="px-4 py-3 text-text-third">
                 {formatDate(post.createdAt)}

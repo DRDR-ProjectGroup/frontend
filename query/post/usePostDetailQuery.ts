@@ -1,9 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { fetchPostDetail } from '@/lib/api/post';
 
-/**
- * 글 상세 조회 Query Hook
- */
+// 글 상세 조회
 export function usePostDetailQuery(postId: number) {
   return useQuery({
     queryKey: ['postDetail', postId],

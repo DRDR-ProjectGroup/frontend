@@ -28,16 +28,13 @@ export default function NavMenu({ navMenus }: { navMenus: NavMenuData[] }) {
                 <Popover>
                   <ul>
                     {navMenu.categories.map((category) => (
-                      <li
-                        key={category.categoryAddress}
-                        onClick={() => {
-                          console.log(`${category.categoryAddress} 클릭`);
-                        }}
-                      >
-                        <Link 
+                      <li key={category.categoryAddress}>
+                        <Link
                           href={`/category/${category.categoryAddress}`}
-                          className='block hover:bg-primitive-graySecond px-4 py-2'
-                        >{category.categoryName}</Link>
+                          className="block hover:bg-primitive-graySecond px-4 py-2"
+                        >
+                          {category.categoryName}
+                        </Link>
                       </li>
                     ))}
                   </ul>

@@ -1,11 +1,21 @@
 import Button from '@/components/ui/Button';
-import { usePostListParams } from './PostListParamsContext';
-import { PostListSortType } from '@/types/api/postList';
+import { PostListParams, PostListSortType } from '@/types/api/postList';
 import { RiFireLine } from 'react-icons/ri';
 import { BiTime } from 'react-icons/bi';
+import { useRouter } from 'next/navigation';
 
-export default function Sort() {
-  const { params, setSort } = usePostListParams();
+interface SortProps extends PostListParams {
+  currentPostId?: number;
+}
+
+export default function Sort({
+  currentPostId,
+  category,
+  searchTarget,
+  searchKeyword,
+  sort,
+}: SortProps) {
+  const router = useRouter();
 
   const sortOptions = [
     { value: 'LATEST' as const, label: '최신순' },
@@ -14,10 +24,15 @@ export default function Sort() {
 
   const getSortButtonClassName = (sortType: PostListSortType) => {
     return `font-bold border-none text-xs ${
-      params.sort === sortType
+      sort === sortType
         ? 'shadow-sm'
         : 'bg-transparent text-primitive-grayText hover:text-primitive-blackPrimary'
     }`;
+  };
+
+  const onSortChange = (sortType: PostListSortType) => {
+    const url = `/category/${category}?page=1&sort=${sortType}&size=5&currentPostId=${currentPostId}`;
+    router.push(url);
   };
 
   return (
@@ -26,7 +41,7 @@ export default function Sort() {
         <Button
           key={option.value}
           variant="tertiary"
-          onClick={() => setSort(option.value)}
+          onClick={() => onSortChange(option.value)}
           className={getSortButtonClassName(option.value)}
         >
           <span className="flex items-center gap-1">

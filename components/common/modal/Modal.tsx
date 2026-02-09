@@ -8,11 +8,13 @@ import { twMerge } from 'tailwind-merge';
 export default function Modal({
   isOpen,
   onClose,
+  size = 'md',
   children,
   className,
 }: {
   isOpen: boolean;
   onClose: () => void;
+  size?: 'sm' | 'md' | 'lg';
   children: React.ReactNode;
   className?: string;
 }) {
@@ -50,6 +52,9 @@ export default function Modal({
       <div
         className={twMerge(
           'relative bg-bg-white rounded-lg p-6 max-w-md w-full shadow-xl',
+          size === 'sm' && 'max-w-sm',
+          size === 'md' && 'max-w-md',
+          size === 'lg' && 'max-w-lg',
           className,
         )}
         onClick={(e) => e.stopPropagation()}

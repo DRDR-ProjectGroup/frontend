@@ -66,7 +66,11 @@ export default function PostMeta({ postId }: { postId: number }) {
           </div>
         </div>
         <div className="flex items-center gap-2 text-sm mt-4 text-text-third">
-          <UserChip name={post.author.nickname} />
+          <UserChip
+            status={post.author.status}
+            userId={post.author.memberId.toString()}
+            name={post.author.nickname}
+          />
           <BsDot />
           <span>{formatDate(post.createdAt)}</span>
           <BsDot />

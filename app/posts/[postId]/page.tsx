@@ -10,10 +10,15 @@ export default async function Page({
   searchParams,
 }: {
   params: Promise<{ postId: string }>;
-  searchParams: Promise<{ category?: string; page?: string; sort?: string }>;
+  searchParams: Promise<{
+    category?: string;
+    page?: string;
+    sort?: string;
+    currentPostId?: string;
+  }>;
 }) {
   const { postId } = await params;
-  const { category = 'all', page, sort } = await searchParams;
+  const { category = 'all', page, sort, currentPostId } = await searchParams;
 
   // postId 검증: 양의 정수만 허용
   if (!/^\d+$/.test(postId)) {
@@ -35,14 +40,15 @@ export default async function Page({
       </div>
 
       {/* 이전에 보던 카테고리와 페이지 상태를 유지한 글 리스트 */}
-      <div className="mt-8">
-        <PostListWrap
-          currentPostId={postIdNumber}
-          category={category}
-          page={page ? Number(page) : undefined}
-          sort={sort as PostListSortType | undefined}
-        />
-      </div>
+      {currentPostId && (
+        <div className="mt-8">
+          <PostListWrap
+            category={category}
+            page={page ? Number(page) : undefined}
+            sort={sort as PostListSortType | undefined}
+          />
+        </div>
+      )}
     </div>
   );
 }

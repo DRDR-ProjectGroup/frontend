@@ -67,9 +67,7 @@ export function useLikePostMutation() {
       postId: number;
       likeType: 'like' | 'dislike';
     }) => likePost(postId, likeType),
-    onSuccess: (data, variables) => {
-      console.log('좋아요 api 응답', data);
-      // 글 목록 및 상세 캐시 무효화
+    onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ['postList'] });
       queryClient.invalidateQueries({
         queryKey: ['postDetail', variables.postId],

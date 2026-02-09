@@ -19,7 +19,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div>
       <Nav currentPath={pathname} />
-      <div className="py-8">{children}</div>
+      <div className="py-4">{children}</div>
     </div>
   );
 }

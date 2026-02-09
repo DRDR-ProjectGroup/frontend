@@ -7,6 +7,7 @@ import { useState } from 'react';
 import { RxCornerBottomLeft } from 'react-icons/rx';
 import { useDeleteCommentMutation } from '@/query/comment/useCommentMutations';
 import DeleteModal from '@/components/common/modal/DeleteModal';
+import UserChip from '@/components/common/UserChip';
 
 export default function CommentItem({
   postId,
@@ -32,9 +33,12 @@ export default function CommentItem({
       {/* 댓글 content */}
       <div className="py-2">
         <div className="flex items-baseline gap-2">
-          <strong className="text-sm font-medium">
-            {author?.nickname || 'deleted user'}
-          </strong>
+          <UserChip
+            status={author?.status}
+            userId={author?.memberId.toString()}
+            name={author?.nickname}
+            className="text-sm font-medium"
+          />
           <span className="text-xs text-primitive-grayText">
             {formatDate(createdAt)}
           </span>

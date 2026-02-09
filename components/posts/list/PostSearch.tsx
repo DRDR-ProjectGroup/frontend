@@ -3,15 +3,21 @@
 import { FiSearch } from 'react-icons/fi';
 import { useState } from 'react';
 import InputText from '@/components/ui/InputText';
-import { usePostListParams } from './PostListParamsContext';
-import { PostListSearchTargetType } from '@/types/api/postList';
+import { PostListParams, PostListSearchTargetType } from '@/types/api/postList';
+import { useRouter } from 'next/navigation';
 
-export default function PostSearch() {
-  const { params, applySearch, clearSearch } = usePostListParams();
+interface PostSearchProps extends PostListParams {}
+
+export default function PostSearch({
+  category,
+  searchTarget,
+  searchKeyword,
+}: PostSearchProps) {
+  const router = useRouter();
   const [target, setTarget] = useState<PostListSearchTargetType>(
-    params.searchTarget || 'ALL',
+    searchTarget || 'ALL',
   );
-  const [keyword, setKeyword] = useState(params.searchKeyword || '');
+  const [keyword, setKeyword] = useState(searchKeyword || '');
 
   // searchTarget 변수
   const searchTargetOptions = [
@@ -21,13 +27,11 @@ export default function PostSearch() {
     { value: 'AUTHOR', label: '작성자' },
   ];
 
+  // url 이동
   const onSubmit = () => {
-    // 빈 키워드면 검색 해제
-    if (!keyword.trim()) {
-      clearSearch();
-      return;
-    }
-    applySearch(target, keyword.trim());
+    router.push(
+      `/category/${category}?searchMode=true&searchTarget=${target}&searchKeyword=${keyword}&page=1&size=5&sort=LATEST`,
+    );
   };
 
   return (

@@ -9,7 +9,7 @@ import { useLoginMutation } from '@/query/auth/useAuthMutations';
 export default function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const redirect = searchParams.get('redirect');
+  const redirect = searchParams.get('redirect') ?? '/';
   const {
     mutate: loginMutation,
     isPending: isLoginPending,
@@ -38,8 +38,7 @@ export default function LoginForm() {
       },
       {
         onSuccess: () => {
-          if (redirect) router.push(redirect);
-          else router.push('/');
+          router.push(redirect);
         },
       },
     );
