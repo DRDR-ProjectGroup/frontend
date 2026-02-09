@@ -1,5 +1,5 @@
 import DeleteModal from '@/components/common/modal/DeleteModal';
-import { useDeleteGroupMutation } from '@/query/category/useCategoryMutations';
+import { useDeleteGroupMutation } from '@/query/admin/category/useCategoryMutations';
 
 interface ModalGroupDeleteProps {
   groupId: number;

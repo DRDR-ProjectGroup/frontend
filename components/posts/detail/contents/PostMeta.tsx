@@ -20,13 +20,11 @@ export default function PostMeta({ postId }: { postId: number }) {
   } = usePostDetailQuery(postId);
   const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
   const userId = useAuthStore((state) => state.userId);
+  // const isAdmin = useAuthStore((state) => state.isAdmin); // 백엔드 API 추가 후 사용
+  const isAdmin = true;
 
   if (isLoading) {
-    return (
-      <div className="py-8 text-center text-text-third">
-        <p>로딩 중...</p>
-      </div>
-    );
+    return <div className="py-8 text-center text-text-third">로딩 중...</div>;
   }
 
   if (
@@ -55,14 +53,18 @@ export default function PostMeta({ postId }: { postId: number }) {
     <div>
       <div className="py-4">
         <div>
-          <Tag>{post.category.categoryName}</Tag>
+          <div className="flex items-center gap-2">
+            <Tag>{post.category.categoryName}</Tag>
+            {post.notice && <Tag variant="notice">공지</Tag>}
+          </div>
           <div className="mt-3 flex items-center justify-between">
             <Heading level={1} className="truncate">
               {post.title}
             </Heading>
-            {isLoggedIn && post.author.memberId === Number(userId) && (
-              <PostOwnerActions postId={postId} />
-            )}
+            {isLoggedIn &&
+              (post.author.memberId === Number(userId) || isAdmin) && (
+                <PostOwnerActions postId={postId} />
+              )}
           </div>
         </div>
         <div className="flex items-center gap-2 text-sm mt-4 text-text-third">

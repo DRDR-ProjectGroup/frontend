@@ -2,7 +2,7 @@
 
 import Table from './Table';
 import Pagination from './Pagination';
-import { useAdminMemberListQuery } from '@/query/adminMember/useAdminMemberQuery';
+import { useAdminMemberListQuery } from '@/query/admin/member/useAdminMemberQuery';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 export default function Page() {

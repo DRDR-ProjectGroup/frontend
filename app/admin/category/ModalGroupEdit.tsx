@@ -2,7 +2,7 @@ import Modal from '@/components/common/modal/Modal';
 import Button from '@/components/ui/Button';
 import { Heading } from '@/components/ui/Heading';
 import InputText from '@/components/ui/InputText';
-import { useUpdateGroupMutation } from '@/query/category/useCategoryMutations';
+import { useUpdateGroupMutation } from '@/query/admin/category/useCategoryMutations';
 import { useState } from 'react';
 
 interface ModalGroupEditProps {
