@@ -55,7 +55,7 @@ export default function Table({
         </thead>
         <tbody className="bg-primitive-white">
           {memberList.map((member) => (
-            <tr className="h-15">
+            <tr key={member.memberId} className="h-15">
               <td className="text-center px-2">{member.memberId}</td>
               <td className="px-2">{member.nickname}</td>
               <td className="px-2">{member.username}</td>

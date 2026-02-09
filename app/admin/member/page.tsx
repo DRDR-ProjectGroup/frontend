@@ -10,10 +10,6 @@ export default function Page() {
   const page = Math.max(1, Number(searchParams.get('page') || 1));
   const router = useRouter();
 
-  if (!page) {
-    router.push(`/admin/member?page=${page}`);
-  }
-
   const {
     data: memberListData,
     isLoading,

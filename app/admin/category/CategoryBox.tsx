@@ -92,7 +92,7 @@ export default function CategoryBox({
         </thead>
         <tbody className="bg-primitive-white">
           {groupAndCategoryData.categories.map((category) => (
-            <tr className="h-15">
+            <tr key={category.categoryId} className="h-15">
               <td className="px-6">{category.categoryId}</td>
               <td className="px-6">{category.categoryName}</td>
               <td className="px-6">{category.categoryAddress}</td>

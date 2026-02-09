@@ -16,6 +16,7 @@ interface AuthState {
   isLoggedIn: boolean;
   userId: string | null;
   isInitialized: boolean; // 초기화 완료 여부
+  // role: string | null; // 권한 (admin, user)
 
   // Actions
   setAuth: (token: string) => void;

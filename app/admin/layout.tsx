@@ -5,7 +5,7 @@ import Main from './Main';
 import Sidebar from './Sidebar';
 import { BiCategory } from 'react-icons/bi';
 import { FiUser } from 'react-icons/fi';
-import { redirect, usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useAuthStore } from '@/lib/store/authStore';
 
 export interface NavMenu {
@@ -21,11 +21,15 @@ export default function AdminLayout({
 }) {
   const { isInitialized, isLoggedIn } = useAuthStore();
   const pathname = usePathname();
+  const router = useRouter();
 
   useEffect(() => {
     if (isInitialized && !isLoggedIn) {
-      redirect('/login');
+      router.push('/login');
     }
+    // else if (role !== 'ADMIN') {
+    //   router.push('/');
+    // }
   }, [isInitialized, isLoggedIn]);
 
   const navMenus: NavMenu[] = [
