@@ -78,7 +78,7 @@ export default function LoginForm() {
       )}
       {loginError && (
         <div className="text-primitive-red text-sm p-2 text-center">
-          아이디와 비밀번호를 확인해주세요.
+          {loginError.message}
         </div>
       )}
     </form>

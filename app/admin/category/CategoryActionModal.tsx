@@ -68,11 +68,24 @@ export function CategoryActionModal({
         </Heading>
 
         {config.needInput ? (
-          <InputText
-            placeholder={config.placeholder}
-            value={inputValue}
-            onChange={(e) => onChangeInput(e.target.value)}
-          />
+          <div>
+            <div>
+              <span>categoryName</span>
+              <InputText
+                placeholder={config.placeholder}
+                value={inputValue}
+                onChange={(e) => onChangeInput(e.target.value)}
+              />
+            </div>
+            <div>
+              <span>categoryName</span>
+              <InputText
+                placeholder={config.placeholder}
+                value={inputValue}
+                onChange={(e) => onChangeInput(e.target.value)}
+              />
+            </div>
+          </div>
         ) : (
           <p className="text-sm text-text-second">정말 삭제하시겠습니까?</p>
         )}

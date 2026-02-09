@@ -149,6 +149,7 @@ export default function Pagination({
     >
       {/* 이전 버튼 - 첫 페이지에서는 비활성화 */}
       <Button
+        size="sm"
         variant="tertiary"
         className="border-none"
         disabled={disabled || safeCurrent <= 1}

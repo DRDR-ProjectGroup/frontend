@@ -5,7 +5,7 @@ import {
   deleteGroup,
   updateCategory,
   updateGroup,
-} from '@/lib/api/category';
+} from '@/lib/api/admin/category';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 // 그룹 추가
@@ -15,10 +15,6 @@ export const useAddGroupMutation = () => {
     mutationFn: ({ groupName }: { groupName: string }) => addGroup(groupName),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['groupAndCategory'] });
-      alert('그룹 추가 성공');
-    },
-    onError: (error) => {
-      alert(error.message);
     },
   });
 };
@@ -35,11 +31,7 @@ export const useUpdateGroupMutation = () => {
       groupName: string;
     }) => updateGroup(groupId, groupName),
     onSuccess: () => {
-      alert('그룹 수정 성공');
       queryClient.invalidateQueries({ queryKey: ['groupAndCategory'] });
-    },
-    onError: (error) => {
-      alert(error.message);
     },
   });
 };
@@ -50,11 +42,7 @@ export const useDeleteGroupMutation = () => {
   return useMutation({
     mutationFn: ({ groupId }: { groupId: string }) => deleteGroup(groupId),
     onSuccess: () => {
-      alert('그룹 삭제 성공');
       queryClient.invalidateQueries({ queryKey: ['groupAndCategory'] });
-    },
-    onError: (error) => {
-      alert(error.message);
     },
   });
 };
@@ -74,10 +62,6 @@ export const useAddCategoryMutation = () => {
     }) => addCategory(groupId, categoryName, categoryAddress),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['groupAndCategory'] });
-      alert('카테고리 추가 성공');
-    },
-    onError: (error) => {
-      alert(error.message);
     },
   });
 };
@@ -99,10 +83,6 @@ export const useUpdateCategoryMutation = () => {
     }) => updateCategory(categoryId, categoryName, categoryAddress, groupId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['groupAndCategory'] });
-      alert('카테고리 수정 성공');
-    },
-    onError: (error) => {
-      alert(error.message);
     },
   });
 };
@@ -115,10 +95,6 @@ export const useDeleteCategoryMutation = () => {
       deleteCategory(categoryId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['groupAndCategory'] });
-      alert('카테고리 삭제 성공');
-    },
-    onError: (error) => {
-      alert(error.message);
     },
   });
 };

@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { fetchGroupAndCategory } from '@/lib/api/category';
+import { fetchGroupAndCategory } from '@/lib/api/admin/category';
 
 // 그룹 및 카테고리 조회
 export function useGroupAndCategoryQuery() {
