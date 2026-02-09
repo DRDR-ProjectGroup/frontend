@@ -3,10 +3,21 @@
 import Popover from '@/components/ui/Popover';
 import Link from 'next/link';
 import { useState } from 'react';
-import { NavMenuData } from '@/types/api/navMenu';
+import { useGroupAndCategoryQuery } from '@/query/category/useCategoryQuery';
 
-export default function NavMenu({ navMenus }: { navMenus: NavMenuData[] }) {
+export default function NavMenu() {
   const [activeNav, setActiveNav] = useState('');
+  const {
+    data: groupAndCategory,
+    isLoading,
+    isError,
+  } = useGroupAndCategoryQuery();
+
+  if (isLoading) return <div>Loading...</div>;
+  if (isError) return <div>Error</div>;
+  if (!groupAndCategory?.data) return <div>카테고리 데이터가 없습니다.</div>;
+
+  const navMenus = groupAndCategory.data || [];
 
   return (
     <nav>

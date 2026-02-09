@@ -1,6 +1,6 @@
 'use client';
 
-import ResignForm from '@/app/mypage/info/resign/page';
+import ResignForm from '@/app/(main)/mypage/info/resign/page';
 import { useRouter } from 'next/navigation';
 import Modal from '@/components/common/modal/Modal';
 

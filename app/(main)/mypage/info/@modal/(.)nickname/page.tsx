@@ -1,6 +1,6 @@
 'use client';
 
-import PasswordForm from '@/app/mypage/info/password/page';
+import NicknameForm from '@/app/(main)/mypage/info/nickname/page';
 import { useRouter } from 'next/navigation';
 import Modal from '@/components/common/modal/Modal';
 
@@ -9,7 +9,7 @@ export default function Page() {
 
   return (
     <Modal isOpen={true} onClose={() => router.back()}>
-      <PasswordForm />
+      <NicknameForm />
     </Modal>
   );
 }
