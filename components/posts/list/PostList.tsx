@@ -31,7 +31,6 @@ export default function PostList({
           {category === 'all' ? '전체 인기글' : category}
         </Heading>
         <Sort
-          searchMode={searchMode}
           currentPostId={currentPostId}
           category={category}
           searchTarget={searchTarget}

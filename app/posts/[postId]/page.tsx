@@ -19,7 +19,6 @@ export default async function Page({
 }) {
   const { postId } = await params;
   const { category = 'all', page, sort, currentPostId } = await searchParams;
-  console.log(currentPostId);
 
   // postId 검증: 양의 정수만 허용
   if (!/^\d+$/.test(postId)) {

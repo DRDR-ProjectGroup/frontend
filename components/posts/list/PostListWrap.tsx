@@ -3,28 +3,30 @@
 import PostList from './PostList';
 import PostSearch from './PostSearch';
 import PostListPagination from './PostListPagination';
-import { PostListParamsProvider } from './PostListParamsContext';
-import type {
-  PostListParams,
-  PostListSearchTargetType,
-  PostListSortType,
-} from '@/types/api/postList';
-import { useSearchParams } from 'next/navigation';
+import { usePostListParams } from '@/hooks/usePostListParams';
+import type { PostListParams } from '@/types/api/postList';
 import { usePostListQuery } from '@/query/post/usePostListQuery';
 
 interface PostListWrapProps extends PostListParams {}
 
 export default function PostListWrap({ category = 'all' }: PostListWrapProps) {
-  const searchParams = useSearchParams();
-  const searchMode = searchParams.get('searchMode') === 'true';
-  const categoryValue = (searchParams.get('category') as string) || category;
-  const searchTarget =
-    (searchParams.get('searchTarget') as PostListSearchTargetType) || 'ALL';
-  const searchKeyword = searchParams.get('searchKeyword') || '';
-  const page = Math.max(1, Number(searchParams.get('page') || 1));
-  const sort = (searchParams.get('sort') as PostListSortType) || 'LATEST';
-  const currentPostIdValue =
-    Number(searchParams.get('currentPostId')) || undefined;
+  const {
+    searchMode,
+    category: categoryValue,
+    searchTarget,
+    searchKeyword,
+    page,
+    sort,
+    currentPostId,
+  } = usePostListParams(category);
+  const postListParams = {
+    category: categoryValue,
+    searchTarget,
+    searchKeyword,
+    page,
+    sort,
+    searchMode,
+  };
 
   const {
     data: postListResponse,
@@ -32,7 +34,7 @@ export default function PostListWrap({ category = 'all' }: PostListWrapProps) {
     isError,
     error,
   } = usePostListQuery({
-    category,
+    category: categoryValue,
     searchTarget,
     searchKeyword,
     page,
@@ -57,34 +59,24 @@ export default function PostListWrap({ category = 'all' }: PostListWrapProps) {
     <div>
       {/* 글 리스트 */}
       <PostList
-        currentPostId={currentPostIdValue}
-        searchMode={searchMode}
+        {...postListParams}
+        currentPostId={currentPostId}
         postList={postList}
-        category={categoryValue}
-        searchTarget={searchTarget}
-        searchKeyword={searchKeyword}
-        page={page}
-        sort={sort}
       />
 
       {/* 검색 */}
       <PostSearch
-        category={categoryValue}
-        searchTarget={searchTarget}
-        searchKeyword={searchKeyword}
+        category={postListParams.category}
+        searchTarget={postListParams.searchTarget}
+        searchKeyword={postListParams.searchKeyword}
       />
 
       {/* 페이지네이션 */}
       <PostListPagination
-        category={categoryValue}
-        searchMode={searchMode}
-        searchTarget={searchTarget}
-        searchKeyword={searchKeyword}
-        page={page}
+        {...postListParams}
         totalPages={totalPages}
         isLoading={isLoading}
         isError={isError}
-        sort={sort}
       />
     </div>
   );

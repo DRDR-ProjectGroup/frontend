@@ -5,17 +5,14 @@ import { BiTime } from 'react-icons/bi';
 import { useRouter } from 'next/navigation';
 
 interface SortProps extends PostListParams {
-  searchMode: boolean;
   currentPostId?: number;
 }
 
 export default function Sort({
-  searchMode,
   currentPostId,
   category,
   searchTarget,
   searchKeyword,
-  page,
   sort,
 }: SortProps) {
   const router = useRouter();
@@ -34,11 +31,7 @@ export default function Sort({
   };
 
   const onSortChange = (sortType: PostListSortType) => {
-    const baseUrl = `/category/${category}?&page=1&sort=${sortType}&size=5&currentPostId=${currentPostId}`;
-    const searchParams = searchMode
-      ? `&searchMode=true&searchTarget=${searchTarget}&searchKeyword=${searchKeyword}`
-      : '';
-    const url = `${baseUrl}${searchParams}`;
+    const url = `/category/${category}?page=1&sort=${sortType}&size=5&currentPostId=${currentPostId}`;
     router.push(url);
   };
 
