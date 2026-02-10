@@ -27,10 +27,15 @@ export default function AdminLayout({
   const role = useAuthStore((state) => state.role);
 
   useEffect(() => {
-    if (isInitialized && !isLoggedIn) {
+    if (!isInitialized) return;
+    if (!isLoggedIn) {
+      alert('로그인이 필요합니다.');
       router.push('/login');
+      return;
     } else if (role !== 'ROLE_ADMIN') {
+      alert('관리자 권한이 필요합니다.');
       router.push('/');
+      return;
     }
   }, [isInitialized, isLoggedIn, role, router]);
 

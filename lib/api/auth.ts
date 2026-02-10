@@ -1,6 +1,7 @@
 import { LoginRequest, LoginResponse, LogoutResponse } from '@/types/api/auth';
 import { apiRequest, getApiBaseUrl } from './apiClient';
 import { setAccessToken } from '../utils/auth-token';
+import { ApiError } from '../error/api';
 
 // 로그인
 export async function login(
@@ -16,13 +17,13 @@ export async function login(
   });
   const data = await response.json();
   if (!response.ok) {
-    throw new Error(data.message || '로그인 실패');
+    throw new ApiError(data.message, data.code);
   }
 
   // Response Header에서 accessToken 추출
   const authHeader = response.headers.get('Authorization');
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    throw new Error('토큰을 받지 못했습니다.');
+    throw new ApiError('토큰을 받지 못했습니다.', data.code);
   }
   const accessToken = authHeader.replace('Bearer ', '');
 
@@ -44,7 +45,7 @@ export async function logout(): Promise<LogoutResponse> {
   });
   const data = await response.json();
   if (!response.ok) {
-    throw new Error(data.message || '로그아웃 실패');
+    throw new ApiError(data.message, data.code);
   }
   return data;
 }
@@ -58,19 +59,22 @@ export async function refreshAccessToken(): Promise<string | null> {
       credentials: 'include', // 쿠키의 refreshToken 포함
     });
 
+    const result = await res.json();
+    console.log('refreshAccessToken result : ', result);
+
     if (!res.ok) {
-      return null;
+      throw new ApiError(result.message, result.code);
     }
 
     // 응답 헤더에서 새 액세스 토큰 추출
     const authHeader = res.headers.get('Authorization');
-    if (!authHeader) return null;
+    if (!authHeader) throw new ApiError('Authorization 헤더 없음', result.code);
 
     const newToken = authHeader.replace('Bearer ', '');
     setAccessToken(newToken);
     return newToken;
   } catch (error) {
     console.error('Token refresh failed:', error);
-    return null;
+    throw error;
   }
 }

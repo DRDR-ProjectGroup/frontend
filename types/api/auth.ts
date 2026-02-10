@@ -13,3 +13,8 @@ export type LogoutResponse = ApiResponse<undefined>;
 
 // 사용자 role
 export type UserRole = 'ROLE_MEMBER' | 'ROLE_ADMIN';
+
+// 토큰 검증 옵션
+export type RequireAuthOptions = {
+  requireAuth?: boolean;
+};

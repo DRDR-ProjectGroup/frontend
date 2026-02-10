@@ -7,6 +7,7 @@ import { useAuthStore } from '@/lib/store/authStore';
 export default function Page() {
   const role = useAuthStore((state) => state.role);
   const { data: memberInfo, isLoading, isError } = useMemberInfoQuery();
+
   if (isLoading) return <div>로딩중...</div>;
   if (isError) return <div>에러가 발생했습니다.</div>;
 

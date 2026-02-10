@@ -40,7 +40,6 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     setAccessToken(token);
     const userId = getUserIdFromToken(token);
     const role = getUserRoleFromToken(token);
-    console.log('role', role);
 
     set({
       accessToken: token,
