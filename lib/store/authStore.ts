@@ -7,8 +7,10 @@ import {
   removeAccessToken,
   getUserIdFromToken,
   isTokenExpired,
+  getUserRoleFromToken,
 } from '@/lib/utils/auth-token';
 import { refreshAccessToken } from '../api/auth';
+import { UserRole } from '@/types/api/auth';
 
 interface AuthState {
   // 상태
@@ -16,7 +18,7 @@ interface AuthState {
   isLoggedIn: boolean;
   userId: string | null;
   isInitialized: boolean; // 초기화 완료 여부
-  // role: string | null; // 권한 (admin, user)
+  role: UserRole | null; // 권한 (admin, user)
 
   // Actions
   setAuth: (token: string) => void;
@@ -30,17 +32,21 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   isLoggedIn: false,
   userId: null,
   isInitialized: false,
+  role: null,
 
   // 로그인 시 호출
   // - 토큰을 저장하고 사용자 정보 추출
   setAuth: (token: string) => {
     setAccessToken(token);
     const userId = getUserIdFromToken(token);
+    const role = getUserRoleFromToken(token);
+    console.log('role', role);
 
     set({
       accessToken: token,
       isLoggedIn: true,
       userId,
+      role,
       isInitialized: true,
     });
   },
@@ -54,6 +60,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       accessToken: null,
       isLoggedIn: false,
       userId: null,
+      role: null,
       isInitialized: true,
     });
   },
@@ -70,6 +77,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         accessToken: null,
         isLoggedIn: false,
         userId: null,
+        role: null,
         isInitialized: true,
       });
       return;
@@ -86,10 +94,12 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         // 재발급 성공
         console.log('Token refreshed successfully');
         const userId = getUserIdFromToken(newToken);
+        const role = getUserRoleFromToken(newToken);
         set({
           accessToken: newToken,
           isLoggedIn: true,
           userId,
+          role,
           isInitialized: true,
         });
       } else {
@@ -100,10 +110,12 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     } else {
       // 토큰이 유효함
       const userId = getUserIdFromToken(token);
+      const role = getUserRoleFromToken(token);
       set({
         accessToken: token,
         isLoggedIn: true,
         userId,
+        role,
         isInitialized: true,
       });
     }

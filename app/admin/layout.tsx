@@ -19,18 +19,20 @@ export default function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { isInitialized, isLoggedIn } = useAuthStore();
   const pathname = usePathname();
   const router = useRouter();
+
+  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
+  const role = useAuthStore((state) => state.role);
 
   useEffect(() => {
     if (isInitialized && !isLoggedIn) {
       router.push('/login');
+    } else if (role !== 'ROLE_ADMIN') {
+      router.push('/');
     }
-    // else if (role !== 'ADMIN') {
-    //   router.push('/');
-    // }
-  }, [isInitialized, isLoggedIn]);
+  }, [isInitialized, isLoggedIn, role, router]);
 
   const navMenus: NavMenu[] = [
     {
