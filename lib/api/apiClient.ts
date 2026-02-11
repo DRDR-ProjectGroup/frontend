@@ -72,9 +72,7 @@ export async function apiRequest(
       // access token 재발급 실패 (refresh token 만료)
       console.error('access token 재발급 실패 : ', error);
       removeAccessToken();
-      if (requireAuthOptions?.requireAuth && window) {
-        window.location.href = '/login';
-      }
+      window.location.href = '/login';
       throw error;
     }
   }
