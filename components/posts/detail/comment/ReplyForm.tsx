@@ -52,6 +52,7 @@ export default function ReplyForm({
           variant={mode === 'create' ? 'primary' : 'secondary'}
           size="sm"
           onClick={handleSubmit}
+          disabled={content.length === 0}
         >
           {mode === 'create' ? '등록' : '수정'}
         </Button>

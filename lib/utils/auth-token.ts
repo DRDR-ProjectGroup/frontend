@@ -1,3 +1,5 @@
+import { UserRole } from '@/types/api/auth';
+
 // JWT 토큰 관련 유틸리티 함수
 interface JWTPayload {
   userId?: string;
@@ -36,6 +38,13 @@ export function getUserIdFromToken(token: string): string | null {
 
   // 백엔드 JWT 구조에 따라 userId 또는 sub 필드 사용
   return payload.userId || payload.sub || null;
+}
+
+// JWT 토큰에서 사용자 role 추출
+export function getUserRoleFromToken(token: string): UserRole | null {
+  const payload = decodeJWT(token);
+  if (!payload) return null;
+  return payload.role || null;
 }
 
 // localStorage에서 액세스 토큰 가져오기

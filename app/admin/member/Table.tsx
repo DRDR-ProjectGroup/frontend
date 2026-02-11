@@ -30,20 +30,20 @@ export default function Table({
   };
   return (
     <div className="w-full rounded-md border border-primitive-grayPrimary overflow-x-auto">
-      <table className="min-w-full table-fixed text-xs text-text-second border-collapse text-left">
+      <table className="min-w-full table-fixed text-xs text-text-second border-collapse text-center">
         <colgroup>
           <col className="w-[80px]" />
-          <col className="w-[100px]" />
-          <col className="w-[100px]" />
+          <col className="w-[150px]" />
+          <col className="w-[150px]" />
           <col />
           <col className="w-[100px]" />
           <col className="w-[100px]" />
           <col className="w-[70px]" />
-          <col className="w-[70px]" />
+          <col className="w-[100px]" />
         </colgroup>
         <thead>
           <tr className="h-10">
-            <th className="px-2 text-center">memberId</th>
+            <th className="px-2">memberId</th>
             <th className="px-2">nickname</th>
             <th className="px-2">username</th>
             <th className="px-2">email</th>
@@ -56,10 +56,10 @@ export default function Table({
         <tbody className="bg-primitive-white">
           {memberList.map((member) => (
             <tr key={member.memberId} className="h-15">
-              <td className="text-center px-2">{member.memberId}</td>
-              <td className="px-2">{member.nickname}</td>
-              <td className="px-2">{member.username}</td>
-              <td className="px-2">{member.email}</td>
+              <td className="px-2">{member.memberId}</td>
+              <td className="px-2 max-w-[150px] truncate">{member.nickname}</td>
+              <td className="px-2 max-w-[150px] truncate">{member.username}</td>
+              <td className="px-2 max-w-[300px] truncate">{member.email}</td>
               <td className="px-2">{member.role}</td>
               <td className="px-2">{formatDate(member.createdAt)}</td>
               <td className="px-2">{member.status}</td>

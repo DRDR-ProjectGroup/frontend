@@ -5,6 +5,7 @@ import { useState } from 'react';
 import InputText from '@/components/ui/InputText';
 import { PostListParams, PostListSearchTargetType } from '@/types/api/postList';
 import { useRouter } from 'next/navigation';
+import Select from '@/components/ui/Select';
 
 interface PostSearchProps extends PostListParams {}
 
@@ -36,17 +37,16 @@ export default function PostSearch({
 
   return (
     <div className="flex items-center gap-2 mt-6 mb-4">
-      <select
+      <Select
         value={target}
         onChange={(e) => setTarget(e.target.value as PostListSearchTargetType)}
-        className="border-primitive-grayPrimary h-[36px] w-[131px] rounded-md border px-3 text-sm"
       >
         {searchTargetOptions.map((option) => (
           <option key={option.value} value={option.value}>
             {option.label}
           </option>
         ))}
-      </select>
+      </Select>
       <div className="flex-1 h-[36px] relative">
         <InputText
           className="h-full w-full"

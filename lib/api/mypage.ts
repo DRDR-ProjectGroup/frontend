@@ -18,6 +18,7 @@ export async function fetchMemberInfo(): Promise<MemberInfoResponse> {
     `/members/me`,
     undefined,
     '내 정보 조회 실패',
+    { requireAuth: true }, // requireAuth true 시 토큰 검증 -> 실패 -> /login 리다이렉트
   );
 }
 
@@ -70,6 +71,7 @@ export async function fetchMyPosts({
     `/members/me/posts?page=${page}&size=2`,
     undefined,
     '내 작성글 조회 실패',
+    { requireAuth: true },
   );
 }
 
@@ -84,5 +86,6 @@ export async function fetchMyComments({
     `/members/me/comments?page=${page}&size=2`,
     undefined,
     '내 댓글 조회 실패',
+    { requireAuth: true },
   );
 }

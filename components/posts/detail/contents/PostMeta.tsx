@@ -20,8 +20,7 @@ export default function PostMeta({ postId }: { postId: number }) {
   } = usePostDetailQuery(postId);
   const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
   const userId = useAuthStore((state) => state.userId);
-  // const isAdmin = useAuthStore((state) => state.isAdmin); // 백엔드 API 추가 후 사용
-  const isAdmin = true;
+  const userRole = useAuthStore((state) => state.role);
 
   if (isLoading) {
     return <div className="py-8 text-center text-text-third">로딩 중...</div>;
@@ -62,7 +61,8 @@ export default function PostMeta({ postId }: { postId: number }) {
               {post.title}
             </Heading>
             {isLoggedIn &&
-              (post.author.memberId === Number(userId) || isAdmin) && (
+              (post.author.memberId === Number(userId) ||
+                userRole === 'ROLE_ADMIN') && (
                 <PostOwnerActions postId={postId} />
               )}
           </div>
