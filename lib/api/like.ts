@@ -14,8 +14,7 @@ export async function likePost(
 
 // 추천 수 조회
 export async function getLikeCount(postId: number): Promise<any> {
-  return apiGet(`/posts/${postId}/likeCount`, {
+  return apiGet(`/posts/${postId}/likecount`, {
     errorMessage: 'Failed to get like count',
-    requireAuthOptions: { requireAuth: true },
   });
 }

@@ -1,7 +1,6 @@
-import { notFound } from 'next/navigation';
 import Comments from '@/components/posts/detail/comment/Comments';
 import PostMeta from '@/components/posts/detail/contents/PostMeta';
-import PostReactions from '@/components/posts/detail/like/PostLike';
+import PostLike from '@/components/posts/detail/like/PostLike';
 import PostListWrap from '@/components/posts/list/PostListWrap';
 import type { PostListSortType } from '@/types/api/postList';
 
@@ -20,10 +19,6 @@ export default async function Page({
   const { postId } = await params;
   const { category = 'all', page, sort, currentPostId } = await searchParams;
 
-  // postId 검증: 양의 정수만 허용
-  if (!/^\d+$/.test(postId)) {
-    notFound();
-  }
   const postIdNumber = Number(postId);
 
   return (
@@ -33,7 +28,7 @@ export default async function Page({
         <PostMeta postId={postIdNumber} />
 
         {/* 좋아요, 싫어요 */}
-        <PostReactions postId={postIdNumber} />
+        <PostLike postId={postIdNumber} />
 
         {/* 댓글 */}
         <Comments postId={postIdNumber} />
