@@ -3,8 +3,8 @@
 import Button from '@/components/ui/Button';
 import { Heading } from '@/components/ui/Heading';
 import InputText from '@/components/ui/InputText';
-import { useChangeNicknameMutation } from '@/query/member/useMemberMutations';
-import { useMemberInfoQuery } from '@/query/member/useMemberQuery';
+import { useChangeNicknameMutation } from '@/query/mypage/useMyPageMutations';
+import { useMyInfoQuery } from '@/query/mypage/useMyPageQuery';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
@@ -18,7 +18,7 @@ export default function Page() {
     data: memberInfo,
     isLoading: isMemberInfoLoading,
     isError: isMemberInfoError,
-  } = useMemberInfoQuery();
+  } = useMyInfoQuery();
 
   // 닉네임 변경
   const {

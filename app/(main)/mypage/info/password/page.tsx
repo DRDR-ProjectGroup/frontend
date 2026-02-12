@@ -3,7 +3,7 @@
 import Button from '@/components/ui/Button';
 import { Heading } from '@/components/ui/Heading';
 import InputText from '@/components/ui/InputText';
-import { useChangePasswordMutation } from '@/query/member/useMemberMutations';
+import { useChangePasswordMutation } from '@/query/mypage/useMyPageMutations';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 

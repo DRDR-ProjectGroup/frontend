@@ -14,24 +14,21 @@ import { apiDelete, apiGet, apiPatch } from './apiClient';
 /* 내 정보 */
 // 내 정보 조회
 export async function fetchMemberInfo(): Promise<MemberInfoResponse> {
-  return apiGet<MemberInfoResponse>(
-    `/members/me`,
-    undefined,
-    '내 정보 조회 실패',
-    { requireAuth: true }, // requireAuth true 시 토큰 검증 -> 실패 -> /login 리다이렉트
-  );
+  return apiGet<MemberInfoResponse>(`/members/me`, {
+    errorMessage: '내 정보 조회 실패',
+    requireAuthOptions: { requireAuth: true },
+  });
 }
 
 // 닉네임 변경
 export async function changeNickname({
   newNickname,
 }: NicknameRequest): Promise<NicknameResponse> {
-  return apiPatch<NicknameResponse>(
-    `/members/me/nickname`,
-    { newNickname },
-    undefined,
-    '닉네임 변경 실패',
-  );
+  return apiPatch<NicknameResponse>(`/members/me/nickname`, {
+    body: { newNickname },
+    errorMessage: '닉네임 변경 실패',
+    requireAuthOptions: { requireAuth: true },
+  });
 }
 
 // 비밀번호 변경
@@ -40,24 +37,22 @@ export async function changePassword({
   newPassword,
   newPassword2,
 }: PasswordRequest): Promise<PasswordResponse> {
-  return apiPatch<PasswordResponse>(
-    `/members/me/password`,
-    { password, newPassword, newPassword2 },
-    undefined,
-    '비밀번호 변경 실패',
-  );
+  return apiPatch<PasswordResponse>(`/members/me/password`, {
+    body: { password, newPassword, newPassword2 },
+    errorMessage: '비밀번호 변경 실패',
+    requireAuthOptions: { requireAuth: true },
+  });
 }
 
 // 회원 탈퇴
 export async function resign({
   password,
 }: ResignRequest): Promise<ResignResponse> {
-  return apiDelete<ResignResponse>(
-    `/members/resign`,
-    { password },
-    undefined,
-    '회원 탈퇴 실패',
-  );
+  return apiDelete<ResignResponse>(`/members/resign`, {
+    body: { password },
+    errorMessage: '회원 탈퇴 실패',
+    requireAuthOptions: { requireAuth: true },
+  });
 }
 
 /* 내 작성글 */
@@ -67,12 +62,10 @@ export async function fetchMyPosts({
 }: {
   page: number;
 }): Promise<MyPostListResponse> {
-  return apiGet<MyPostListResponse>(
-    `/members/me/posts?page=${page}&size=2`,
-    undefined,
-    '내 작성글 조회 실패',
-    { requireAuth: true },
-  );
+  return apiGet<MyPostListResponse>(`/members/me/posts?page=${page}&size=2`, {
+    errorMessage: '내 작성글 조회 실패',
+    requireAuthOptions: { requireAuth: true },
+  });
 }
 
 /* 내 댓글 */
@@ -84,8 +77,9 @@ export async function fetchMyComments({
 }): Promise<MyCommentListResponse> {
   return apiGet<MyCommentListResponse>(
     `/members/me/comments?page=${page}&size=2`,
-    undefined,
-    '내 댓글 조회 실패',
-    { requireAuth: true },
+    {
+      errorMessage: '내 댓글 조회 실패',
+      requireAuthOptions: { requireAuth: true },
+    },
   );
 }

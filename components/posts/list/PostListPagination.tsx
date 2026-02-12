@@ -1,8 +1,6 @@
 'use client';
 
 import Pagination from '@/components/common/Pagination';
-import { usePostListQuery } from '@/query/post/usePostListQuery';
-import { usePostListParams } from './PostListParamsContext';
 import { useRouter } from 'next/navigation';
 import { PostListParams } from '@/types/api/postList';
 

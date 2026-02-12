@@ -1,6 +1,6 @@
 'use client';
 
-import { useMyPostsQuery } from '@/query/member/useMemberQuery';
+import { useMyPostsQuery } from '@/query/mypage/useMyPageQuery';
 import Table from './Table';
 import MyPostsPagination from './Pagination';
 import { useState } from 'react';

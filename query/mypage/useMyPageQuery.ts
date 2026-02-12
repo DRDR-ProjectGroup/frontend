@@ -6,9 +6,9 @@ import {
 } from '@/lib/api/mypage';
 
 // 내 정보 조회
-export function useMemberInfoQuery() {
+export function useMyInfoQuery() {
   return useQuery({
-    queryKey: ['memberInfo'],
+    queryKey: ['myPage', 'info'],
     queryFn: () => fetchMemberInfo(),
     staleTime: 30000,
     gcTime: 5 * 60000, // 5분
@@ -18,7 +18,7 @@ export function useMemberInfoQuery() {
 // 내 작성글 조회
 export function useMyPostsQuery({ page }: { page: number }) {
   return useQuery({
-    queryKey: ['myPosts', page],
+    queryKey: ['myPage', 'posts', page],
     queryFn: () => fetchMyPosts({ page }),
     staleTime: 30000,
     gcTime: 5 * 60000, // 5분
@@ -28,7 +28,7 @@ export function useMyPostsQuery({ page }: { page: number }) {
 // 내 댓글 조회
 export function useMyCommentsQuery({ page }: { page: number }) {
   return useQuery({
-    queryKey: ['myComments', page],
+    queryKey: ['myPage', 'comments', page],
     queryFn: () => fetchMyComments({ page }),
     staleTime: 30000,
     gcTime: 5 * 60000, // 5분

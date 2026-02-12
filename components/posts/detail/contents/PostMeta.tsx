@@ -19,8 +19,6 @@ export default function PostMeta({ postId }: { postId: number }) {
     error,
   } = usePostDetailQuery(postId);
   const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
-  const userId = useAuthStore((state) => state.userId);
-  const userRole = useAuthStore((state) => state.role);
 
   if (isLoading) {
     return <div className="py-8 text-center text-text-third">로딩 중...</div>;
@@ -60,11 +58,7 @@ export default function PostMeta({ postId }: { postId: number }) {
             <Heading level={1} className="truncate">
               {post.title}
             </Heading>
-            {isLoggedIn &&
-              (post.author.memberId === Number(userId) ||
-                userRole === 'ROLE_ADMIN') && (
-                <PostOwnerActions postId={postId} />
-              )}
+            {isLoggedIn && <PostOwnerActions postId={postId} />}
           </div>
         </div>
         <div className="flex items-center gap-2 text-sm mt-4 text-text-third">

@@ -25,7 +25,7 @@ export default function CategoryBox({
 
   return (
     <div className="rounded-md overflow-hidden border border-primitive-white shadow-categoryBox">
-      <div className="px-6 py-4 flex items-center justify-between border-b border-primitive-white bg-primitive-white">
+      <div className="px-6 py-4 flex items-center justify-between border-b border-primitive-white bg-primitive-grayWeakest">
         <div className="flex items-center gap-2">
           <strong className="text-sm">{groupAndCategoryData.groupName}</strong>
           <span className="text-xs text-text-third">
@@ -83,7 +83,7 @@ export default function CategoryBox({
           <col className="w-1/4" />
         </colgroup>
         <thead>
-          <tr className="h-10">
+          <tr className="h-10 bg-primitive-grayWeakest">
             <th className="px-6">categoryId</th>
             <th className="px-6">categoryName</th>
             <th className="px-6">categoryAddress</th>

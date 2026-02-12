@@ -9,9 +9,15 @@ import { useDeleteMessageMutation } from '@/query/message/useMessageMutations';
 
 interface MessageTableProps {
   messages: MessageItem[];
+  type: 'inbox' | 'sent';
+  page: number;
 }
 
-export default function MessageTable({ messages }: MessageTableProps) {
+export default function MessageTable({
+  messages,
+  type,
+  page,
+}: MessageTableProps) {
   const [selectedMessageId, setSelectedMessageId] = useState<number | null>(
     null,
   );
@@ -64,7 +70,7 @@ export default function MessageTable({ messages }: MessageTableProps) {
               <td className="px-4 py-3">
                 <div className="flex gap-2 items-center">
                   <Link
-                    href={`/mypage/message/${message.messageId}`}
+                    href={`/mypage/message/${message.messageId}?type=${type}&page=${page}`}
                     className="truncate max-w-[calc(100%-16px)] font-bold hover:underline text-left"
                   >
                     {message.content}

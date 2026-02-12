@@ -1,6 +1,6 @@
 'use client';
 
-import { useMyCommentsQuery } from '@/query/member/useMemberQuery';
+import { useMyCommentsQuery } from '@/query/mypage/useMyPageQuery';
 import Table from './Table';
 import MyCommentsPagination from './Pagination';
 import { useState } from 'react';

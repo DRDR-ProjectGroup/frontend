@@ -12,8 +12,10 @@ export async function fetchAdminMemberList(
 ): Promise<AdminMemberListResponse> {
   return apiGet<AdminMemberListResponse>(
     `/admin/members?page=${request.page}&size=${request.size}`,
-    undefined,
-    '회원 조회 실패',
+    {
+      errorMessage: '회원 조회 실패',
+      requireAuthOptions: { requireAuth: true },
+    },
   );
 }
 
@@ -23,8 +25,10 @@ export async function changeAdminMemberStatus(
 ): Promise<ChangeMemberStatusResponse> {
   return apiPatch<ChangeMemberStatusResponse>(
     `/admin/members/${request.memberId}`,
-    { status: request.status },
-    undefined,
-    '회원 상태 변경 실패',
+    {
+      body: { status: request.status },
+      errorMessage: '회원 상태 변경 실패',
+      requireAuthOptions: { requireAuth: true },
+    },
   );
 }

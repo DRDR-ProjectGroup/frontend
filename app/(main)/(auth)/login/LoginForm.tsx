@@ -5,6 +5,7 @@ import InputText from '@/components/ui/InputText';
 import { useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useLoginMutation } from '@/query/auth/useAuthMutations';
+import { useAuthStore } from '@/lib/store/authStore';
 
 export default function LoginForm() {
   const router = useRouter();
@@ -15,6 +16,7 @@ export default function LoginForm() {
     isPending: isLoginPending,
     error: loginError,
   } = useLoginMutation();
+  const setAuth = useAuthStore((state) => state.setAuth);
 
   const [formValues, setFormValues] = useState({
     username: '',
@@ -37,8 +39,9 @@ export default function LoginForm() {
         password: formValues.password,
       },
       {
-        onSuccess: () => {
+        onSuccess: (data) => {
           router.push(redirect);
+          setAuth(data.accessToken); // Zustand store에 저장
         },
       },
     );

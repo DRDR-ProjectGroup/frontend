@@ -29,22 +29,18 @@ export async function fetchPostList(
   params: PostListParams = {},
 ): Promise<PostListResponse> {
   const sp = buildSearchParams(params);
-  return apiGet<PostListResponse>(
-    `/posts?${sp.toString()}`,
-    undefined,
-    'Failed to fetch post list',
-  );
+  return apiGet<PostListResponse>(`/posts?${sp.toString()}`, {
+    errorMessage: 'Failed to fetch post list',
+  });
 }
 
 // 글 상세 조회
 export async function fetchPostDetail(
   postId: number,
 ): Promise<PostDetailResponse> {
-  return apiGet<PostDetailResponse>(
-    `/posts/${postId}`,
-    undefined,
-    'Failed to fetch post detail',
-  );
+  return apiGet<PostDetailResponse>(`/posts/${postId}`, {
+    errorMessage: 'Failed to fetch post detail',
+  });
 }
 
 // 글 작성
@@ -52,12 +48,10 @@ export async function createPost(
   formData: FormData,
   category: string,
 ): Promise<any> {
-  return apiPostFormData(
-    `/posts/${category}`,
-    formData,
-    undefined,
-    'Failed to create post',
-  );
+  return apiPostFormData(`/posts/${category}`, formData, {
+    errorMessage: 'Failed to create post',
+    requireAuthOptions: { requireAuth: true },
+  });
 }
 
 // 글 수정
@@ -65,17 +59,18 @@ export async function updatePost(
   postId: number,
   formData: FormData,
 ): Promise<any> {
-  return apiPutFormData(
-    `/posts/${postId}`,
-    formData,
-    undefined,
-    'Failed to update post',
-  );
+  return apiPutFormData(`/posts/${postId}`, formData, {
+    errorMessage: 'Failed to update post',
+    requireAuthOptions: { requireAuth: true },
+  });
 }
 
 // 글 삭제
 export async function deletePost(postId: number): Promise<void> {
-  await apiDelete(`/posts/${postId}`, undefined, 'Failed to delete post');
+  await apiDelete(`/posts/${postId}`, {
+    errorMessage: 'Failed to delete post',
+    requireAuthOptions: { requireAuth: true },
+  });
 }
 
 // 좋아요 기능
@@ -83,10 +78,9 @@ export async function likePost(
   postId: number,
   likeType: 'like' | 'dislike',
 ): Promise<any> {
-  return apiPost(
-    `/posts/${postId}/like`,
-    { likeType },
-    undefined,
-    'Failed to like post',
-  );
+  return apiPost(`/posts/${postId}/like`, {
+    body: { likeType },
+    errorMessage: 'Failed to like post',
+    requireAuthOptions: { requireAuth: true },
+  });
 }

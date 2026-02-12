@@ -46,7 +46,7 @@ export default function Page() {
         <NavMenu type={type} />
       </div>
       <div className="mt-8">
-        <MessageTable messages={messages} />
+        <MessageTable messages={messages} type={type} page={page} />
       </div>
       <MessagePagination
         page={Number(page)}

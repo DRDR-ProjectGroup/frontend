@@ -16,8 +16,10 @@ export async function fetchCommentList(
 ): Promise<CommentListResponse> {
   return apiGet<CommentListResponse>(
     `/posts/${params.postId}/comments?page=${params.page || 1}`,
-    undefined,
-    '댓글 리스트 조회 실패',
+    {
+      errorMessage: '댓글 리스트 조회 실패',
+      requireAuthOptions: { requireAuth: true },
+    },
   );
 }
 
@@ -25,12 +27,14 @@ export async function fetchCommentList(
 export async function createComment(
   request: CreateCommentRequest,
 ): Promise<CreateCommentResponse> {
-  return apiPost<CreateCommentResponse>(
-    `/posts/${request.postId}/comments`,
-    request,
-    undefined,
-    '댓글 작성 실패',
-  );
+  return apiPost<CreateCommentResponse>(`/posts/${request.postId}/comments`, {
+    body: {
+      content: request.content,
+      parentCommentId: request.parentCommentId,
+    },
+    errorMessage: '댓글 작성 실패',
+    requireAuthOptions: { requireAuth: true },
+  });
 }
 
 // 댓글 수정
@@ -39,9 +43,11 @@ export async function updateComment(
 ): Promise<UpdateCommentResponse> {
   return apiPatch<UpdateCommentResponse>(
     `/posts/${request.postId}/comments/${request.commentId}`,
-    request,
-    undefined,
-    '댓글 수정 실패',
+    {
+      body: { content: request.content },
+      errorMessage: '댓글 수정 실패',
+      requireAuthOptions: { requireAuth: true },
+    },
   );
 }
 
@@ -51,6 +57,9 @@ export async function deleteComment(
 ): Promise<DeleteCommentResponse> {
   return apiDelete<DeleteCommentResponse>(
     `/posts/${request.postId}/comments/${request.commentId}`,
-    undefined,
+    {
+      errorMessage: '댓글 삭제 실패',
+      requireAuthOptions: { requireAuth: true },
+    },
   );
 }

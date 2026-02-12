@@ -1,6 +1,5 @@
 import { LoginRequest, LoginResponse, LogoutResponse } from '@/types/api/auth';
 import { apiRequest, getApiBaseUrl } from './apiClient';
-import { setAccessToken } from '../utils/auth-token';
 import { ApiError } from '../error/api';
 
 // 로그인
@@ -60,7 +59,6 @@ export async function refreshAccessToken(): Promise<string | null> {
     });
 
     const result = await res.json();
-    console.log('refreshAccessToken result : ', result);
 
     if (!res.ok) {
       throw new ApiError(result.message, result.code);
@@ -71,10 +69,12 @@ export async function refreshAccessToken(): Promise<string | null> {
     if (!authHeader) throw new ApiError('Authorization 헤더 없음', result.code);
 
     const newToken = authHeader.replace('Bearer ', '');
-    setAccessToken(newToken);
     return newToken;
   } catch (error) {
-    console.error('Token refresh failed:', error);
+    // console.log(
+    //   'refreshAccessToken error => refreshToken 만료, reissue failed: ',
+    //   error,
+    // );
     throw error;
   }
 }
