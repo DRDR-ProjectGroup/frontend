@@ -25,8 +25,8 @@ export default function Header() {
     <div className="h-[65px]">
       <header
         className={twMerge(
-          'fixed top-0 left-0 right-0 z-50 shadow-xs h-[65px]',
-          scrolled && 'bg-primitive-green/90 shadow-none text-primitive-white',
+          'fixed top-0 left-0 right-0 z-50 shadow-xs h-[65px] transition-all duration-300',
+          scrolled && 'bg-primitive-green/90 shadow-none',
         )}
       >
         <div className="max-w-layout mx-auto h-full flex items-center px-6">

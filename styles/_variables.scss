@@ -1,17 +1,12 @@
 :root {
   /****************** 
-  Basics
-  ******************/
-
-  overflow-wrap: break-word;
-  text-size-adjust: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-
-  /****************** 
   Colors variables
   ******************/
+
+  /* Basic colors */
+  --white: rgba(255, 255, 255, 1);
+  --black: rgba(14, 14, 17, 1);
+  --transparent: rgba(255, 255, 255, 0);
 
   /* Gray alpha (light mode) */
   --tt-gray-light-a-50: rgba(56, 56, 56, 0.04);
@@ -113,11 +108,6 @@
   --tt-color-red-dec-4: hsla(3, 100%, 16%, 1);
   --tt-color-red-dec-5: hsla(1, 100%, 9%, 1);
 
-  /* Basic colors */
-  --white: rgba(255, 255, 255, 1);
-  --black: rgba(14, 14, 17, 1);
-  --transparent: rgba(255, 255, 255, 0);
-
   /****************** 
   Shadow variables
   ******************/
@@ -160,15 +150,6 @@
   --tt-accent-contrast: 8%;
   --tt-destructive-contrast: 8%;
   --tt-foreground-contrast: 8%;
-
-  &,
-  *,
-  ::before,
-  ::after {
-    box-sizing: border-box;
-    transition: none var(--tt-transition-duration-default)
-      var(--tt-transition-easing-default);
-  }
 }
 
 :root {
@@ -293,4 +274,21 @@
   --tt-color-highlight-brown-contrast: rgba(184, 101, 69, 0.25);
   --tt-color-highlight-orange-contrast: rgba(233, 126, 37, 0.2);
   --tt-color-highlight-pink-contrast: rgba(220, 76, 145, 0.22);
+}
+
+.tiptap-editor {
+  overflow-wrap: break-word;
+  text-size-adjust: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  &,
+  *,
+  ::before,
+  ::after {
+    box-sizing: border-box;
+    transition: none var(--tt-transition-duration-default)
+      var(--tt-transition-easing-default);
+  }
 }

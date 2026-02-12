@@ -1,4 +1,5 @@
 import { UserRole } from '@/types/api/auth';
+import { useAuthStore } from '../store/authStore';
 
 // JWT 토큰 관련 유틸리티 함수
 interface JWTPayload {
@@ -45,22 +46,4 @@ export function getUserRoleFromToken(token: string): UserRole | null {
   const payload = decodeJWT(token);
   if (!payload) return null;
   return payload.role || null;
-}
-
-// localStorage에서 액세스 토큰 가져오기
-export function getAccessToken(): string | null {
-  if (typeof window === 'undefined') return null;
-  return localStorage.getItem('accessToken');
-}
-
-// localStorage에 액세스 토큰 저장
-export function setAccessToken(token: string): void {
-  if (typeof window === 'undefined') return;
-  localStorage.setItem('accessToken', token);
-}
-
-// localStorage에서 액세스 토큰 삭제
-export function removeAccessToken(): void {
-  if (typeof window === 'undefined') return;
-  localStorage.removeItem('accessToken');
 }

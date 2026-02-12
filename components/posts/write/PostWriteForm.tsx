@@ -14,16 +14,16 @@ import { replaceImagesWithPlaceholders } from './utils/imageProcessor';
 import { usePostImageManager } from './hooks/usePostImageManager';
 import { useRouter } from 'next/navigation';
 import SelectCategory from './SelectCategory';
-import type { Category } from '@/types/api/category';
+import type { CategoryData } from '@/types/api/category';
 
 type PostWriteFormProps = {
   mode?: 'create' | 'edit';
   initialData?: {
     title: string;
     content: string;
-    category: Category;
+    category: CategoryData;
   };
-  postId?: string;
+  postId?: number;
 };
 
 export default function PostWriteForm({

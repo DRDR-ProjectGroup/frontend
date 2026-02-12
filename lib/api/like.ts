@@ -5,19 +5,17 @@ export async function likePost(
   postId: number,
   likeType: 'like' | 'dislike',
 ): Promise<any> {
-  return apiPost(
-    `/posts/${postId}/like`,
-    { likeType },
-    undefined,
-    'Failed to like post',
-  );
+  return apiPost(`/posts/${postId}/like`, {
+    body: { likeType },
+    errorMessage: 'Failed to like post',
+    requireAuthOptions: { requireAuth: true },
+  });
 }
 
 // 추천 수 조회
 export async function getLikeCount(postId: number): Promise<any> {
-  return apiGet(
-    `/posts/${postId}/likeCount`,
-    undefined,
-    'Failed to get like count',
-  );
+  return apiGet(`/posts/${postId}/likeCount`, {
+    errorMessage: 'Failed to get like count',
+    requireAuthOptions: { requireAuth: true },
+  });
 }

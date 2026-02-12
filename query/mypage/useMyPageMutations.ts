@@ -14,7 +14,7 @@ export function useChangeNicknameMutation() {
     mutationFn: ({ newNickname }: NicknameRequest) =>
       changeNickname({ newNickname }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['memberInfo'] });
+      queryClient.invalidateQueries({ queryKey: ['myPage'] });
       queryClient.invalidateQueries({ queryKey: ['postList'] });
       queryClient.invalidateQueries({ queryKey: ['commentList'] });
       queryClient.invalidateQueries({ queryKey: ['postDetail'] });
@@ -37,10 +37,10 @@ export function useResignMutation() {
   return useMutation({
     mutationFn: ({ password }: ResignRequest) => resign({ password }),
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ['memberInfo', 'postList', 'commentList'],
-        exact: false, // queryKey로 시작하는 모든 쿼리 무효화
-      });
+      queryClient.invalidateQueries({ queryKey: ['postList'] });
+      queryClient.invalidateQueries({ queryKey: ['commentList'] });
+      queryClient.invalidateQueries({ queryKey: ['postDetail'] });
+      queryClient.removeQueries({ queryKey: ['myPage'] });
     },
   });
 }

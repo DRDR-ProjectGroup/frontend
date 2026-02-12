@@ -6,13 +6,16 @@
  */
 
 import { refreshAccessToken } from './auth';
-import {
-  getAccessToken,
-  setAccessToken,
-  removeAccessToken,
-} from '@/lib/utils/auth-token';
 import { RequireAuthOptions } from '@/types/api/auth';
 import { ApiError } from '../error/api';
+import { useAuthStore } from '../store/authStore';
+
+interface ApiRequestOptionalParamsType {
+  body?: any;
+  options?: RequestInit;
+  errorMessage?: string;
+  requireAuthOptions?: RequireAuthOptions;
+}
 
 /**
  * 환경변수에서 API Base URL 가져오기
@@ -35,7 +38,7 @@ export async function apiRequest(
   options: RequestInit = {},
   requireAuthOptions?: RequireAuthOptions,
 ): Promise<Response> {
-  const token = getAccessToken();
+  const token = useAuthStore.getState().accessToken;
 
   // 요청 헤더 구성
   const headers: HeadersInit = {
@@ -71,8 +74,10 @@ export async function apiRequest(
     } catch (error) {
       // access token 재발급 실패 (refresh token 만료)
       console.error('access token 재발급 실패 : ', error);
-      removeAccessToken();
-      window.location.href = '/login';
+      useAuthStore.getState().clearAuth();
+      if (requireAuthOptions?.requireAuth) {
+        window.location.href = '/login';
+      }
       throw error;
     }
   }
@@ -85,9 +90,11 @@ export async function apiRequest(
  */
 export async function apiGet<T = any>(
   endpoint: string,
-  options?: RequestInit,
-  errorMessage?: string,
-  requireAuthOptions: RequireAuthOptions = { requireAuth: false }, // true 시 토큰 검증 -> 실패 -> /login 리다이렉트
+  {
+    options,
+    errorMessage,
+    requireAuthOptions = { requireAuth: false },
+  }: ApiRequestOptionalParamsType = {},
 ): Promise<T> {
   const baseUrl = getApiBaseUrl();
   const response = await apiRequest(
@@ -105,7 +112,7 @@ export async function apiGet<T = any>(
 
   if (!response.ok) {
     const error = await response.json().catch(() => ({}));
-    throw new ApiError(error.message, error.code);
+    throw new ApiError(errorMessage || error.message, error.code);
   }
 
   return response.json();
@@ -116,24 +123,31 @@ export async function apiGet<T = any>(
  */
 export async function apiPost<T = any>(
   endpoint: string,
-  body?: any,
-  options?: RequestInit,
-  errorMessage?: string,
+  {
+    body,
+    options,
+    errorMessage,
+    requireAuthOptions = { requireAuth: false },
+  }: ApiRequestOptionalParamsType = {},
 ): Promise<T> {
   const baseUrl = getApiBaseUrl();
-  const response = await apiRequest(`${baseUrl}${endpoint}`, {
-    ...options,
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      ...options?.headers,
+  const response = await apiRequest(
+    `${baseUrl}${endpoint}`,
+    {
+      ...options,
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...options?.headers,
+      },
+      body: body ? JSON.stringify(body) : undefined,
     },
-    body: body ? JSON.stringify(body) : undefined,
-  });
+    requireAuthOptions,
+  );
 
   if (!response.ok) {
     const error = await response.json().catch(() => ({}));
-    throw new ApiError(error.message, error.code);
+    throw new ApiError(errorMessage || error.message, error.code);
   }
 
   return response.json();
@@ -144,24 +158,31 @@ export async function apiPost<T = any>(
  */
 export async function apiPut<T = any>(
   endpoint: string,
-  body?: any,
-  options?: RequestInit,
-  errorMessage?: string,
+  {
+    body,
+    options,
+    errorMessage,
+    requireAuthOptions = { requireAuth: false },
+  }: ApiRequestOptionalParamsType = {},
 ): Promise<T> {
   const baseUrl = getApiBaseUrl();
-  const response = await apiRequest(`${baseUrl}${endpoint}`, {
-    ...options,
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-      ...options?.headers,
+  const response = await apiRequest(
+    `${baseUrl}${endpoint}`,
+    {
+      ...options,
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        ...options?.headers,
+      },
+      body: body ? JSON.stringify(body) : undefined,
     },
-    body: body ? JSON.stringify(body) : undefined,
-  });
+    requireAuthOptions,
+  );
 
   if (!response.ok) {
     const error = await response.json().catch(() => ({}));
-    throw new ApiError(error.message, error.code);
+    throw new ApiError(errorMessage || error.message, error.code);
   }
 
   return response.json();
@@ -172,24 +193,31 @@ export async function apiPut<T = any>(
  */
 export async function apiPatch<T = any>(
   endpoint: string,
-  body?: any,
-  options?: RequestInit,
-  errorMessage?: string,
+  {
+    body,
+    options,
+    errorMessage,
+    requireAuthOptions = { requireAuth: false },
+  }: ApiRequestOptionalParamsType = {},
 ): Promise<T> {
   const baseUrl = getApiBaseUrl();
-  const response = await apiRequest(`${baseUrl}${endpoint}`, {
-    ...options,
-    method: 'PATCH',
-    headers: {
-      'Content-Type': 'application/json',
-      ...options?.headers,
+  const response = await apiRequest(
+    `${baseUrl}${endpoint}`,
+    {
+      ...options,
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        ...options?.headers,
+      },
+      body: body ? JSON.stringify(body) : undefined,
     },
-    body: body ? JSON.stringify(body) : undefined,
-  });
+    requireAuthOptions,
+  );
 
   if (!response.ok) {
     const error = await response.json().catch(() => ({}));
-    throw new ApiError(error.message, error.code);
+    throw new ApiError(errorMessage || error.message, error.code);
   }
 
   return response.json();
@@ -200,24 +228,31 @@ export async function apiPatch<T = any>(
  */
 export async function apiDelete<T = any>(
   endpoint: string,
-  body?: any,
-  options?: RequestInit,
-  errorMessage?: string,
+  {
+    body,
+    options,
+    errorMessage,
+    requireAuthOptions = { requireAuth: false },
+  }: ApiRequestOptionalParamsType = {},
 ): Promise<T> {
   const baseUrl = getApiBaseUrl();
-  const response = await apiRequest(`${baseUrl}${endpoint}`, {
-    ...options,
-    method: 'DELETE',
-    headers: {
-      'Content-Type': 'application/json',
-      ...options?.headers,
+  const response = await apiRequest(
+    `${baseUrl}${endpoint}`,
+    {
+      ...options,
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        ...options?.headers,
+      },
+      body: body ? JSON.stringify(body) : undefined,
     },
-    body: body ? JSON.stringify(body) : undefined,
-  });
+    requireAuthOptions,
+  );
 
   if (!response.ok) {
     const error = await response.json().catch(() => ({}));
-    throw new ApiError(error.message, error.code);
+    throw new ApiError(errorMessage || error.message, error.code);
   }
 
   return response.json();
@@ -229,27 +264,26 @@ export async function apiDelete<T = any>(
 export async function apiPostFormData<T = any>(
   endpoint: string,
   formData: FormData,
-  options?: RequestInit,
-  errorMessage?: string,
+  {
+    options,
+    errorMessage,
+    requireAuthOptions = { requireAuth: false },
+  }: ApiRequestOptionalParamsType = {},
 ): Promise<T> {
   const baseUrl = getApiBaseUrl();
-  const token = getAccessToken();
-
-  const headers: HeadersInit = {
-    ...options?.headers,
-    ...(token && { Authorization: `Bearer ${token}` }),
-  };
-
-  const response = await apiRequest(`${baseUrl}${endpoint}`, {
-    ...options,
-    method: 'POST',
-    headers,
-    body: formData,
-  });
+  const response = await apiRequest(
+    `${baseUrl}${endpoint}`,
+    {
+      ...options,
+      method: 'POST',
+      body: formData,
+    },
+    requireAuthOptions,
+  );
 
   if (!response.ok) {
     const error = await response.json().catch(() => ({}));
-    throw new ApiError(error.message, error.code);
+    throw new ApiError(errorMessage || error.message, error.code);
   }
 
   return response.json();
@@ -261,27 +295,26 @@ export async function apiPostFormData<T = any>(
 export async function apiPutFormData<T = any>(
   endpoint: string,
   formData: FormData,
-  options?: RequestInit,
-  errorMessage?: string,
+  {
+    options,
+    errorMessage,
+    requireAuthOptions = { requireAuth: false },
+  }: ApiRequestOptionalParamsType = {},
 ): Promise<T> {
   const baseUrl = getApiBaseUrl();
-  const token = getAccessToken();
-
-  const headers: HeadersInit = {
-    ...options?.headers,
-    ...(token && { Authorization: `Bearer ${token}` }),
-  };
-
-  const response = await apiRequest(`${baseUrl}${endpoint}`, {
-    ...options,
-    method: 'PUT',
-    headers,
-    body: formData,
-  });
+  const response = await apiRequest(
+    `${baseUrl}${endpoint}`,
+    {
+      ...options,
+      method: 'PUT',
+      body: formData,
+    },
+    requireAuthOptions,
+  );
 
   if (!response.ok) {
     const error = await response.json().catch(() => ({}));
-    throw new ApiError(error.message, error.code);
+    throw new ApiError(errorMessage || error.message, error.code);
   }
 
   return response.json();

@@ -8,10 +8,12 @@ import { replacePlaceholdersWithUrls } from '@/components/posts/write/utils/imag
 // 글 수정
 export default function PostEditPage() {
   const params = useParams();
-  const postId = params.postId as string;
+  const postId = params.postId;
 
   // 기존 상세 조회 API 재사용
-  const { data: postDetailResponse, isLoading } = usePostDetailQuery(postId);
+  const { data: postDetailResponse, isLoading } = usePostDetailQuery(
+    Number(postId),
+  );
 
   if (isLoading) return <div>Loading...</div>;
 
@@ -27,7 +29,7 @@ export default function PostEditPage() {
   return (
     <PostWriteForm
       mode="edit"
-      postId={postId}
+      postId={Number(postId)}
       initialData={{
         title: post.title,
         content: contentWithImages,

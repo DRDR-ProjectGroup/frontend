@@ -3,7 +3,7 @@
 import Button from '@/components/ui/Button';
 import { Heading } from '@/components/ui/Heading';
 import InputText from '@/components/ui/InputText';
-import { useResignMutation } from '@/query/member/useMemberMutations';
+import { useResignMutation } from '@/query/mypage/useMyPageMutations';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/lib/store/authStore';

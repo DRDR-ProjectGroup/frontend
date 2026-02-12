@@ -41,26 +41,32 @@ export default function PostListWrap({ category = 'all' }: PostListWrapProps) {
     sort,
     size: 5,
   });
-  const postList = postListResponse?.data?.posts ?? [];
-  const totalPages = postListResponse?.data?.totalPages ?? 1;
   if (isLoading) return <div>Loading...</div>;
   if (isError)
     return (
       <div>
-        Error:{' '}
+        Error:
         {error instanceof Error
           ? error.message
           : '데이터를 불러오지 못했습니다.'}
       </div>
     );
-  if (!postListResponse) return <div>데이터를 불러오지 못했습니다.</div>;
+  if (!postListResponse || !postListResponse.data)
+    return <div>데이터를 불러오지 못했습니다.</div>;
+
+  const postList = postListResponse.data.posts;
+  const notices = postListResponse.data.notices || [];
+  const totalPages = postListResponse.data.totalPages;
+  const categoryTitle = postListResponse.data.category || '전체 인기글';
 
   return (
     <div>
       {/* 글 리스트 */}
       <PostList
         {...postListParams}
+        categoryTitle={categoryTitle}
         currentPostId={currentPostId}
+        notices={notices}
         postList={postList}
       />
 
