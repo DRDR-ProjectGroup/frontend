@@ -112,7 +112,7 @@ export async function apiGet<T = any>(
 
   if (!response.ok) {
     const error = await response.json().catch(() => ({}));
-    throw new ApiError(errorMessage || error.message, error.code);
+    throw new ApiError(error.message || errorMessage, error.code);
   }
 
   return response.json();
@@ -147,7 +147,7 @@ export async function apiPost<T = any>(
 
   if (!response.ok) {
     const error = await response.json().catch(() => ({}));
-    throw new ApiError(errorMessage || error.message, error.code);
+    throw new ApiError(error.message || errorMessage, error.code);
   }
 
   return response.json();
@@ -182,7 +182,7 @@ export async function apiPut<T = any>(
 
   if (!response.ok) {
     const error = await response.json().catch(() => ({}));
-    throw new ApiError(errorMessage || error.message, error.code);
+    throw new ApiError(error.message || errorMessage, error.code);
   }
 
   return response.json();
@@ -217,7 +217,7 @@ export async function apiPatch<T = any>(
 
   if (!response.ok) {
     const error = await response.json().catch(() => ({}));
-    throw new ApiError(errorMessage || error.message, error.code);
+    throw new ApiError(error.message || errorMessage, error.code);
   }
 
   return response.json();
@@ -283,7 +283,7 @@ export async function apiPostFormData<T = any>(
 
   if (!response.ok) {
     const error = await response.json().catch(() => ({}));
-    throw new ApiError(errorMessage || error.message, error.code);
+    throw new ApiError(error.message || errorMessage, error.code);
   }
 
   return response.json();
@@ -314,7 +314,7 @@ export async function apiPutFormData<T = any>(
 
   if (!response.ok) {
     const error = await response.json().catch(() => ({}));
-    throw new ApiError(errorMessage || error.message, error.code);
+    throw new ApiError(error.message || errorMessage, error.code);
   }
 
   return response.json();

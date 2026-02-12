@@ -2,7 +2,7 @@ import { likePost } from '@/lib/api/like';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 // 글 좋아요/싫어요 Mutation Hook
-export function useLikePostMutation() {
+export function useLikeMutation() {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -13,8 +13,12 @@ export function useLikePostMutation() {
       postId: number;
       likeType: 'like' | 'dislike';
     }) => likePost(postId, likeType),
-    onSuccess: (_, variables) => {
+    onSuccess: (data, variables) => {
       queryClient.invalidateQueries({ queryKey: ['like', variables.postId] });
+      // queryClient.setQueryData(['like', variables.postId], data);
+    },
+    onError: (error) => {
+      console.error('like mutation error:', error);
     },
   });
 }

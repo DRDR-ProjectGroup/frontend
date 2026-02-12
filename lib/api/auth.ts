@@ -71,10 +71,7 @@ export async function refreshAccessToken(): Promise<string | null> {
     const newToken = authHeader.replace('Bearer ', '');
     return newToken;
   } catch (error) {
-    // console.log(
-    //   'refreshAccessToken error => refreshToken 만료, reissue failed: ',
-    //   error,
-    // );
+    console.log('reissue failed: ', error);
     throw error;
   }
 }

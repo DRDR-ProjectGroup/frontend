@@ -1,18 +1,14 @@
 'use client';
 
 import Button from '@/components/ui/Button';
-import { usePostDetailQuery } from '@/query/post/usePostDetailQuery';
-import { useLikePostMutation } from '@/query/post/usePostMutations';
+import { useLikeMutation } from '@/query/like/useLikeMutations';
 import { AiOutlineLike, AiOutlineDislike } from 'react-icons/ai';
 import { useAuthStore } from '@/lib/store/authStore';
+import { useLikeQuery } from '@/query/like/useLikeQuery';
 
-export default function PostReactions({ postId }: { postId: number }) {
-  const {
-    data: postDetailResponse,
-    isLoading,
-    error,
-  } = usePostDetailQuery(postId);
-  const { mutate: likePostMutate } = useLikePostMutation();
+export default function PostLike({ postId }: { postId: number }) {
+  const { data: likeResponse, isLoading, error } = useLikeQuery({ postId });
+  const { mutate: likeMutation } = useLikeMutation();
   const { isLoggedIn } = useAuthStore();
 
   if (isLoading) {
@@ -22,13 +18,13 @@ export default function PostReactions({ postId }: { postId: number }) {
     return <div>Error: {error.message}</div>;
   }
 
-  const post = postDetailResponse?.data;
-  if (!post) {
+  const likeData = likeResponse?.data;
+  if (!likeData) {
     return <div>게시글 상세 정보를 불러오지 못했습니다.</div>;
   }
 
-  const isLiked = post.memberLikeType === 'LIKE';
-  const isDisliked = post.memberLikeType === 'DISLIKE';
+  const isLiked = likeData.memberLikeType === 'LIKE';
+  const isDisliked = likeData.memberLikeType === 'DISLIKE';
 
   return (
     <div className="flex items-stretch justify-center gap-2 py-8">
@@ -39,14 +35,14 @@ export default function PostReactions({ postId }: { postId: number }) {
           if (!isLoggedIn) {
             return alert('로그인 후 이용해주세요.');
           }
-          likePostMutate({ postId, likeType: 'like' });
+          likeMutation({ postId, likeType: 'like' });
         }}
       >
         <AiOutlineLike />
         &nbsp;Like
       </Button>
       <span className="px-2 text-md flex items-center justify-center">
-        {post.likeCount}
+        {likeData.likeCount}
       </span>
       <Button
         variant="tertiary"
@@ -55,7 +51,7 @@ export default function PostReactions({ postId }: { postId: number }) {
           if (!isLoggedIn) {
             return alert('로그인 후 이용해주세요.');
           }
-          likePostMutate({ postId, likeType: 'dislike' });
+          likeMutation({ postId, likeType: 'dislike' });
         }}
       >
         <AiOutlineDislike />
