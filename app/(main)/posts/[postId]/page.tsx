@@ -3,6 +3,7 @@ import PostMeta from '@/components/posts/detail/contents/PostMeta';
 import PostLike from '@/components/posts/detail/like/PostLike';
 import PostListWrap from '@/components/posts/list/PostListWrap';
 import type { PostListSortType } from '@/types/api/postList';
+import { notFound } from 'next/navigation';
 
 export default async function Page({
   params,
@@ -18,6 +19,11 @@ export default async function Page({
 }) {
   const { postId } = await params;
   const { category = 'all', page, sort, currentPostId } = await searchParams;
+
+  // postId 검증: 양의 정수만 허용
+  if (!/^\d+$/.test(postId)) {
+    notFound();
+  }
 
   const postIdNumber = Number(postId);
 
