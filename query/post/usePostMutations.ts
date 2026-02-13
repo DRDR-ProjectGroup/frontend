@@ -14,6 +14,7 @@ export function useCreatePostMutation() {
       category: string;
     }) => createPost(formData, category),
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['postList'] });
       queryClient.invalidateQueries({ queryKey: ['myPage', 'posts'] });
     },
   });

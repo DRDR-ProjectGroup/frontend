@@ -13,9 +13,12 @@ export default function Page() {
   const router = useRouter();
   const params = useParams<{ messageId: string }>();
   const searchParams = useSearchParams();
-  const boxType = searchParams.get('type') as 'inbox' | 'sent';
-
-  if (!params || !params.messageId || !boxType) {
+  const boxType = searchParams.get('type');
+  if (
+    !params ||
+    !params.messageId ||
+    (boxType !== 'inbox' && boxType !== 'sent')
+  ) {
     notFound();
   }
 
