@@ -1,7 +1,7 @@
 'use client';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ReactNode, useState, useEffect } from 'react';
+import { ReactNode, useState, useEffect, useRef } from 'react';
 import { useAuthStore } from '@/lib/store/authStore';
 
 // ReactQuery Provider
@@ -28,13 +28,18 @@ export default function Providers({ children }: { children: ReactNode }) {
   // 인증 상태 초기화 여부
   const [isAuthReady, setIsAuthReady] = useState(false);
 
+  const didInitRef = useRef(false);
+
   useEffect(() => {
+    if (didInitRef.current) return; // 이미 실행했으면 바로 return
+    didInitRef.current = true;
+
     const init = async () => {
       await initAuth();
       setIsAuthReady(true);
     };
     init();
-  }, [isAuthReady, initAuth]);
+  }, []); // 빈 배열 = 마운트 시 한 번만 실행
 
   if (!isAuthReady) {
     return null;

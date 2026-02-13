@@ -40,7 +40,7 @@ export default function PostList({
         />
       </div>
 
-      <div className="border border-primitive-graySecond rounded-lg overflow-hidden">
+      <div className="border border-primitive-graySecond rounded-lg">
         <table className="table-fixed w-full border-collapse text-center ">
           <caption className="sr-only">게시글 목록</caption>
           <colgroup>

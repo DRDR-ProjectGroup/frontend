@@ -41,7 +41,7 @@ export default function Table({ posts }: { posts: MyPostItem[] }) {
                   {post.title}
                 </Link>
                 <span className="text-xs text-primitive-green w-fit">
-                  {`(${post.likeCount})`}
+                  {`(${post.commentCount})`}
                 </span>
               </div>
             </td>
