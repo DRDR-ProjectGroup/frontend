@@ -14,8 +14,8 @@ export function useLikeMutation() {
       likeType: 'like' | 'dislike';
     }) => likePost(postId, likeType),
     onSuccess: (data, variables) => {
-      queryClient.invalidateQueries({ queryKey: ['like', variables.postId] });
-      // queryClient.setQueryData(['like', variables.postId], data);
+      // queryClient.invalidateQueries({ queryKey: ['like', variables.postId] });
+      queryClient.setQueryData(['like', variables.postId], data);
     },
     onError: (error) => {
       console.error('like mutation error:', error);
