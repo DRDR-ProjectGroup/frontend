@@ -17,7 +17,7 @@ export default function Page() {
     { label: '아이디', value: memberInfo.data.username },
     { label: '닉네임', value: memberInfo.data.nickname },
     { label: '이메일', value: memberInfo.data.email },
-    { label: '권한', value: role },
+    // { label: '권한', value: role },
   ];
 
   return (

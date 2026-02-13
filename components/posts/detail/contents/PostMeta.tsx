@@ -58,7 +58,13 @@ export default function PostMeta({ postId }: { postId: number }) {
             <Heading level={1} className="truncate">
               {post.title}
             </Heading>
-            {isLoggedIn && <PostOwnerActions postId={postId} />}
+            {isLoggedIn && (
+              <PostOwnerActions
+                postId={postId}
+                postAuthorId={post.author.memberId}
+                isNotice={post.notice}
+              />
+            )}
           </div>
         </div>
         <div className="flex items-center gap-2 text-sm mt-4 text-text-third">

@@ -14,8 +14,8 @@ export function useCreatePostMutation() {
       category: string;
     }) => createPost(formData, category),
     onSuccess: () => {
-      // 글 목록 캐시 무효화
       queryClient.invalidateQueries({ queryKey: ['postList'] });
+      queryClient.invalidateQueries({ queryKey: ['myPage', 'posts'] });
     },
   });
 }
@@ -35,6 +35,7 @@ export function useUpdatePostMutation() {
     onSuccess: (_, variables) => {
       // 글 목록 및 상세 캐시 무효화
       queryClient.invalidateQueries({ queryKey: ['postList'] });
+      queryClient.invalidateQueries({ queryKey: ['myPage', 'posts'] });
       queryClient.invalidateQueries({
         queryKey: ['postDetail', variables.postId],
       });
