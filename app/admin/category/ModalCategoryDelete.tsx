@@ -22,7 +22,7 @@ export default function ModalCategoryDelete({
           alert('카테고리 삭제 성공');
         },
         onError: (error) => {
-          console.error(error.message);
+          alert(error.message || '카테고리 삭제 실패');
         },
       },
     );

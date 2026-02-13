@@ -10,6 +10,10 @@ import {
 
 // 글 리스트 조회용 쿼리 파라미터 생성
 function buildSearchParams(params: PostListParams) {
+  // params.category : 영어 + 숫자 만 가능 (db에는 이미 적용됨, 여긴 2중 가드)
+  if (params.category && !/^[a-zA-Z0-9]+$/.test(params.category)) {
+    throw new Error('Invalid category');
+  }
   const sp = new URLSearchParams();
 
   if (params.category && params.category !== 'all') {
@@ -22,6 +26,20 @@ function buildSearchParams(params: PostListParams) {
   if (params.sort) sp.set('sort', params.sort);
 
   return sp;
+
+  // 인코딩 없이 직접 문자열 조합
+  // const parts = [];
+
+  // if (params.category && params.category !== 'all') {
+  //   parts.push(`cat=${params.category}`); // encodeURIComponent를 쓰지 않음
+  // }
+  // if (params.page) parts.push(`page=${params.page}`);
+  // if (params.size) parts.push(`size=${params.size}`);
+  // if (params.searchTarget) parts.push(`searchTarget=${params.searchTarget}`);
+  // if (params.searchKeyword) parts.push(`searchKeyword=${params.searchKeyword}`);
+  // if (params.sort) parts.push(`sort=${params.sort}`);
+
+  // return parts.join('&');
 }
 
 // 글 리스트 조회

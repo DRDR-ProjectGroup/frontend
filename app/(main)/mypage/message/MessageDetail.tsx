@@ -6,16 +6,21 @@ import { IoMdClose } from 'react-icons/io';
 import { useMessageDetailQuery } from '@/query/message/useMessageQuery';
 import { useRouter } from 'next/navigation';
 import { formatDate } from '@/lib/utils/formatDate';
+import { useState } from 'react';
+import MessageSendForm from '@/components/message/MessageSendForm';
 
 interface MessageDetailProps {
   isModal: boolean;
   messageId: string;
+  boxType: 'inbox' | 'sent';
 }
 
 export default function MessageDetail({
   isModal,
   messageId,
+  boxType,
 }: MessageDetailProps) {
+  const [isOpenMessageSendForm, setIsOpenMessageSendForm] = useState(false);
   const router = useRouter();
   const {
     data: messageDetailResponse,
@@ -58,11 +63,30 @@ export default function MessageDetail({
       </main>
       <footer>
         <div className="flex justify-center gap-2 py-4 border-t border-primitive-grayPrimary">
-          <Button variant="primary" onClick={() => router.back()}>
+          <Button variant="tertiary" onClick={() => router.back()}>
             확인
           </Button>
+          {boxType === 'inbox' && (
+            <Button
+              variant="primary"
+              onClick={() => setIsOpenMessageSendForm(true)}
+            >
+              답장
+            </Button>
+          )}
         </div>
       </footer>
+      {isOpenMessageSendForm && (
+        <MessageSendForm
+          isOpen={isOpenMessageSendForm}
+          mode="send"
+          receiverId={messageDetail.sender.memberId.toString()}
+          name={messageDetail.sender.nickname}
+          onCancel={() => {
+            setIsOpenMessageSendForm(false);
+          }}
+        />
+      )}
     </div>
   );
 }

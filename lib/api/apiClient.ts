@@ -252,7 +252,7 @@ export async function apiDelete<T = any>(
 
   if (!response.ok) {
     const error = await response.json().catch(() => ({}));
-    throw new ApiError(errorMessage || error.message, error.code);
+    throw new ApiError(error.message || errorMessage, error.code);
   }
 
   return response.json();

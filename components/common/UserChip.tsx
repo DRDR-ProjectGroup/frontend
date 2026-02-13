@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import Popover from '../ui/Popover';
 import { TbMessageChatbot } from 'react-icons/tb';
 import { CgProfile } from 'react-icons/cg';
-import SendForm from '../message/SendForm';
+import MessageSendForm from '../message/MessageSendForm';
 import { useAuthStore } from '@/lib/store/authStore';
 import { useRouter } from 'next/navigation';
 import { AuthorStatus } from '@/types/api/author';
@@ -26,7 +26,7 @@ export default function UserChip({
   const ref = useRef<HTMLDivElement | null>(null);
   const router = useRouter();
   const [isOpenPopover, setIsOpenPopover] = useState(false);
-  const [isOpenSendForm, setIsOpenSendForm] = useState(false);
+  const [isOpenMessageSendForm, setIsOpenMessageSendForm] = useState(false);
   const { isLoggedIn, userId: loggedInUserId } = useAuthStore();
 
   useEffect(() => {
@@ -49,7 +49,7 @@ export default function UserChip({
       alert('로그인 후 이용해주세요.');
       return;
     }
-    setIsOpenSendForm(true);
+    setIsOpenMessageSendForm(true);
     setIsOpenPopover(false);
   };
 
@@ -112,13 +112,13 @@ export default function UserChip({
           <ul className="text-left text-xs">{renderMenuItem()}</ul>
         </Popover>
       )}
-      {isOpenSendForm && (
-        <SendForm
-          isOpen={isOpenSendForm}
+      {isOpenMessageSendForm && (
+        <MessageSendForm
+          isOpen={isOpenMessageSendForm}
           mode="send"
           receiverId={userId}
           name={name}
-          onCancel={() => setIsOpenSendForm(false)}
+          onCancel={() => setIsOpenMessageSendForm(false)}
         />
       )}
     </div>

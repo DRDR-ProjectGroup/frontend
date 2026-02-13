@@ -14,7 +14,7 @@ export function useCreateCommentMutation() {
     mutationFn: (request: CreateCommentRequest) => createComment(request),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['commentList'] });
-      queryClient.invalidateQueries({ queryKey: ['myComments'] });
+      queryClient.invalidateQueries({ queryKey: ['myPage', 'comments'] });
     },
   });
 }

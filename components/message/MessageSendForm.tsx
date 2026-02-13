@@ -6,7 +6,7 @@ import Modal from '../common/modal/Modal';
 import { useState } from 'react';
 import { useSendMessageMutation } from '@/query/message/useMessageMutations';
 
-interface SendFormProps {
+interface MessageSendFormProps {
   isOpen: boolean;
   mode: 'send' | 'receive';
   receiverId: string;
@@ -15,14 +15,14 @@ interface SendFormProps {
   onCancel: () => void;
 }
 
-export default function SendForm({
+export default function MessageSendForm({
   isOpen,
   mode,
   receiverId,
   name,
   content,
   onCancel,
-}: SendFormProps) {
+}: MessageSendFormProps) {
   const [textareaValue, setTextareaValue] = useState(content || '');
   const { mutate: sendMessage, isPending, isError } = useSendMessageMutation();
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
