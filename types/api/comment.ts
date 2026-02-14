@@ -5,10 +5,12 @@ import { Author } from './author';
 // 댓글 아이템 타입
 export interface CommentItem {
   commentId: number;
-  author: Author | null; // 삭제된 댓글 경우
+  author: Author | null; // 삭제된 댓글 경우 null
+  parentComment: (Author & { commentId: number }) | null; // 대댓글 경우 부모 댓글 작성자
   content: string;
   createdAt: string;
   child: CommentItem[] | [];
+  depth: number; // 댓글 깊이
 }
 
 // 페이지네이션

@@ -18,7 +18,7 @@ export default function CommentItem({
   const { isLoggedIn, userId } = useAuthStore();
   const { mutate: deleteCommentMutate } = useDeleteCommentMutation();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const { author, createdAt, content, child, commentId } = props;
+  const { author, createdAt, content, child, commentId, parentComment } = props;
 
   if (!author) {
     return (
@@ -37,7 +37,7 @@ export default function CommentItem({
             status={author?.status}
             userId={author?.memberId.toString()}
             name={author?.nickname}
-            className="text-sm font-medium"
+            className="text-sm font-bold"
           />
           <span className="text-xs text-primitive-grayText">
             {formatDate(createdAt)}
@@ -53,7 +53,17 @@ export default function CommentItem({
             initialContent={content}
           />
         ) : (
-          <p className="text-xs py-2 whitespace-pre-wrap">{content}</p>
+          <div className="text-xs pt-2 whitespace-pre-wrap">
+            {parentComment && (
+              <UserChip
+                status={parentComment.status}
+                userId={parentComment.memberId.toString()}
+                name={parentComment.nickname}
+                className="text-primitive-grayText mr-2 font-medium"
+              />
+            )}
+            {content}
+          </div>
         )}
       </div>
       {/* 대댓글 작성 */}
