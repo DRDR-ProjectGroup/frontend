@@ -56,3 +56,13 @@ export interface DeleteCommentRequest {
 
 // 댓글 삭제 response
 export type DeleteCommentResponse = ApiResponse<undefined>;
+
+/* 댓글 개수 조회 */
+// 댓글 개수 data
+export interface CommentCountData {
+  postId: number;
+  commentCount: number;
+}
+
+// API 공통 응답 타입
+export type CommentCountResponse = ApiResponse<CommentCountData>;

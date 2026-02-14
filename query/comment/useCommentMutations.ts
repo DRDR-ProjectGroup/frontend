@@ -14,6 +14,7 @@ export function useCreateCommentMutation() {
     mutationFn: (request: CreateCommentRequest) => createComment(request),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['commentList'] });
+      queryClient.invalidateQueries({ queryKey: ['commentCount'] });
       queryClient.invalidateQueries({ queryKey: ['myPage', 'comments'] });
     },
   });
@@ -29,6 +30,7 @@ export function useUpdateCommentMutation() {
       queryClient.invalidateQueries({
         queryKey: ['commentList', variables.postId],
       });
+      queryClient.invalidateQueries({ queryKey: ['myPage', 'comments'] });
     },
   });
 }
@@ -43,6 +45,8 @@ export function useDeleteCommentMutation() {
       queryClient.invalidateQueries({
         queryKey: ['commentList', variables.postId],
       });
+      queryClient.invalidateQueries({ queryKey: ['commentCount'] });
+      queryClient.invalidateQueries({ queryKey: ['myPage', 'comments'] });
     },
   });
 }
