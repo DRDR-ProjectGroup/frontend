@@ -7,6 +7,7 @@ import {
   UpdateCommentResponse,
   DeleteCommentRequest,
   DeleteCommentResponse,
+  CommentCountResponse,
 } from '@/types/api/comment';
 import { apiDelete, apiGet, apiPatch, apiPost } from './apiClient';
 
@@ -62,4 +63,15 @@ export async function deleteComment(
       requireAuthOptions: { requireAuth: true },
     },
   );
+}
+
+// 댓글 개수 조회
+export async function fetchCommentCount({
+  postId,
+}: {
+  postId: number;
+}): Promise<CommentCountResponse> {
+  return apiGet<CommentCountResponse>(`/posts/${postId}/comments/count`, {
+    errorMessage: '댓글 개수 조회 실패',
+  });
 }

@@ -1,7 +1,10 @@
 'use client';
 
 import { useState } from 'react';
-import { useCommentListQuery } from '@/query/comment/useCommentListQuery';
+import {
+  useCommentCountQuery,
+  useCommentListQuery,
+} from '@/query/comment/useCommentListQuery';
 import CommentItem from './CommentItem';
 import Pagination from '@/components/common/Pagination';
 
@@ -9,6 +12,11 @@ import Pagination from '@/components/common/Pagination';
 export default function CommentList({ postId }: { postId: number }) {
   const [currentPage, setCurrentPage] = useState(1);
 
+  // 댓글 갯수
+  const { data: commentCountResponse } = useCommentCountQuery(postId);
+  const commentCount = commentCountResponse?.data?.commentCount;
+
+  // 댓글 리스트
   const {
     data: commentListResponse,
     isFetching,
@@ -29,9 +37,7 @@ export default function CommentList({ postId }: { postId: number }) {
     <div className="border-primitive-graySecond">
       <div className="flex items-center gap-2 text-lg font-medium">
         <strong>댓글</strong>
-        <span className="text-primitive-green">
-          {commentListData?.totalCount}
-        </span>
+        <span className="text-primitive-green">{commentCount}</span>
       </div>
       <div>
         {commentList?.map((comment) => (
