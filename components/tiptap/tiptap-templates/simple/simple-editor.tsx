@@ -18,6 +18,7 @@ import { Highlight } from '@tiptap/extension-highlight';
 import { Subscript } from '@tiptap/extension-subscript';
 import { Superscript } from '@tiptap/extension-superscript';
 import { Selection } from '@tiptap/extensions';
+import Youtube from '@tiptap/extension-youtube';
 
 // --- UI Primitives ---
 import { Button } from '@/components/tiptap/tiptap-ui-primitive/button';
@@ -30,18 +31,23 @@ import {
 
 // --- Tiptap Node ---
 import { ImageUploadNode } from '@/components/tiptap/tiptap-node/image-upload-node/image-upload-node-extension';
+import { VideoUploadNode } from '@/components/tiptap/tiptap-node/video-upload-node/video-upload-node-extension';
+import { Video } from '@/components/tiptap/tiptap-node/video-node/video-extension';
 import { HorizontalRule } from '@/components/tiptap/tiptap-node/horizontal-rule-node/horizontal-rule-node-extension';
 import '@/components/tiptap/tiptap-node/blockquote-node/blockquote-node.scss';
 import '@/components/tiptap/tiptap-node/code-block-node/code-block-node.scss';
 import '@/components/tiptap/tiptap-node/horizontal-rule-node/horizontal-rule-node.scss';
 import '@/components/tiptap/tiptap-node/list-node/list-node.scss';
 import '@/components/tiptap/tiptap-node/image-node/image-node.scss';
+import '@/components/tiptap/tiptap-node/video-node/video-node.scss';
 import '@/components/tiptap/tiptap-node/heading-node/heading-node.scss';
 import '@/components/tiptap/tiptap-node/paragraph-node/paragraph-node.scss';
 
 // --- Tiptap UI ---
 import { HeadingDropdownMenu } from '@/components/tiptap/tiptap-ui/heading-dropdown-menu';
 import { ImageUploadButton } from '@/components/tiptap/tiptap-ui/image-upload-button';
+import { VideoUploadButton } from '@/components/tiptap/tiptap-ui/video-upload-button';
+import { YoutubeButton } from '@/components/tiptap/tiptap-ui/youtube-button';
 import { ListDropdownMenu } from '@/components/tiptap/tiptap-ui/list-dropdown-menu';
 import { BlockquoteButton } from '@/components/tiptap/tiptap-ui/blockquote-button';
 import { CodeBlockButton } from '@/components/tiptap/tiptap-ui/code-block-button';
@@ -79,6 +85,12 @@ import '@/components/tiptap/tiptap-templates/simple/simple-editor.scss';
 
 // --- Types ---
 type ImageUploadHandler = (
+  file: File,
+  onProgress?: (event: { progress: number }) => void,
+  abortSignal?: AbortSignal,
+) => Promise<string>;
+
+type VideoUploadHandler = (
   file: File,
   onProgress?: (event: { progress: number }) => void,
   abortSignal?: AbortSignal,
@@ -151,7 +163,9 @@ const MainToolbarContent = ({
       <ToolbarSeparator />
 
       <ToolbarGroup>
-        <ImageUploadButton text="Add" />
+        <ImageUploadButton text="Image" />
+        <VideoUploadButton text="Video" />
+        <YoutubeButton text="YouTube" />
       </ToolbarGroup>
 
       <Spacer />
@@ -193,9 +207,11 @@ const MobileToolbarContent = ({
 export function SimpleEditor({
   onEditorReady,
   onImageUpload,
+  onVideoUpload,
 }: {
   onEditorReady: (editor: Editor) => void;
   onImageUpload: ImageUploadHandler;
+  onVideoUpload?: VideoUploadHandler;
 }) {
   const isMobile = useIsBreakpoint();
   const { height } = useWindowSize();
@@ -229,16 +245,35 @@ export function SimpleEditor({
       TaskItem.configure({ nested: true }),
       Highlight.configure({ multicolor: true }),
       Image,
+      Video,
       Typography,
       Superscript,
       Subscript,
       Selection,
+      Youtube.configure({
+        controls: true,
+        nocookie: true,
+      }),
       ImageUploadNode.configure({
         accept: 'image/*',
         maxSize: MAX_FILE_SIZE,
-        limit: 3,
-        upload: onImageUpload, // props로 받은 핸들러 사용
-        onError: (error) => console.error('Upload failed:', error),
+        limit: 5,
+        upload: onImageUpload,
+        onError: (error) => {
+          console.error('Upload failed:', error);
+          alert(error.message);
+        },
+      }),
+      VideoUploadNode.configure({
+        accept: 'video/*',
+        maxSize: MAX_FILE_SIZE,
+        limit: 5,
+        type: 'video',
+        upload: onVideoUpload || onImageUpload,
+        onError: (error) => {
+          console.error('Upload failed:', error);
+          alert(error.message);
+        },
       }),
     ],
     content: '<div></div>',
