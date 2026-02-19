@@ -11,7 +11,7 @@ import {
   useUpdatePostMutation,
 } from '@/query/post/usePostMutations';
 import { replaceImagesWithPlaceholders } from './utils/imageProcessor';
-import { usePostImageManager } from './hooks/usePostImageManager';
+import { usePostMediaManager } from './hooks/usePostImageManager';
 import { useRouter } from 'next/navigation';
 import SelectCategory from './SelectCategory';
 import type { CategoryData } from '@/types/api/category';
@@ -39,7 +39,7 @@ export default function PostWriteForm({
   const [editor, setEditor] = useState<Editor | null>(null);
 
   const { handleImageUpload, getImageFiles, clearImages } =
-    usePostImageManager();
+    usePostMediaManager();
   const createPostMutate = useCreatePostMutation();
   const updatePostMutate = useUpdatePostMutation();
 
@@ -140,7 +140,14 @@ export default function PostWriteForm({
         <SimpleEditor
           onEditorReady={(editor) => setEditor(editor)}
           onImageUpload={handleImageUpload}
+          onVideoUpload={handleImageUpload}
         />
+
+        {/* 제한 안내 문구 */}
+        <ul className="text-sm text-primitive-grayText">
+          <li>- 이미지, 영상 용량 제한 : 파일당 20mb 이하 가능</li>
+          <li>- 이미지, 영상 개수 제한 : 각각 5개, 총 10개 가능</li>
+        </ul>
 
         <div className="flex justify-center">
           <Button
