@@ -1,8 +1,15 @@
 import { useCallback, useRef } from 'react';
 import { MAX_FILE_SIZE } from '@/lib/tiptap-utils';
+import { getBlobUrlsInHtml } from '../utils/imageProcessor';
 
-export function usePostMediaManager() {
+type UsePostMediaManagerOptions = {
+  /** 에디터 content에 있는 blob URL 목록을 반환하는 함수. 있으면 업로드 전에 map을 이 목록과 동기화한다. */
+  getBlobUrlsInContent?: () => string[];
+};
+
+export function usePostMediaManager(options?: UsePostMediaManagerOptions) {
   const mediaFilesMap = useRef(new Map<string, File>());
+  const getBlobUrlsInContent = options?.getBlobUrlsInContent;
 
   const handleMediaUpload = useCallback(
     async (
@@ -12,6 +19,14 @@ export function usePostMediaManager() {
     ): Promise<string> => {
       if (!file) {
         throw new Error('No file provided');
+      }
+
+      // 에디터에서 삭제된 미디어는 map에서 제거 (개수 제한이 실제 노출 개수 기준이 되도록)
+      if (getBlobUrlsInContent) {
+        const urlsInContent = new Set(getBlobUrlsInContent());
+        for (const url of mediaFilesMap.current.keys()) {
+          if (!urlsInContent.has(url)) mediaFilesMap.current.delete(url);
+        }
       }
 
       // 전체 파일 개수 체크 (이미지 + 비디오 합쳐서 5개 제한)
@@ -38,12 +53,21 @@ export function usePostMediaManager() {
       mediaFilesMap.current.set(blobUrl, file);
       return blobUrl;
     },
-    [],
+    [getBlobUrlsInContent],
   );
 
-  const getMediaFiles = useCallback(() => {
-    return Array.from(mediaFilesMap.current.values());
-  }, []);
+  const getMediaFiles = useCallback(
+    (html?: string) => {
+      if (html) {
+        const urlsInOrder = getBlobUrlsInHtml(html);
+        return urlsInOrder
+          .map((url) => mediaFilesMap.current.get(url))
+          .filter((f): f is File => Boolean(f));
+      }
+      return Array.from(mediaFilesMap.current.values());
+    },
+    [],
+  );
 
   const clearMedia = useCallback(() => {
     mediaFilesMap.current.clear();

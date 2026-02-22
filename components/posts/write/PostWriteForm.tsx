@@ -5,13 +5,13 @@ import type { Editor } from '@tiptap/react';
 import { Heading } from '@/components/ui/Heading';
 import InputText from '@/components/ui/InputText';
 import Button from '@/components/ui/Button';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import {
   useCreatePostMutation,
   useUpdatePostMutation,
 } from '@/query/post/usePostMutations';
-import { replaceImagesWithPlaceholders } from './utils/imageProcessor';
-import { usePostMediaManager } from './hooks/usePostImageManager';
+import { replaceImagesWithPlaceholders, getBlobUrlsInHtml } from './utils/imageProcessor';
+import { usePostMediaManager } from './hooks/usePostMediaManager';
 import { useRouter } from 'next/navigation';
 import SelectCategory from './SelectCategory';
 import type { CategoryData } from '@/types/api/category';
@@ -37,9 +37,14 @@ export default function PostWriteForm({
     initialData?.category?.categoryAddress || '',
   );
   const [editor, setEditor] = useState<Editor | null>(null);
+  const editorRef = useRef<Editor | null>(null);
+  editorRef.current = editor;
 
   const { handleImageUpload, getImageFiles, clearImages } =
-    usePostMediaManager();
+    usePostMediaManager({
+      getBlobUrlsInContent: () =>
+        getBlobUrlsInHtml(editorRef.current?.getHTML() ?? ''),
+    });
   const createPostMutate = useCreatePostMutation();
   const updatePostMutate = useUpdatePostMutation();
 
@@ -60,9 +65,16 @@ export default function PostWriteForm({
 
     try {
       const html = editor.getHTML();
-      const processedHtml = replaceImagesWithPlaceholders(html);
-      const imageFiles = getImageFiles();
+      const blobUrlsInEditor = getBlobUrlsInHtml(html);
+      const imageFiles = getImageFiles(html);
 
+      // 제출 시 에디터에 등록된 미디어 / 전송할 파일 디버깅
+      console.log('[글 제출] 에디터 내 blob URL 개수:', blobUrlsInEditor.length);
+      console.log('[글 제출] 에디터 내 blob URL 목록:', blobUrlsInEditor);
+      console.log('[글 제출] 전송할 미디어 파일 개수:', imageFiles.length);
+      console.log('[글 제출] 전송할 미디어 파일:', imageFiles.map((f, i) => ({ order: i, name: f.name, type: f.type, size: f.size })));
+
+      const processedHtml = replaceImagesWithPlaceholders(html);
       const formData = new FormData();
       formData.append(
         'post',
@@ -78,6 +90,7 @@ export default function PostWriteForm({
           { formData, category },
           {
             onSuccess: (data) => {
+              clearImages();
               alert('글 작성 완료!');
               if (data.code === 201 && data.data?.postId) {
                 router.push(`/posts/${data.data.postId}`);
@@ -99,6 +112,7 @@ export default function PostWriteForm({
           { postId, formData },
           {
             onSuccess: (data) => {
+              clearImages();
               alert('글 수정 완료!');
               router.push(`/posts/${postId}`);
             },
@@ -112,8 +126,6 @@ export default function PostWriteForm({
     } catch (error) {
       console.error(`글 ${mode === 'create' ? '작성' : '수정'} 실패:`, error);
       alert(`글 ${mode === 'create' ? '작성' : '수정'}에 실패했습니다.`);
-    } finally {
-      clearImages();
     }
   };
 
@@ -138,7 +150,10 @@ export default function PostWriteForm({
         </div>
 
         <SimpleEditor
-          onEditorReady={(editor) => setEditor(editor)}
+          onEditorReady={(e) => {
+            editorRef.current = e;
+            setEditor(e);
+          }}
           onImageUpload={handleImageUpload}
           onVideoUpload={handleImageUpload}
         />
@@ -146,7 +161,9 @@ export default function PostWriteForm({
         {/* 제한 안내 문구 */}
         <ul className="text-sm text-primitive-grayText">
           <li>- 이미지, 영상 용량 제한 : 파일당 20mb 이하 가능</li>
-          <li>- 이미지, 영상 개수 제한 : 각각 5개, 총 10개 가능</li>
+          <li>
+            - 이미지, 영상 개수 제한 : 이미지와 영상을 합쳐 총 5개까지 등록 가능
+          </li>
         </ul>
 
         <div className="flex justify-center">
