@@ -1,44 +1,36 @@
 import { MediaItem } from '@/types/api/postDetail';
 
-// HTML에서 blob URL을 placeholder로 변환
-export function replaceImagesWithPlaceholders(html: string): string {
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(html, 'text/html');
-
-  let blobIndex = 0;
-
-  // img 태그 처리
-  const images = doc.querySelectorAll('img');
-  images.forEach((img) => {
+/** 문서 내 blob URL을 가진 요소를 등장 순서(img → video/source)대로 반환 */
+function getBlobUrlEntriesInOrder(doc: Document): { element: Element; src: string }[] {
+  const entries: { element: Element; src: string }[] = [];
+  doc.querySelectorAll('img').forEach((img) => {
     const src = img.getAttribute('src');
-    if (src?.startsWith('blob:')) {
-      img.setAttribute('src', `{{IMG_${blobIndex}}}`);
-      blobIndex++;
-    }
+    if (src?.startsWith('blob:')) entries.push({ element: img, src });
   });
-
-  // video 태그 처리
-  const videos = doc.querySelectorAll('video');
-  videos.forEach((video) => {
+  doc.querySelectorAll('video').forEach((video) => {
     const src = video.getAttribute('src');
     if (src?.startsWith('blob:')) {
-      video.setAttribute('src', `{{IMG_${blobIndex}}}`);
-      blobIndex++;
+      entries.push({ element: video, src });
     } else {
-      // source 태그도 확인
-      const sources = video.querySelectorAll('source');
-      sources.forEach((source) => {
-        const sourceSrc = source.getAttribute('src');
-        if (sourceSrc?.startsWith('blob:')) {
-          source.setAttribute('src', `{{IMG_${blobIndex}}}`);
-          blobIndex++;
-        }
+      video.querySelectorAll('source').forEach((source) => {
+        const src = source.getAttribute('src');
+        if (src?.startsWith('blob:')) entries.push({ element: source, src });
       });
     }
   });
+  return entries;
+}
 
-  // iframe 태그는 blob이 아니므로 placeholder 처리 불필요 (YouTube 등)
+export function getBlobUrlsInHtml(html: string): string[] {
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+  return getBlobUrlEntriesInOrder(doc).map((e) => e.src);
+}
 
+export function replaceImagesWithPlaceholders(html: string): string {
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+  getBlobUrlEntriesInOrder(doc).forEach(({ element }, i) => {
+    element.setAttribute('src', `{{IMG_${i}}}`);
+  });
   return doc.body.innerHTML;
 }
 
@@ -55,7 +47,8 @@ export function replacePlaceholdersWithUrls(
     const regex = new RegExp(placeholder.replace(/[{}]/g, '\\$&'), 'g');
     processedContent = processedContent.replace(
       regex,
-      process.env.NEXT_PUBLIC_BACKEND_BASE_URL + media.url,
+      process.env.NEXT_PUBLIC_BACKEND_BASE_URL + media.url, // 백엔드 로컬컬 서버 URL
+      // media.url, // S3 저장소 URL
     );
   });
 
