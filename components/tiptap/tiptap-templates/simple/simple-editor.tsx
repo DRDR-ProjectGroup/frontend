@@ -281,9 +281,8 @@ export function SimpleEditor({
 
           if (blobMedia.length === 0) {
             const pastedCount = countMediaInHtml?.(html) ?? 0;
-            const currentCount = countMediaInHtml?.(
-              editorRef.current?.getHTML() ?? '',
-            ) ?? 0;
+            const currentCount =
+              countMediaInHtml?.(editorRef.current?.getHTML() ?? '') ?? 0;
             if (pastedCount > 0 && currentCount + pastedCount > 5) {
               e.preventDefault();
               e.stopPropagation();
@@ -291,6 +290,7 @@ export function SimpleEditor({
               return true;
             }
             if (pastedCount > 0 && onPasteComplete) {
+              // 에디터의 DOM 업데이트가 완료된 후 상위 컴포넌트에 알리기 위해 setTimeout 사용
               setTimeout(() => onPasteComplete(), 0);
             }
             return false;
@@ -330,7 +330,10 @@ export function SimpleEditor({
                   .focus()
                   .insertContent(
                     isVideo
-                      ? { type: 'video', attrs: { src: insertUrl, controls: true } }
+                      ? {
+                          type: 'video',
+                          attrs: { src: insertUrl, controls: true },
+                        }
                       : { type: 'image', attrs: { src: insertUrl } },
                   )
                   .run();
