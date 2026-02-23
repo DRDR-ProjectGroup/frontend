@@ -1,7 +1,9 @@
 import { MediaItem } from '@/types/api/postDetail';
 
 /** 문서 내 blob URL을 가진 요소를 등장 순서(img → video/source)대로 반환 */
-function getBlobUrlEntriesInOrder(doc: Document): { element: Element; src: string }[] {
+function getBlobUrlEntriesInOrder(
+  doc: Document,
+): { element: Element; src: string }[] {
   const entries: { element: Element; src: string }[] = [];
   doc.querySelectorAll('img').forEach((img) => {
     const src = img.getAttribute('src');
@@ -47,8 +49,8 @@ export function replacePlaceholdersWithUrls(
     const regex = new RegExp(placeholder.replace(/[{}]/g, '\\$&'), 'g');
     processedContent = processedContent.replace(
       regex,
-      process.env.NEXT_PUBLIC_BACKEND_BASE_URL + media.url, // 백엔드 로컬컬 서버 URL
-      // media.url, // S3 저장소 URL
+      // process.env.NEXT_PUBLIC_BACKEND_BASE_URL + media.url, // 백엔드 로컬 서버 URL
+      media.url, // S3 저장소 URL
     );
   });
 
