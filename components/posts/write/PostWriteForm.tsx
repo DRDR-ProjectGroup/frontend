@@ -10,7 +10,11 @@ import {
   useCreatePostMutation,
   useUpdatePostMutation,
 } from '@/query/post/usePostMutations';
-import { replaceImagesWithPlaceholders, getBlobUrlsInHtml } from './utils/imageProcessor';
+import {
+  replaceImagesWithPlaceholders,
+  getBlobUrlsInHtml,
+  getMediaCountInContent,
+} from './utils/imageProcessor';
 import { usePostMediaManager } from './hooks/usePostMediaManager';
 import { useRouter } from 'next/navigation';
 import SelectCategory from './SelectCategory';
@@ -40,11 +44,10 @@ export default function PostWriteForm({
   const editorRef = useRef<Editor | null>(null);
   editorRef.current = editor;
 
-  const { handleImageUpload, getImageFiles, clearImages } =
-    usePostMediaManager({
-      getBlobUrlsInContent: () =>
-        getBlobUrlsInHtml(editorRef.current?.getHTML() ?? ''),
-    });
+  const getEditorHtml = () => editorRef.current?.getHTML() ?? '';
+  const { handleMediaUpload, getMediaFiles, clearMedia } = usePostMediaManager(
+    { getEditorHtml },
+  );
   const createPostMutate = useCreatePostMutation();
   const updatePostMutate = useUpdatePostMutation();
 
@@ -66,13 +69,24 @@ export default function PostWriteForm({
     try {
       const html = editor.getHTML();
       const blobUrlsInEditor = getBlobUrlsInHtml(html);
-      const imageFiles = getImageFiles(html);
+      const imageFiles = getMediaFiles(html);
 
       // 제출 시 에디터에 등록된 미디어 / 전송할 파일 디버깅
-      console.log('[글 제출] 에디터 내 blob URL 개수:', blobUrlsInEditor.length);
+      console.log(
+        '[글 제출] 에디터 내 blob URL 개수:',
+        blobUrlsInEditor.length,
+      );
       console.log('[글 제출] 에디터 내 blob URL 목록:', blobUrlsInEditor);
       console.log('[글 제출] 전송할 미디어 파일 개수:', imageFiles.length);
-      console.log('[글 제출] 전송할 미디어 파일:', imageFiles.map((f, i) => ({ order: i, name: f.name, type: f.type, size: f.size })));
+      console.log(
+        '[글 제출] 전송할 미디어 파일:',
+        imageFiles.map((f, i) => ({
+          order: i,
+          name: f.name,
+          type: f.type,
+          size: f.size,
+        })),
+      );
 
       const processedHtml = replaceImagesWithPlaceholders(html);
       const formData = new FormData();
@@ -90,7 +104,7 @@ export default function PostWriteForm({
           { formData, category },
           {
             onSuccess: (data) => {
-              clearImages();
+              clearMedia();
               alert('글 작성 완료!');
               if (data.code === 201 && data.data?.postId) {
                 router.push(`/posts/${data.data.postId}`);
@@ -112,7 +126,7 @@ export default function PostWriteForm({
           { postId, formData },
           {
             onSuccess: (data) => {
-              clearImages();
+              clearMedia();
               alert('글 수정 완료!');
               router.push(`/posts/${postId}`);
             },
@@ -154,8 +168,14 @@ export default function PostWriteForm({
             editorRef.current = e;
             setEditor(e);
           }}
-          onImageUpload={handleImageUpload}
-          onVideoUpload={handleImageUpload}
+          onMediaUpload={handleMediaUpload}
+          countMediaInHtml={getMediaCountInContent}
+          onPasteComplete={() => {
+            console.log(
+              '[붙여넣기 후] 전체 미디어 개수:',
+              getMediaCountInContent(getEditorHtml()),
+            );
+          }}
         />
 
         {/* 제한 안내 문구 */}

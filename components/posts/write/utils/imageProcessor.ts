@@ -23,9 +23,25 @@ function getBlobUrlEntriesInOrder(
   return entries;
 }
 
-export function getBlobUrlsInHtml(html: string): string[] {
+/** HTML 한 번 파싱해 blob URL 목록 + 미디어 개수 반환 (이중 파싱 방지) */
+export function getContentMediaInfo(html: string): {
+  blobUrls: string[];
+  mediaCount: number;
+} {
   const doc = new DOMParser().parseFromString(html, 'text/html');
-  return getBlobUrlEntriesInOrder(doc).map((e) => e.src);
+  const blobUrls = getBlobUrlEntriesInOrder(doc).map((e) => e.src);
+  const mediaCount =
+    doc.querySelectorAll('img').length + doc.querySelectorAll('video').length;
+  return { blobUrls, mediaCount };
+}
+
+export function getBlobUrlsInHtml(html: string): string[] {
+  return getContentMediaInfo(html).blobUrls;
+}
+
+/** content 내 이미지+비디오 개수 (blob/서버 URL 구분 없이 노드 개수) */
+export function getMediaCountInContent(html: string): number {
+  return getContentMediaInfo(html).mediaCount;
 }
 
 export function replaceImagesWithPlaceholders(html: string): string {
