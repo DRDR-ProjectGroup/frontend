@@ -19,6 +19,7 @@ import { Subscript } from '@tiptap/extension-subscript';
 import { Superscript } from '@tiptap/extension-superscript';
 import { Selection } from '@tiptap/extensions';
 import Youtube from '@tiptap/extension-youtube';
+import FileHandler from '@tiptap/extension-file-handler';
 
 // --- UI Primitives ---
 import { Button } from '@/components/tiptap/tiptap-ui-primitive/button';
@@ -84,19 +85,50 @@ import { MAX_FILE_SIZE } from '@/lib/tiptap-utils';
 import '@/components/tiptap/tiptap-templates/simple/simple-editor.scss';
 
 // --- Types ---
-type ImageUploadHandler = (
+type MediaUploadHandler = (
   file: File,
   onProgress?: (event: { progress: number }) => void,
   abortSignal?: AbortSignal,
 ) => Promise<string>;
 
-type VideoUploadHandler = (
-  file: File,
-  onProgress?: (event: { progress: number }) => void,
-  abortSignal?: AbortSignal,
-) => Promise<string>;
+/** MIME 타입 → 파일 확장자 (이미지/비디오 다양하게) */
+const MIME_TO_EXT: Record<string, string> = {
+  'image/jpeg': 'jpg',
+  'image/jpg': 'jpg',
+  'image/png': 'png',
+  'image/gif': 'gif',
+  'image/webp': 'webp',
+  'image/bmp': 'bmp',
+  'image/svg+xml': 'svg',
+  'image/avif': 'avif',
+  'video/mp4': 'mp4',
+  'video/webm': 'webm',
+  'video/quicktime': 'mov',
+  'video/x-msvideo': 'avi',
+  'video/x-matroska': 'mkv',
+  'video/ogg': 'ogv',
+};
 
-// import content from "@/components/tiptap-templates/simple/data/content.json"
+function getExtensionFromMime(mime: string, isVideo: boolean): string {
+  const lower = mime.toLowerCase();
+  if (MIME_TO_EXT[lower]) return MIME_TO_EXT[lower];
+  const part = lower.split('/')[1];
+  if (part && /^[a-z0-9+-]+$/i.test(part)) return part;
+  return isVideo ? 'mp4' : 'png';
+}
+
+/** HTML에서 blob URL만 추출. img/video 태그 순서대로, 이미지/비디오 구분 */
+function extractBlobMediaFromHtml(
+  html: string,
+): { url: string; isVideo: boolean }[] {
+  const list: { url: string; isVideo: boolean }[] = [];
+  const re = /<(video|img)[^>]+src=["'](blob:[^"']+)["']/gi;
+  let m;
+  while ((m = re.exec(html)) !== null) {
+    list.push({ url: m[2], isVideo: m[1].toLowerCase() === 'video' });
+  }
+  return list;
+}
 
 const MainToolbarContent = ({
   onHighlighterClick,
@@ -206,12 +238,16 @@ const MobileToolbarContent = ({
 
 export function SimpleEditor({
   onEditorReady,
-  onImageUpload,
-  onVideoUpload,
+  onMediaUpload,
+  countMediaInHtml,
+  onPasteComplete,
 }: {
   onEditorReady: (editor: Editor) => void;
-  onImageUpload: ImageUploadHandler;
-  onVideoUpload?: VideoUploadHandler;
+  onMediaUpload: MediaUploadHandler;
+  /** HTML 문자열 내 미디어 개수 (제한·붙여넣기 후 로그용) */
+  countMediaInHtml?: (html: string) => number;
+  /** blob 없는 붙여넣기(서버 URL 등) 후 호출 - 합산 개수 로그용 */
+  onPasteComplete?: () => void;
 }) {
   const isMobile = useIsBreakpoint();
   const { height } = useWindowSize();
@@ -219,6 +255,7 @@ export function SimpleEditor({
     'main',
   );
   const toolbarRef = useRef<HTMLDivElement>(null);
+  const editorRef = useRef<Editor | null>(null);
 
   const editor = useEditor({
     immediatelyRender: false,
@@ -229,6 +266,82 @@ export function SimpleEditor({
         autocapitalize: 'off',
         'aria-label': 'Main content area, start typing to enter text.',
         class: 'simple-editor',
+      },
+      handleDOMEvents: {
+        paste: (_view, ev) => {
+          const e = ev as ClipboardEvent;
+          const data = e.clipboardData;
+          if (!data) return false;
+
+          const filesLength = data.files?.length ?? 0;
+          if (filesLength > 0) return false; // FileHandler가 처리
+
+          const html = data.getData('text/html');
+          const blobMedia = extractBlobMediaFromHtml(html);
+
+          if (blobMedia.length === 0) {
+            const pastedCount = countMediaInHtml?.(html) ?? 0;
+            const currentCount = countMediaInHtml?.(
+              editorRef.current?.getHTML() ?? '',
+            ) ?? 0;
+            if (pastedCount > 0 && currentCount + pastedCount > 5) {
+              e.preventDefault();
+              e.stopPropagation();
+              alert('최대 5개의 파일만 업로드할 수 있습니다.');
+              return true;
+            }
+            if (pastedCount > 0 && onPasteComplete) {
+              setTimeout(() => onPasteComplete(), 0);
+            }
+            return false;
+          }
+
+          e.preventDefault();
+          e.stopPropagation();
+
+          Promise.all(
+            blobMedia.map(({ url, isVideo }) =>
+              fetch(url)
+                .then((res) => res.blob())
+                .then((blob) => {
+                  const ext = getExtensionFromMime(blob.type, isVideo);
+                  const typeLabel = isVideo ? '비디오' : '이미지';
+                  console.log('[붙여넣기]', {
+                    타입: typeLabel,
+                    MIME: blob.type,
+                    확장자: ext,
+                  });
+                  const file = new File(
+                    [blob],
+                    `pasted-${isVideo ? 'video' : 'image'}.${ext}`,
+                    { type: blob.type },
+                  );
+                  return onMediaUpload(file).then((insertUrl) => ({
+                    insertUrl,
+                    isVideo,
+                  }));
+                }),
+            ),
+          )
+            .then((results) => {
+              results.forEach(({ insertUrl, isVideo }) => {
+                editorRef.current
+                  ?.chain()
+                  .focus()
+                  .insertContent(
+                    isVideo
+                      ? { type: 'video', attrs: { src: insertUrl, controls: true } }
+                      : { type: 'image', attrs: { src: insertUrl } },
+                  )
+                  .run();
+              });
+            })
+            .catch((err) => {
+              console.error('Paste (HTML blob) failed:', err);
+              alert(err instanceof Error ? err.message : '업로드 실패');
+            });
+          return true;
+        },
       },
     },
     extensions: [
@@ -254,11 +367,62 @@ export function SimpleEditor({
         controls: true,
         nocookie: true,
       }),
+      FileHandler.configure({
+        allowedMimeTypes: [
+          'image/png',
+          'image/jpeg',
+          'image/jpg',
+          'image/gif',
+          'image/webp',
+          'video/mp4',
+          'video/webm',
+          'video/quicktime',
+        ],
+        onPaste: (currentEditor, files) => {
+          Promise.all(
+            files.map((file) => {
+              const isVideo = file.type.startsWith('video/');
+              return onMediaUpload(file).then((url) => {
+                currentEditor
+                  .chain()
+                  .focus()
+                  .insertContent(
+                    isVideo
+                      ? { type: 'video', attrs: { src: url, controls: true } }
+                      : { type: 'image', attrs: { src: url } },
+                  )
+                  .run();
+              });
+            }),
+          ).catch((err) => {
+            console.error('Paste upload failed:', err);
+            alert(err instanceof Error ? err.message : '업로드 실패');
+          });
+        },
+        onDrop: (currentEditor, files, pos) => {
+          Promise.all(
+            files.map((file) => {
+              const isVideo = file.type.startsWith('video/');
+              return onMediaUpload(file).then((url) => ({
+                type: isVideo ? 'video' : 'image',
+                attrs: isVideo ? { src: url, controls: true } : { src: url },
+              }));
+            }),
+          )
+            .then((nodes) => {
+              currentEditor.chain().focus().insertContentAt(pos, nodes).run();
+            })
+            .catch((err) => {
+              console.error('Drop upload failed:', err);
+              alert(err instanceof Error ? err.message : '업로드 실패');
+            });
+        },
+      }),
       ImageUploadNode.configure({
         accept: 'image/*',
         maxSize: MAX_FILE_SIZE,
         limit: 5,
-        upload: onImageUpload,
+        upload: onMediaUpload,
         onError: (error) => {
           console.error('Upload failed:', error);
           alert(error.message);
@@ -269,7 +433,7 @@ export function SimpleEditor({
         maxSize: MAX_FILE_SIZE,
         limit: 5,
         type: 'video',
-        upload: onVideoUpload || onImageUpload,
+        upload: onMediaUpload,
         onError: (error) => {
           console.error('Upload failed:', error);
           alert(error.message);
@@ -278,6 +442,8 @@ export function SimpleEditor({
     ],
     content: '<div></div>',
   });
+
+  editorRef.current = editor;
 
   const rect = useCursorVisibility({
     editor,
