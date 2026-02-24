@@ -3,7 +3,10 @@
 import { useParams } from 'next/navigation';
 import { usePostDetailQuery } from '@/query/post/usePostDetailQuery';
 import PostWriteForm from '@/components/posts/write/PostWriteForm';
-import { replacePlaceholdersWithUrls } from '@/components/posts/write/utils/imageProcessor';
+import {
+  addDataAttMediaIdToImages,
+  replacePlaceholdersWithUrls,
+} from '@/components/posts/write/utils/imageProcessor';
 
 // 글 수정
 export default function PostEditPage() {
@@ -20,9 +23,15 @@ export default function PostEditPage() {
   const post = postDetailResponse?.data;
   if (!post) return <div>글을 찾을 수 없습니다.</div>;
 
-  // ✅ placeholder를 실제 이미지 URL로 변환
+  // placeholder를 실제 이미지 URL로 변환
   const contentWithImages = replacePlaceholdersWithUrls(
     post.content,
+    post.mediaList,
+  );
+
+  // 이미지에 data-media-id 속성 추가
+  const contentWithDataAttMediaId = addDataAttMediaIdToImages(
+    contentWithImages,
     post.mediaList,
   );
 
@@ -32,7 +41,7 @@ export default function PostEditPage() {
       postId={Number(postId)}
       initialData={{
         title: post.title,
-        content: contentWithImages,
+        content: contentWithDataAttMediaId,
         category: post.category,
       }}
     />
