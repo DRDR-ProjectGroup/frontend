@@ -44,7 +44,7 @@ export function getMediaCountInContent(html: string): number {
   return getContentMediaInfo(html).mediaCount;
 }
 
-// 모든 미디어 태그에 placeholder 추가
+// (blob URL 보유) 미디어 태그에 placeholder 추가
 export function replaceImagesWithPlaceholders(html: string): string {
   const doc = new DOMParser().parseFromString(html, 'text/html');
   getBlobUrlEntriesInOrder(doc).forEach(({ element }, i) => {
