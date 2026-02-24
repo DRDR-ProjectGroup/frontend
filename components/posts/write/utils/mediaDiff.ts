@@ -20,16 +20,15 @@ export function buildEditMediaPayload(initialHtml: string, finalHtml: string) {
 
   const newMediaOrders = collectNewMediaOrdersFromHtml(finalHtml);
 
-  const oldMediaIdsAndOrdersArray = initial.filter(
-    ({ mediaId: initialMediaId }) =>
-      final.some(
-        ({ mediaId: finalMediaId }) =>
-          Number(finalMediaId) === Number(initialMediaId),
-      ),
-  );
   const oldMediaIdsAndOrders: Record<string, number> = {};
-  oldMediaIdsAndOrdersArray.forEach(({ mediaId, order }) => {
-    oldMediaIdsAndOrders[mediaId] = order;
+  final.forEach(({ mediaId: finalMediaId, order: finalOrder }) => {
+    if (!finalMediaId) return;
+    initial.forEach(({ mediaId: initialMediaId, order: initialOrder }) => {
+      if (!initialMediaId) return;
+      if (Number(finalMediaId) === Number(initialMediaId)) {
+        oldMediaIdsAndOrders[finalMediaId] = finalOrder;
+      }
+    });
   });
 
   console.log('initial', initial);

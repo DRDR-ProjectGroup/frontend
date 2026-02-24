@@ -7,20 +7,9 @@ function getBlobUrlEntriesInOrder(
   doc: Document,
 ): { element: Element; src: string }[] {
   const entries: { element: Element; src: string }[] = [];
-  doc.querySelectorAll('img').forEach((img) => {
-    const src = img.getAttribute('src');
-    if (src?.startsWith('blob:')) entries.push({ element: img, src });
-  });
-  doc.querySelectorAll('video').forEach((video) => {
-    const src = video.getAttribute('src');
-    if (src?.startsWith('blob:')) {
-      entries.push({ element: video, src });
-    } else {
-      video.querySelectorAll('source').forEach((source) => {
-        const src = source.getAttribute('src');
-        if (src?.startsWith('blob:')) entries.push({ element: source, src });
-      });
-    }
+  doc.querySelectorAll('img, video, source').forEach((media) => {
+    const src = media.getAttribute('src');
+    if (src?.startsWith('blob:')) entries.push({ element: media, src });
   });
   return entries;
 }
@@ -45,11 +34,12 @@ export function getMediaCountInContent(html: string): number {
   return getContentMediaInfo(html).mediaCount;
 }
 
-// (blob URL 보유) 미디어 태그에 placeholder 추가
+// 모든 미디어 태그(img, video, source)에 placeholder 추가
 export function replaceImagesWithPlaceholders(html: string): string {
   const doc = new DOMParser().parseFromString(html, 'text/html');
-  getBlobUrlEntriesInOrder(doc).forEach(({ element }, i) => {
-    element.setAttribute('src', `{{IMG_${i}}}`);
+  doc.querySelectorAll('img, video, source').forEach((element, i) => {
+    if (element instanceof HTMLElement)
+      element.setAttribute('src', `{{IMG_${i}}}`);
   });
   return doc.body.innerHTML;
 }
@@ -96,7 +86,9 @@ export function addDataAttMediaIdToImages(
 }
 
 /** HTML 파싱 후 미디어 태그별 index, mediaId, src 반환 (한 번만 파싱) */
-function getMediaTagInfos(html: string): { index: number; mediaId: string | null; src: string | null }[] {
+function getMediaTagInfos(
+  html: string,
+): { index: number; mediaId: string | null; src: string | null }[] {
   const { mediaTags } = collectMediaTagsFromHtml(html);
   return Array.from(mediaTags).map((el, index) => ({
     index,
@@ -114,10 +106,20 @@ function isNewMediaSrc(src: string | null): boolean {
 // (수정 모드) mediaId가 있는 태그들의 mediaId와 order 수집
 export function collectMediaIdsAndOrdersFromHtml(
   html: string,
-): { mediaId: string; order: number }[] {
-  return getMediaTagInfos(html)
-    .filter((info): info is { index: number; mediaId: string; src: string | null } => !!info.mediaId)
-    .map(({ mediaId, index }) => ({ mediaId, order: index }));
+): { mediaId: string | null; order: number }[] {
+  console.log(
+    'getMediaTagInfos(html)================== 이건 정상임 ==================',
+    getMediaTagInfos(html),
+  );
+  const mediaTagInfos = getMediaTagInfos(html).map(({ mediaId, index }) => ({
+    mediaId,
+    order: index,
+  }));
+  console.log(
+    'mediaTagInfos================== 여기가 이상함 ==================',
+    mediaTagInfos,
+  );
+  return mediaTagInfos;
 }
 
 // (수정 모드) data-media-id 없고 blob/placeholder인 태그의 order 수집 (에디터 내 복붙 제외)
