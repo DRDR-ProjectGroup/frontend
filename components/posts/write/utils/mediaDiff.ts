@@ -1,7 +1,7 @@
 import { collectMediaIdsAndOrdersFromHtml } from './imageProcessor';
 
 export function buildEditMediaPayload(initialHtml: string, finalHtml: string) {
-  const initial = collectMediaIdsAndOrdersFromHtml(initialHtml || '');
+  const initial = collectMediaIdsAndOrdersFromHtml(initialHtml);
   const final = collectMediaIdsAndOrdersFromHtml(finalHtml);
 
   const deletedMediaIds = initial

@@ -21,7 +21,7 @@ import type { CategoryData } from '@/types/api/category';
 import { buildEditMediaPayload } from './utils/mediaDiff';
 
 type PostWriteFormProps = {
-  mode?: 'create' | 'edit';
+  mode: 'create' | 'edit';
   initialData?: {
     title: string;
     content: string;
@@ -101,6 +101,10 @@ export default function PostWriteForm({
             clearMedia();
             alert('글 수정 완료!');
             router.push(`/posts/${postId}`);
+          },
+          onError: (error) => {
+            console.error('글 수정 실패:', error);
+            alert('글 수정에 실패했습니다.');
           },
         },
       );

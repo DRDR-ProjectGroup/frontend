@@ -90,11 +90,11 @@ export function addDataAttMediaIdToImages(
   html: string,
   mediaList: MediaItem[],
 ): string {
-  const doc = new DOMParser().parseFromString(html, 'text/html');
-  getBlobUrlEntriesInOrder(doc).forEach(({ element }, i) => {
+  const { mediaTags } = collectMediaTagsFromHtml(html);
+  mediaTags.forEach((element, i) => {
     element.setAttribute('data-media-id', mediaList[i].mediaId);
   });
-  return doc.body.innerHTML;
+  return html;
 }
 
 // (수정 모드) 모든 미디어 태그 중 mediaId가 있는 태그들의 mediaId와 order 수집
@@ -102,7 +102,8 @@ export function collectMediaIdsAndOrdersFromHtml(
   html: string,
 ): { mediaId: string; order: number }[] {
   const mediaIdsAndOrders: { mediaId: string; order: number }[] = [];
-  collectMediaTagsFromHtml(html).forEach((element, index) => {
+  const { mediaTags } = collectMediaTagsFromHtml(html);
+  mediaTags.forEach((element, index) => {
     const mediaId = element.getAttribute('data-media-id');
     if (mediaId) mediaIdsAndOrders.push({ mediaId, order: index });
   });
@@ -110,11 +111,12 @@ export function collectMediaIdsAndOrdersFromHtml(
 }
 
 // (수정 모드) blob URL 보유 여부 상관없이, html 내 모든 미디어 태그 수집
-export function collectMediaTagsFromHtml(
-  html: string,
-): (HTMLImageElement | HTMLVideoElement)[] {
+export function collectMediaTagsFromHtml(html: string): {
+  mediaTags: (HTMLImageElement | HTMLVideoElement)[];
+  doc: Document;
+} {
   const doc = new DOMParser().parseFromString(html, 'text/html');
   const imgTags = doc.querySelectorAll('img');
   const videoTags = doc.querySelectorAll('video');
-  return [...imgTags, ...videoTags];
+  return { mediaTags: [...imgTags, ...videoTags], doc };
 }
