@@ -33,6 +33,14 @@ export const Video = Node.create<VideoOptions>({
       controls: {
         default: true,
       },
+      dataMediaId: {
+        default: null,
+        parseHTML: (element) => element.getAttribute('data-media-id'),
+        renderHTML: (attributes) =>
+          attributes.dataMediaId
+            ? { 'data-media-id': attributes.dataMediaId }
+            : {},
+      },
     };
   },
 

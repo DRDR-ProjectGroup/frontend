@@ -1,20 +1,42 @@
-import { collectMediaIdsAndOrdersFromHtml } from './imageProcessor';
+import {
+  collectMediaIdsAndOrdersFromHtml,
+  collectNewMediaOrdersFromHtml,
+} from './imageProcessor';
 
 export function buildEditMediaPayload(initialHtml: string, finalHtml: string) {
   const initial = collectMediaIdsAndOrdersFromHtml(initialHtml);
   const final = collectMediaIdsAndOrdersFromHtml(finalHtml);
+  console.log('finalHtml==============================', finalHtml);
 
   const deletedMediaIds = initial
-    .filter((i) => !final.some((f) => f.mediaId === i.mediaId))
-    .map((i) => i.mediaId);
+    .filter(
+      ({ mediaId: initialMediaId }) =>
+        !final.some(
+          ({ mediaId: finalMediaId }) =>
+            Number(finalMediaId) === Number(initialMediaId),
+        ),
+    )
+    .map(({ mediaId: initialMediaId }) => initialMediaId);
 
-  const newMediaOrders = final
-    .filter((f) => !initial.some((i) => i.mediaId === f.mediaId))
-    .map((f) => f.order);
+  const newMediaOrders = collectNewMediaOrdersFromHtml(finalHtml);
 
-  const oldMediaIdsAndOrders = initial.filter((i) =>
-    final.some((f) => f.mediaId === i.mediaId),
+  const oldMediaIdsAndOrdersArray = initial.filter(
+    ({ mediaId: initialMediaId }) =>
+      final.some(
+        ({ mediaId: finalMediaId }) =>
+          Number(finalMediaId) === Number(initialMediaId),
+      ),
   );
+  const oldMediaIdsAndOrders: Record<string, number> = {};
+  oldMediaIdsAndOrdersArray.forEach(({ mediaId, order }) => {
+    oldMediaIdsAndOrders[mediaId] = order;
+  });
+
+  console.log('initial', initial);
+  console.log('final', final);
+  console.log('deletedMediaIds', deletedMediaIds);
+  console.log('newMediaOrders', newMediaOrders);
+  console.log('oldMediaIdsAndOrders', oldMediaIdsAndOrders);
 
   return {
     oldMediaIdsAndOrders,
