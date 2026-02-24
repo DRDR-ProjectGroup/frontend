@@ -10,7 +10,7 @@ import {
 
 // --- Tiptap Core Extensions ---
 import { StarterKit } from '@tiptap/starter-kit';
-import { Image } from '@tiptap/extension-image';
+import { Image } from '@/components/tiptap/tiptap-node/image-node/image-extension';
 import { TaskItem, TaskList } from '@tiptap/extension-list';
 import { TextAlign } from '@tiptap/extension-text-align';
 import { Typography } from '@tiptap/extension-typography';
@@ -128,6 +128,15 @@ function extractBlobMediaFromHtml(
     list.push({ url: m[2], isVideo: m[1].toLowerCase() === 'video' });
   }
   return list;
+}
+
+/** 붙여넣기 시 복사된 data-media-id 제거 (복붙 시 기존 mediaId가 따라오는 것 방지) */
+function stripDataMediaIdFromHtml(html: string): string {
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+  doc
+    .querySelectorAll('img[data-media-id], video[data-media-id]')
+    .forEach((el) => el.removeAttribute('data-media-id'));
+  return doc.body.innerHTML;
 }
 
 const MainToolbarContent = ({
@@ -289,11 +298,14 @@ export function SimpleEditor({
               alert('최대 5개의 파일만 업로드할 수 있습니다.');
               return true;
             }
+            // 복붙 시 data-media-id가 따라오지 않도록 제거 후 삽입
+            e.preventDefault();
+            const cleanedHtml = stripDataMediaIdFromHtml(html);
+            editorRef.current?.chain().focus().insertContent(cleanedHtml).run();
             if (pastedCount > 0 && onPasteComplete) {
-              // 에디터의 DOM 업데이트가 완료된 후 상위 컴포넌트에 알리기 위해 setTimeout 사용
               setTimeout(() => onPasteComplete(), 0);
             }
-            return false;
+            return true;
           }
 
           e.preventDefault();

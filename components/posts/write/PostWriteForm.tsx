@@ -129,6 +129,7 @@ export default function PostWriteForm({
         title,
         content: processedHtml,
       };
+      console.log('postPayload', postPayload);
 
       // 2. edit이면 mediaDiff (html 내 미디어 파일 변경 정보) 추가
       if (mode === 'edit') {
@@ -139,7 +140,7 @@ export default function PostWriteForm({
 
         const mediaPayload = buildEditMediaPayload(
           initialData?.content || '',
-          processedHtml,
+          html,
         );
 
         postPayload = {
