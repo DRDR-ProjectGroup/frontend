@@ -19,6 +19,7 @@ export interface PostDetailData {
 
 // 미디어 아이템 타입
 export interface MediaItem {
+  mediaId: string;
   url: string;
   order: number;
 }

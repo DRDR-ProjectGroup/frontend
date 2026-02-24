@@ -12,13 +12,13 @@ import {
 } from '@/query/post/usePostMutations';
 import {
   replaceImagesWithPlaceholders,
-  getBlobUrlsInHtml,
   getMediaCountInContent,
 } from './utils/imageProcessor';
 import { usePostMediaManager } from './hooks/usePostMediaManager';
 import { useRouter } from 'next/navigation';
 import SelectCategory from './SelectCategory';
 import type { CategoryData } from '@/types/api/category';
+import { buildEditMediaPayload } from './utils/mediaDiff';
 
 type PostWriteFormProps = {
   mode?: 'create' | 'edit';
@@ -45,22 +45,71 @@ export default function PostWriteForm({
   editorRef.current = editor;
 
   const getEditorHtml = () => editorRef.current?.getHTML() ?? '';
-  const { handleMediaUpload, getMediaFiles, clearMedia } = usePostMediaManager(
-    { getEditorHtml },
-  );
+  const { handleMediaUpload, getMediaFiles, clearMedia } = usePostMediaManager({
+    getEditorHtml,
+  });
   const createPostMutate = useCreatePostMutation();
   const updatePostMutate = useUpdatePostMutation();
 
-  // 수정 모드일 때 에디터에 초기 콘텐츠 설정
+  // (수정 모드) 에디터에 초기 콘텐츠 설정
   useEffect(() => {
     if (mode === 'edit' && editor && initialData?.content) {
       editor.commands.setContent(initialData.content);
     }
   }, [mode, editor, initialData?.content]);
 
+  // 글 작성 or 수정 api 호출
+  function submitPostMutation({
+    mode,
+    postId,
+    formData,
+    category,
+  }: {
+    mode: 'create' | 'edit';
+    postId?: number;
+    formData: FormData;
+    category: string;
+  }) {
+    if (mode === 'create') {
+      return createPostMutate.mutate(
+        { formData, category },
+        {
+          onSuccess: (data) => {
+            clearMedia();
+            alert('글 작성 완료!');
+            if (data.code === 201 && data.data?.postId) {
+              router.push(`/posts/${data.data.postId}`);
+            }
+          },
+          onError: (error) => {
+            console.error('글 작성 실패:', error);
+          },
+        },
+      );
+    }
+
+    if (mode === 'edit') {
+      if (!postId) {
+        alert('글 ID가 없습니다.');
+        return;
+      }
+
+      return updatePostMutate.mutate(
+        { postId, formData },
+        {
+          onSuccess: (data) => {
+            clearMedia();
+            alert('글 수정 완료!');
+            router.push(`/posts/${postId}`);
+          },
+        },
+      );
+    }
+  }
+
+  // 글 작성 완료 시 수행
   const handleSubmit = async () => {
     if (!editor) return;
-
     if (!title || !category) {
       alert('제목과 카테고리를 입력해주세요.');
       return;
@@ -68,78 +117,49 @@ export default function PostWriteForm({
 
     try {
       const html = editor.getHTML();
-      const blobUrlsInEditor = getBlobUrlsInHtml(html);
-      const imageFiles = getMediaFiles(html);
-
-      // 제출 시 에디터에 등록된 미디어 / 전송할 파일 디버깅
-      console.log(
-        '[글 제출] 에디터 내 blob URL 개수:',
-        blobUrlsInEditor.length,
-      );
-      console.log('[글 제출] 에디터 내 blob URL 목록:', blobUrlsInEditor);
-      console.log('[글 제출] 전송할 미디어 파일 개수:', imageFiles.length);
-      console.log(
-        '[글 제출] 전송할 미디어 파일:',
-        imageFiles.map((f, i) => ({
-          order: i,
-          name: f.name,
-          type: f.type,
-          size: f.size,
-        })),
-      );
-
       const processedHtml = replaceImagesWithPlaceholders(html);
-      const formData = new FormData();
-      formData.append(
-        'post',
-        new Blob([JSON.stringify({ title, content: processedHtml })], {
-          type: 'application/json',
-        }),
-      );
-      imageFiles.forEach((file) => formData.append('files', file));
+      const newImageFiles = getMediaFiles(html);
 
-      if (mode === 'create') {
-        // 글 작성
-        createPostMutate.mutate(
-          { formData, category },
-          {
-            onSuccess: (data) => {
-              clearMedia();
-              alert('글 작성 완료!');
-              if (data.code === 201 && data.data?.postId) {
-                router.push(`/posts/${data.data.postId}`);
-              }
-            },
-            onError: (error) => {
-              console.error('글 작성 실패:', error);
-              alert('글 작성에 실패했습니다.');
-            },
-          },
-        );
-      } else if (mode === 'edit') {
-        // 글 수정
+      // 1. 기본 payload
+      let postPayload = {
+        title,
+        content: processedHtml,
+      };
+
+      // 2. edit이면 mediaDiff (html 내 미디어 파일 변경 정보) 추가
+      if (mode === 'edit') {
         if (!postId) {
           alert('글 ID가 없습니다.');
           return;
         }
-        updatePostMutate.mutate(
-          { postId, formData },
-          {
-            onSuccess: (data) => {
-              clearMedia();
-              alert('글 수정 완료!');
-              router.push(`/posts/${postId}`);
-            },
-            onError: (error) => {
-              console.error('글 수정 실패:', error);
-              alert('글 수정에 실패했습니다.');
-            },
-          },
+
+        const mediaPayload = buildEditMediaPayload(
+          initialData?.content || '',
+          processedHtml,
         );
+
+        postPayload = {
+          ...postPayload,
+          ...mediaPayload,
+        };
       }
+
+      // 3. formData는 공통
+      const formData = new FormData();
+      formData.append(
+        'post',
+        new Blob([JSON.stringify(postPayload)], {
+          type: 'application/json',
+        }),
+      );
+
+      newImageFiles.forEach((file) => formData.append('files', file));
+
+      // 4. submit 실행
+      submitPostMutation({ mode, postId, formData, category });
     } catch (error) {
-      console.error(`글 ${mode === 'create' ? '작성' : '수정'} 실패:`, error);
-      alert(`글 ${mode === 'create' ? '작성' : '수정'}에 실패했습니다.`);
+      console.error('글 처리 실패:', error);
+      alert('글 처리에 실패했습니다.');
     }
   };
 
