@@ -8,15 +8,20 @@ export function buildEditMediaPayload(initialHtml: string, finalHtml: string) {
   const final = collectMediaIdsAndOrdersFromHtml(finalHtml);
   console.log('finalHtml==============================', finalHtml);
 
-  const deletedMediaIds = initial
-    .filter(
-      ({ mediaId: initialMediaId }) =>
-        !final.some(
-          ({ mediaId: finalMediaId }) =>
-            Number(finalMediaId) === Number(initialMediaId),
-        ),
-    )
-    .map(({ mediaId: initialMediaId }) => initialMediaId);
+  const deletedMediaIds = [
+    ...new Set( // 중복된 값 제거 -> 스프레드 연산자로 배열로 변환
+      initial
+        .filter(
+          ({ mediaId: initialMediaId }) =>
+            initialMediaId &&
+            !final.some(
+              ({ mediaId: finalMediaId }) =>
+                Number(finalMediaId) === Number(initialMediaId),
+            ),
+        )
+        .map(({ mediaId: initialMediaId }) => initialMediaId),
+    ),
+  ];
 
   const newMediaOrders = collectNewMediaOrdersFromHtml(finalHtml);
 

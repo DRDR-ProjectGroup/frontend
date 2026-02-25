@@ -80,6 +80,7 @@ import { useCursorVisibility } from '@/hooks/use-cursor-visibility';
 
 // --- Lib ---
 import { MAX_FILE_SIZE } from '@/lib/tiptap-utils';
+import { createPasteHandler } from '@/components/posts/write/utils/editorPasteHandler';
 
 // --- Styles ---
 import '@/components/tiptap/tiptap-templates/simple/simple-editor.scss';
@@ -90,54 +91,6 @@ type MediaUploadHandler = (
   onProgress?: (event: { progress: number }) => void,
   abortSignal?: AbortSignal,
 ) => Promise<string>;
-
-/** MIME 타입 → 파일 확장자 (이미지/비디오 다양하게) */
-const MIME_TO_EXT: Record<string, string> = {
-  'image/jpeg': 'jpg',
-  'image/jpg': 'jpg',
-  'image/png': 'png',
-  'image/gif': 'gif',
-  'image/webp': 'webp',
-  'image/bmp': 'bmp',
-  'image/svg+xml': 'svg',
-  'image/avif': 'avif',
-  'video/mp4': 'mp4',
-  'video/webm': 'webm',
-  'video/quicktime': 'mov',
-  'video/x-msvideo': 'avi',
-  'video/x-matroska': 'mkv',
-  'video/ogg': 'ogv',
-};
-
-function getExtensionFromMime(mime: string, isVideo: boolean): string {
-  const lower = mime.toLowerCase();
-  if (MIME_TO_EXT[lower]) return MIME_TO_EXT[lower];
-  const part = lower.split('/')[1];
-  if (part && /^[a-z0-9+-]+$/i.test(part)) return part;
-  return isVideo ? 'mp4' : 'png';
-}
-
-/** HTML에서 blob URL만 추출. img/video 태그 순서대로, 이미지/비디오 구분 */
-function extractBlobMediaFromHtml(
-  html: string,
-): { url: string; isVideo: boolean }[] {
-  const list: { url: string; isVideo: boolean }[] = [];
-  const re = /<(video|img)[^>]+src=["'](blob:[^"']+)["']/gi;
-  let m;
-  while ((m = re.exec(html)) !== null) {
-    list.push({ url: m[2], isVideo: m[1].toLowerCase() === 'video' });
-  }
-  return list;
-}
-
-/** 붙여넣기 시 복사된 data-media-id 제거 (복붙 시 기존 mediaId가 따라오는 것 방지) */
-function stripDataMediaIdFromHtml(html: string): string {
-  const doc = new DOMParser().parseFromString(html, 'text/html');
-  doc
-    .querySelectorAll('img[data-media-id], video[data-media-id]')
-    .forEach((el) => el.removeAttribute('data-media-id'));
-  return doc.body.innerHTML;
-}
 
 const MainToolbarContent = ({
   onHighlighterClick,
@@ -277,86 +230,12 @@ export function SimpleEditor({
         class: 'simple-editor',
       },
       handleDOMEvents: {
-        paste: (_view, ev) => {
-          const e = ev as ClipboardEvent;
-          const data = e.clipboardData;
-          if (!data) return false;
-
-          const filesLength = data.files?.length ?? 0;
-          if (filesLength > 0) return false; // FileHandler가 처리
-
-          const html = data.getData('text/html');
-          const blobMedia = extractBlobMediaFromHtml(html);
-
-          if (blobMedia.length === 0) {
-            const pastedCount = countMediaInHtml?.(html) ?? 0;
-            const currentCount =
-              countMediaInHtml?.(editorRef.current?.getHTML() ?? '') ?? 0;
-            if (pastedCount > 0 && currentCount + pastedCount > 5) {
-              e.preventDefault();
-              e.stopPropagation();
-              alert('최대 5개의 파일만 업로드할 수 있습니다.');
-              return true;
-            }
-            // 복붙 시 data-media-id가 따라오지 않도록 제거 후 삽입
-            e.preventDefault();
-            const cleanedHtml = stripDataMediaIdFromHtml(html);
-            editorRef.current?.chain().focus().insertContent(cleanedHtml).run();
-            if (pastedCount > 0 && onPasteComplete) {
-              setTimeout(() => onPasteComplete(), 0);
-            }
-            return true;
-          }
-
-          e.preventDefault();
-          e.stopPropagation();
-
-          Promise.all(
-            blobMedia.map(({ url, isVideo }) =>
-              fetch(url)
-                .then((res) => res.blob())
-                .then((blob) => {
-                  const ext = getExtensionFromMime(blob.type, isVideo);
-                  const typeLabel = isVideo ? '비디오' : '이미지';
-                  console.log('[붙여넣기]', {
-                    타입: typeLabel,
-                    MIME: blob.type,
-                    확장자: ext,
-                  });
-                  const file = new File(
-                    [blob],
-                    `pasted-${isVideo ? 'video' : 'image'}.${ext}`,
-                    { type: blob.type },
-                  );
-                  return onMediaUpload(file).then((insertUrl) => ({
-                    insertUrl,
-                    isVideo,
-                  }));
-                }),
-            ),
-          )
-            .then((results) => {
-              results.forEach(({ insertUrl, isVideo }) => {
-                editorRef.current
-                  ?.chain()
-                  .focus()
-                  .insertContent(
-                    isVideo
-                      ? {
-                          type: 'video',
-                          attrs: { src: insertUrl, controls: true },
-                        }
-                      : { type: 'image', attrs: { src: insertUrl } },
-                  )
-                  .run();
-              });
-            })
-            .catch((err) => {
-              console.error('Paste (HTML blob) failed:', err);
-              alert(err instanceof Error ? err.message : '업로드 실패');
-            });
-          return true;
-        },
+        paste: createPasteHandler({
+          editorRef,
+          onMediaUpload,
+          countMediaInHtml,
+          onPasteComplete,
+        }),
       },
     },
     extensions: [
