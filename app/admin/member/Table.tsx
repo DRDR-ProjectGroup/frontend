@@ -43,12 +43,12 @@ export default function Table({
         </colgroup>
         <thead>
           <tr className="h-10">
-            <th className="px-2">memberId</th>
-            <th className="px-2">nickname</th>
-            <th className="px-2">username</th>
-            <th className="px-2">email</th>
-            <th className="px-2">role</th>
-            <th className="px-2">createdAt</th>
+            <th className="px-2">회원 ID</th>
+            <th className="px-2">닉네임</th>
+            <th className="px-2">유저네임</th>
+            <th className="px-2">이메일</th>
+            <th className="px-2">권한</th>
+            <th className="px-2">생성일</th>
             <th className="px-2">상태</th>
             <th className="px-2">관리</th>
           </tr>

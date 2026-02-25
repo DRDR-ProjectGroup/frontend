@@ -40,11 +40,9 @@ const SKIP_PLACEHOLDER_ATTR = 'data-skip-placeholder';
 // 모든 미디어 src를 placeholder로 치환. data-skip-placeholder 있으면 제외 (이미 DB URL인 복붙 미디어)
 export function replaceImagesWithPlaceholders(html: string): string {
   const { mediaTags, doc } = collectMediaTagsFromHtml(html);
-  console.log('mediaTags=========', mediaTags);
   const withoutPastedMedia = Array.from(mediaTags).filter(
     (element) => !element.hasAttribute(SKIP_PLACEHOLDER_ATTR),
   );
-  console.log('withoutPastedMedia============', withoutPastedMedia);
   withoutPastedMedia.forEach((element, i) => {
     if (element instanceof HTMLElement)
       element.setAttribute('src', `{{IMG_${i}}}`);

@@ -26,7 +26,12 @@ export function usePostMediaManager(options?: UsePostMediaManagerOptions) {
 
       const html = getEditorHtml?.() ?? '';
       const { blobUrls: urlsInContent, mediaCount: currentMediaCount } =
-        getEditorHtml ? getContentMediaInfo(html) : { blobUrls: [] as string[], mediaCount: mediaFilesMap.current.size };
+        getEditorHtml
+          ? getContentMediaInfo(html)
+          : {
+              blobUrls: [] as string[],
+              mediaCount: mediaFilesMap.current.size,
+            };
 
       // 에디터에서 삭제된 미디어는 map에서 제거
       if (getEditorHtml) {
@@ -58,34 +63,20 @@ export function usePostMediaManager(options?: UsePostMediaManagerOptions) {
       const blobUrl = URL.createObjectURL(file);
       mediaFilesMap.current.set(blobUrl, file);
 
-      const files = Array.from(mediaFilesMap.current.values());
-      const totalCount = getEditorHtml ? currentMediaCount + 1 : files.length;
-      const list = files.map((f, i) => ({
-        order: i,
-        name: f.name,
-        type: f.type,
-        size: f.size,
-      }));
-      console.log('[미디어 업로드] 전체 미디어 개수:', totalCount);
-      console.log('[미디어 업로드] 전체 파일 정보:', list);
-
       return blobUrl;
     },
     [getEditorHtml],
   );
 
-  const getMediaFiles = useCallback(
-    (html?: string) => {
-      if (html) {
-        const urlsInOrder = getBlobUrlsInHtml(html);
-        return urlsInOrder
-          .map((url) => mediaFilesMap.current.get(url))
-          .filter((f): f is File => Boolean(f));
-      }
-      return Array.from(mediaFilesMap.current.values());
-    },
-    [],
-  );
+  const getMediaFiles = useCallback((html?: string) => {
+    if (html) {
+      const urlsInOrder = getBlobUrlsInHtml(html);
+      return urlsInOrder
+        .map((url) => mediaFilesMap.current.get(url))
+        .filter((f): f is File => Boolean(f));
+    }
+    return Array.from(mediaFilesMap.current.values());
+  }, []);
 
   const clearMedia = useCallback(() => {
     mediaFilesMap.current.clear();

@@ -91,7 +91,7 @@ function stripDataMediaIdFromHtml(html: string): string {
 
 const SKIP_PLACEHOLDER_ATTR = 'data-skip-placeholder';
 
-/** src가 blob URL이 아닌 img, video, source에 data-skip-placeholder 추가. 수정 제출 시 placeholder 치환 제외용 */
+// src가 blob URL이 아닌 img, video, source에 data-skip-placeholder 추가. 수정 제출 시 placeholder 치환 제외용
 function markPastedUrlMediaInHtml(html: string): string {
   const doc = new DOMParser().parseFromString(html, 'text/html');
   doc.querySelectorAll('img, video, source').forEach((el) => {
@@ -142,11 +142,8 @@ export function createPasteHandler(options: PasteHandlerOptions) {
         return true;
       }
       e.preventDefault();
-      // data-media-id 제거 후, blob이 아닌 URL 미디어에 data-skip-placeholder 표시
-      // const withoutMediaId = stripDataMediaIdFromHtml(html);
-      // const cleanedHtml = markPastedUrlMediaInHtml(withoutMediaId);
-      const cleanedHtml = markPastedUrlMediaInHtml(html);
-      editorRef.current?.chain().focus().insertContent(cleanedHtml).run();
+      const completedHtml = markPastedUrlMediaInHtml(html);
+      editorRef.current?.chain().focus().insertContent(completedHtml).run();
       if (pastedCount > 0 && onPasteComplete) {
         setTimeout(() => onPasteComplete(), 0);
       }
@@ -163,12 +160,6 @@ export function createPasteHandler(options: PasteHandlerOptions) {
           .then((res) => res.blob())
           .then((blob) => {
             const ext = getExtensionFromMime(blob.type, isVideo);
-            const typeLabel = isVideo ? '비디오' : '이미지';
-            console.log('[붙여넣기]', {
-              타입: typeLabel,
-              MIME: blob.type,
-              확장자: ext,
-            });
             const file = new File(
               [blob],
               `pasted-${isVideo ? 'video' : 'image'}.${ext}`,

@@ -46,7 +46,7 @@ export default function ModalCategoryEdit({
         </Heading>
         <div className="space-y-2">
           <div>
-            <p className="text-sm text-text-second pb-2">categoryName</p>
+            <p className="text-sm text-text-second p-2">카테고리 이름</p>
             <InputText
               placeholder="카테고리 이름을 입력해주세요."
               value={categoryName}
@@ -54,7 +54,7 @@ export default function ModalCategoryEdit({
             />
           </div>
           <div>
-            <p className="text-sm text-text-second p-2">categoryAddress</p>
+            <p className="text-sm text-text-second p-2">카테고리 주소</p>
             <InputText
               placeholder="카테고리 주소를 입력해주세요."
               value={categoryAddress}

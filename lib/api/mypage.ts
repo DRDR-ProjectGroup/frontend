@@ -62,7 +62,7 @@ export async function fetchMyPosts({
 }: {
   page: number;
 }): Promise<MyPostListResponse> {
-  return apiGet<MyPostListResponse>(`/members/me/posts?page=${page}&size=2`, {
+  return apiGet<MyPostListResponse>(`/members/me/posts?page=${page}`, {
     errorMessage: '내 작성글 조회 실패',
     requireAuthOptions: { requireAuth: true },
   });
@@ -75,11 +75,8 @@ export async function fetchMyComments({
 }: {
   page: number;
 }): Promise<MyCommentListResponse> {
-  return apiGet<MyCommentListResponse>(
-    `/members/me/comments?page=${page}&size=2`,
-    {
-      errorMessage: '내 댓글 조회 실패',
-      requireAuthOptions: { requireAuth: true },
-    },
-  );
+  return apiGet<MyCommentListResponse>(`/members/me/comments?page=${page}`, {
+    errorMessage: '내 댓글 조회 실패',
+    requireAuthOptions: { requireAuth: true },
+  });
 }

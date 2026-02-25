@@ -14,7 +14,7 @@ export default function ClientPage() {
     data: memberListData,
     isLoading,
     isError,
-  } = useAdminMemberListQuery({ page, size: 2 });
+  } = useAdminMemberListQuery({ page, size: 20 });
   if (isError) {
     return <div>Error</div>;
   }

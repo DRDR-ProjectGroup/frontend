@@ -6,7 +6,6 @@ import {
 export function buildEditMediaPayload(initialHtml: string, finalHtml: string) {
   const initial = collectMediaIdsAndOrdersFromHtml(initialHtml);
   const final = collectMediaIdsAndOrdersFromHtml(finalHtml);
-  console.log('finalHtml==============================', finalHtml);
 
   const deletedMediaIds = [
     ...new Set( // 중복된 값 제거 -> 스프레드 연산자로 배열로 변환
@@ -35,12 +34,6 @@ export function buildEditMediaPayload(initialHtml: string, finalHtml: string) {
       }
     });
   });
-
-  console.log('initial', initial);
-  console.log('final', final);
-  console.log('deletedMediaIds', deletedMediaIds);
-  console.log('newMediaOrders', newMediaOrders);
-  console.log('oldMediaIdsAndOrders', oldMediaIdsAndOrders);
 
   return {
     oldMediaIdsAndOrders,
