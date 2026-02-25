@@ -34,10 +34,18 @@ export function getMediaCountInContent(html: string): number {
   return getContentMediaInfo(html).mediaCount;
 }
 
-// 모든 미디어 태그(img, video, source)에 placeholder 추가
+/** placeholder 치환 시 제외할 속성 (붙여넣기로 들어온 이미 서버 URL인 미디어용) */
+const SKIP_PLACEHOLDER_ATTR = 'data-skip-placeholder';
+
+// 모든 미디어 src를 placeholder로 치환. data-skip-placeholder 있으면 제외 (이미 DB URL인 복붙 미디어)
 export function replaceImagesWithPlaceholders(html: string): string {
-  const doc = new DOMParser().parseFromString(html, 'text/html');
-  doc.querySelectorAll('img, video, source').forEach((element, i) => {
+  const { mediaTags, doc } = collectMediaTagsFromHtml(html);
+  console.log('mediaTags=========', mediaTags);
+  const withoutPastedMedia = Array.from(mediaTags).filter(
+    (element) => !element.hasAttribute(SKIP_PLACEHOLDER_ATTR),
+  );
+  console.log('withoutPastedMedia============', withoutPastedMedia);
+  withoutPastedMedia.forEach((element, i) => {
     if (element instanceof HTMLElement)
       element.setAttribute('src', `{{IMG_${i}}}`);
   });
@@ -51,9 +59,9 @@ export function replacePlaceholdersWithUrls(
 ): string {
   let processedContent = content;
 
-  mediaList.forEach((media) => {
+  mediaList.forEach((media, index) => {
     if (media?.url == null) return;
-    const placeholder = `{{IMG_${media.order}}}`;
+    const placeholder = `{{IMG_${index}}}`;
     const regex = new RegExp(placeholder.replace(/[{}]/g, '\\$&'), 'g');
     processedContent = processedContent.replace(regex, media.url);
   });
@@ -107,18 +115,10 @@ function isNewMediaSrc(src: string | null): boolean {
 export function collectMediaIdsAndOrdersFromHtml(
   html: string,
 ): { mediaId: string | null; order: number }[] {
-  console.log(
-    'getMediaTagInfos(html)================== 이건 정상임 ==================',
-    getMediaTagInfos(html),
-  );
   const mediaTagInfos = getMediaTagInfos(html).map(({ mediaId, index }) => ({
     mediaId,
     order: index,
   }));
-  console.log(
-    'mediaTagInfos================== 여기가 이상함 ==================',
-    mediaTagInfos,
-  );
   return mediaTagInfos;
 }
 
