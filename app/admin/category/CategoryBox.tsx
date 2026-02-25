@@ -84,9 +84,9 @@ export default function CategoryBox({
         </colgroup>
         <thead>
           <tr className="h-10 bg-primitive-grayWeakest">
-            <th className="px-6">categoryId</th>
-            <th className="px-6">categoryName</th>
-            <th className="px-6">categoryAddress</th>
+            <th className="px-6">카테고리 ID</th>
+            <th className="px-6">카테고리 이름</th>
+            <th className="px-6">카테고리 주소</th>
             <th className="px-6">관리</th>
           </tr>
         </thead>

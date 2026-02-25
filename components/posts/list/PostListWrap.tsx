@@ -39,7 +39,6 @@ export default function PostListWrap({ category = 'all' }: PostListWrapProps) {
     searchKeyword,
     page,
     sort,
-    size: 5,
   });
   if (isLoading) return <div>Loading...</div>;
   if (isError)

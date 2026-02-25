@@ -56,7 +56,7 @@ export default function ModalCategoryAdd({
         </Heading>
         <div className="space-y-4">
           <div>
-            <p className="text-text-primary pb-2">카테고리 이름</p>
+            <p className="text-sm text-text-second pb-2">카테고리 이름</p>
             <InputText
               placeholder="카테고리 이름을 입력해주세요."
               value={categoryName}
@@ -64,9 +64,9 @@ export default function ModalCategoryAdd({
             />
           </div>
           <div>
-            <p className="text-text-primary pb-2">
+            <p className="text-sm text-text-second pb-2">
               카테고리 주소{' '}
-              <span className="text-sm text-text-third font-bold">
+              <span className="font-bold">
                 (영어 + 숫자 조합만 허용, 공백 불가)
               </span>
             </p>

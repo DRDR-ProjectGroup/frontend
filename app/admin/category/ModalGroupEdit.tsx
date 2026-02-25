@@ -41,7 +41,7 @@ export default function ModalGroupEdit({
         </Heading>
         <div className="space-y-2">
           <div>
-            <p className="text-sm text-text-second pb-2">groupName</p>
+            <p className="text-sm text-text-second pb-2">그룹 이름</p>
             <InputText
               placeholder="그룹 이름을 입력해주세요."
               value={groupName}

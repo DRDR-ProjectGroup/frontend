@@ -76,9 +76,9 @@ export default function PostMeta({ postId }: { postId: number }) {
           <BsDot />
           <span>{formatDate(post.createdAt)}</span>
           <BsDot />
-          <span>{`Views ${post.viewCount}`}</span>
+          <span>{`조회 수 ${post.viewCount}`}</span>
           <BsDot />
-          <span className="text-primitive-green">{`Likes ${post.likeCount}`}</span>
+          <span className="text-primitive-green">{`좋아요 수 ${post.likeCount}`}</span>
         </div>
       </div>
 

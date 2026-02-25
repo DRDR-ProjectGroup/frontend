@@ -77,7 +77,7 @@ export default function PostList({
                 <td className="px-4 py-3">
                   <div className="flex gap-2 items-center">
                     <Link
-                      href={`/posts/${notice.postId}?category=${category}&page=${page}&sort=${sort}&currentPostId=${notice.postId}&size=5`}
+                      href={`/posts/${notice.postId}?category=${category}&page=${page}&sort=${sort}&currentPostId=${notice.postId}`}
                       className="truncate max-w-[calc(100%-16px)] hover:underline text-left"
                     >
                       {notice.title}
@@ -121,7 +121,7 @@ export default function PostList({
                 <td className="px-4 py-3">
                   <div className="flex gap-2 items-center">
                     <Link
-                      href={`/posts/${post.postId}?category=${category}&page=${page}&sort=${sort}&currentPostId=${post.postId}&size=5`}
+                      href={`/posts/${post.postId}?category=${category}&page=${page}&sort=${sort}&currentPostId=${post.postId}`}
                       className="truncate max-w-[calc(100%-16px)] hover:underline text-left"
                     >
                       {post.title}

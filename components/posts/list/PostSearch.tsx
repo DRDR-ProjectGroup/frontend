@@ -31,7 +31,7 @@ export default function PostSearch({
   // url 이동
   const onSubmit = () => {
     router.push(
-      `/category/${category}?searchMode=true&searchTarget=${target}&searchKeyword=${keyword}&page=1&size=5&sort=LATEST`,
+      `/category/${category}?searchMode=true&searchTarget=${target}&searchKeyword=${keyword}&page=1&sort=LATEST`,
     );
   };
 
