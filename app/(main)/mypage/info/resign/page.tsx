@@ -46,6 +46,10 @@ export default function Page() {
       <Heading level={2} className="mb-6">
         회원 탈퇴
       </Heading>
+      <p className="text-sm text-text-third mb-6">
+        회원 탈퇴 시, 30일 동안 정보는 보관되며, 이후 완전히 삭제됩니다.
+      </p>
+
       <form onSubmit={handleSubmit}>
         <div className="space-y-4">
           <div>
