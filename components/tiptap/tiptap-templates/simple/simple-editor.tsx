@@ -282,8 +282,18 @@ export function SimpleEditor({
                   .focus()
                   .insertContent(
                     isVideo
-                      ? { type: 'video', attrs: { src: url, controls: true } }
-                      : { type: 'image', attrs: { src: url } },
+                      ? {
+                          type: 'video',
+                          attrs: {
+                            src: url,
+                            controls: true,
+                            dataFilename: file.name,
+                          },
+                        }
+                      : {
+                          type: 'image',
+                          attrs: { src: url, dataFilename: file.name },
+                        },
                   )
                   .run();
               });
@@ -299,7 +309,9 @@ export function SimpleEditor({
               const isVideo = file.type.startsWith('video/');
               return onMediaUpload(file).then((url) => ({
                 type: isVideo ? 'video' : 'image',
-                attrs: isVideo ? { src: url, controls: true } : { src: url },
+                attrs: isVideo
+                  ? { src: url, controls: true, dataFilename: file.name }
+                  : { src: url, dataFilename: file.name },
               }));
             }),
           )

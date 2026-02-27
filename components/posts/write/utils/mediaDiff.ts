@@ -34,12 +34,6 @@ export function buildEditMediaPayload(initialHtml: string, finalHtml: string) {
     oldMediaIdsAndOrders[mediaId].push(order);
   });
 
-  console.log(
-    'oldMediaIdsAndOrders=================================',
-    oldMediaIdsAndOrders,
-  );
-  console.log('final=================================', final);
-
   return {
     oldMediaIdsAndOrders,
     deletedMediaIds,

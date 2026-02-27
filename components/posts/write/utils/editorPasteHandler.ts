@@ -45,6 +45,12 @@ const MIME_TO_EXT: Record<string, string> = {
   'video/ogg': 'ogv',
 };
 
+/** 경로 제거 후 파일명만 반환 (붙여넣기 시 data-filename 보존용) */
+function basename(name: string): string {
+  const part = name.split(/[/\\]/).pop();
+  return part && part.length > 0 ? part : name;
+}
+
 /** MIME에서 확장자 추출. 없으면 / 뒤 부분 또는 이미지면 png, 비디오면 mp4 */
 function getExtensionFromMime(mime: string, isVideo: boolean): string {
   const lower = mime.toLowerCase();
@@ -58,16 +64,19 @@ function getExtensionFromMime(mime: string, isVideo: boolean): string {
 // HTML 내 blob 미디어 추출 (붙여넣기 HTML에 blob URL이 있는지 판별)
 // ---------------------------------------------------------------------------
 
-/** HTML에서 blob URL만 추출. img/video 태그 순서대로, 이미지/비디오 구분 */
+/** HTML에서 blob URL과 data-filename 추출. img/video 태그 순서대로 */
 function extractBlobMediaFromHtml(
   html: string,
-): { url: string; isVideo: boolean }[] {
-  const list: { url: string; isVideo: boolean }[] = [];
-  const re = /<(video|img)[^>]+src=["'](blob:[^"']+)["']/gi;
-  let m;
-  while ((m = re.exec(html)) !== null) {
-    list.push({ url: m[2], isVideo: m[1].toLowerCase() === 'video' });
-  }
+): { url: string; isVideo: boolean; filename?: string }[] {
+  const list: { url: string; isVideo: boolean; filename?: string }[] = [];
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+  doc.querySelectorAll('img[src^="blob:"], video[src^="blob:"]').forEach((el) => {
+    const src = el.getAttribute('src');
+    if (!src) return;
+    const isVideo = el.tagName.toLowerCase() === 'video';
+    const filename = el.getAttribute('data-filename') ?? undefined;
+    list.push({ url: src, isVideo, filename });
+  });
   return list;
 }
 
@@ -155,25 +164,34 @@ export function createPasteHandler(options: PasteHandlerOptions) {
     e.stopPropagation();
 
     Promise.all(
-      blobMedia.map(({ url, isVideo }) =>
+      blobMedia.map(({ url, isVideo, filename: pastedFilename }) =>
         fetch(url)
           .then((res) => res.blob())
           .then((blob) => {
             const ext = getExtensionFromMime(blob.type, isVideo);
-            const file = new File(
-              [blob],
-              `pasted-${isVideo ? 'video' : 'image'}.${ext}`,
-              { type: blob.type },
-            );
+            const base =
+              pastedFilename && pastedFilename.trim().length > 0
+                ? basename(pastedFilename.trim())
+                : `pasted-${isVideo ? 'video' : 'image'}`;
+            const safeName =
+              base.includes('.') ? base : `${base}.${ext}`;
+            const file = new File([blob], safeName, { type: blob.type });
+            console.log('[Paste media] file:', {
+              name: file.name,
+              size: file.size,
+              type: file.type,
+              lastModified: file.lastModified,
+            });
             return onMediaUpload(file).then((insertUrl) => ({
               insertUrl,
               isVideo,
+              dataFilename: safeName,
             }));
           }),
       ),
     )
       .then((results) => {
-        results.forEach(({ insertUrl, isVideo }) => {
+        results.forEach(({ insertUrl, isVideo, dataFilename }) => {
           editorRef.current
             ?.chain()
             .focus()
@@ -181,9 +199,19 @@ export function createPasteHandler(options: PasteHandlerOptions) {
               isVideo
                 ? {
                     type: 'video',
-                    attrs: { src: insertUrl, controls: true },
+                    attrs: {
+                      src: insertUrl,
+                      controls: true,
+                      ...(dataFilename && { dataFilename }),
+                    },
                   }
-                : { type: 'image', attrs: { src: insertUrl } },
+                : {
+                    type: 'image',
+                    attrs: {
+                      src: insertUrl,
+                      ...(dataFilename && { dataFilename }),
+                    },
+                  },
             )
             .run();
         });

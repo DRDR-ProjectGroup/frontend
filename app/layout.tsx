@@ -11,7 +11,7 @@ const roboto = Roboto({
 
 export const metadata: Metadata = {
   title: '도란도란(DoranDoran)',
-  description: '도란도란(DoranDoran)',
+  description: '같이 이야기하고 같이 공감하는 공간, 도란도란',
   icons: {
     icon: [
       { url: '/favicon.ico' }, // 브라우저 기본 파비콘
