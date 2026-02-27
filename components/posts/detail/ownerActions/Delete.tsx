@@ -34,7 +34,7 @@ export default function Delete({ postId }: { postId: number }) {
       </Button>
       <DeleteModal
         title="글 삭제"
-        message="정말 글을 삭제하시겠습니까?"
+        message={`게시글을 삭제하시겠습니까? \n삭제 시, 30일 동안 정보는 보관되며, 이후 완전히 삭제됩니다.`}
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onDelete={handleDelete}

@@ -383,13 +383,13 @@ export const VideoUploadNode: React.FC<NodeViewProps> = (props) => {
 
       if (isValidPosition(pos)) {
         const videoNodes = urls.map((url, index) => {
-          const filename =
-            files[index]?.name.replace(/\.[^/.]+$/, "") || "unknown"
+          const fullName = files[index]?.name ?? undefined
           return {
             type: extension.options.type,
             attrs: {
               src: url,
               controls: true,
+              ...(fullName && { dataFilename: fullName }),
             },
           }
         })

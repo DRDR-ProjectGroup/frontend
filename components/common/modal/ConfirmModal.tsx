@@ -21,7 +21,9 @@ export default function ConfirmModal({
   return (
     <Modal isOpen={isOpen} onClose={onClose} className={className}>
       <h2 className="text-lg font-bold">{title}</h2>
-      <p className="text-sm text-text-second mt-3">{message}</p>
+      <p className="text-sm text-text-second mt-3 whitespace-pre-line">
+        {message}
+      </p>
       <div className="flex justify-end gap-3 mt-6">
         <Button onClick={onClose} variant="secondary">
           취소
