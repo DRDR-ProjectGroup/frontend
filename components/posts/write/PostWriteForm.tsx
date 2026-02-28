@@ -204,6 +204,18 @@ export default function PostWriteForm({
           </li>
         </ul>
 
+        {/* 정보 이용 약관 */}
+        <div className="mt-4 mb-4">
+          <strong className="text-sm text-text-second">정보 이용 약관</strong>
+          <ul className="text-sm text-text-third">
+            <li>- 글 작성 시, 해당 글은 모든 유저가 열람 가능합니다.</li>
+            <li>- 글 저장 기간은 삭제 전까지 유지됩니다.</li>
+            <li>
+              - 글 삭제 시, 30일 동안 정보는 보관되며, 이후 완전히 삭제됩니다.
+            </li>
+          </ul>
+        </div>
+
         <div className="flex justify-center">
           <Button
             variant="primary"
