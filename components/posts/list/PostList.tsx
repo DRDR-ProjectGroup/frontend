@@ -62,6 +62,13 @@ export default function PostList({
             </tr>
           </thead>
           <tbody className="h-[50px] text-sm">
+            {notices.length === 0 && postList.length === 0 && (
+              <tr>
+                <td colSpan={6} className="px-4 py-3 text-text-third">
+                  현재 등록된 게시글이 없습니다.
+                </td>
+              </tr>
+            )}
             {notices.map((notice: PostItem) => (
               <tr
                 key={notice.postId}

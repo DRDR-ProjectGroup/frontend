@@ -52,7 +52,7 @@ export default function MessageTable({
         </colgroup>
         <thead className="bg-primitive-grayWeakest/80 h-[40px] text-xs text-text-second font-bold">
           <tr className="border-b border-primitive-graySecond">
-            <th className="px-4">보낸이</th>
+            <th className="px-4">{type === 'inbox' ? '보낸이' : '받은이'}</th>
             <th className="px-4 text-left">내용</th>
             <th className="px-4">날짜</th>
             <th>
@@ -66,7 +66,11 @@ export default function MessageTable({
               key={message.messageId}
               className="border-b border-primitive-graySecond hover:bg-primitive-grayThird"
             >
-              <td className="px-4 py-3">{message.sender.nickname}</td>
+              <td className="px-4 py-3">
+                {type === 'inbox'
+                  ? message.sender.nickname
+                  : message.receiver.nickname}
+              </td>
               <td className="px-4 py-3">
                 <div className="flex gap-2 items-center">
                   <Link

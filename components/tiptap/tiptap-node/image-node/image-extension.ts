@@ -26,6 +26,15 @@ export const Image = BaseImage.extend({
             ? { 'data-skip-placeholder': attributes.dataSkipPlaceholder }
             : {},
       },
+      // 복사·붙여넣기 시 원본 파일명 유지용 (data-filename)
+      dataFilename: {
+        default: null,
+        parseHTML: (element) => element.getAttribute('data-filename'),
+        renderHTML: (attributes) =>
+          attributes.dataFilename
+            ? { 'data-filename': attributes.dataFilename }
+            : {},
+      },
     };
   },
 });

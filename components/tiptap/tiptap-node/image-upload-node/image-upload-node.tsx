@@ -460,6 +460,7 @@ export const ImageUploadNode: React.FC<NodeViewProps> = (props) => {
         const imageNodes = urls.map((url, index) => {
           const filename =
             files[index]?.name.replace(/\.[^/.]+$/, "") || "unknown"
+          const fullName = files[index]?.name ?? undefined
           return {
             type: extension.options.type,
             attrs: {
@@ -467,6 +468,7 @@ export const ImageUploadNode: React.FC<NodeViewProps> = (props) => {
               src: url,
               alt: filename,
               title: filename,
+              ...(fullName && { dataFilename: fullName }),
             },
           }
         })

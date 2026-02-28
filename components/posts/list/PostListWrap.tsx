@@ -56,7 +56,7 @@ export default function PostListWrap({ category = 'all' }: PostListWrapProps) {
   const postList = postListResponse.data.posts;
   const notices = postListResponse.data.notices || [];
   const totalPages = postListResponse.data.totalPages;
-  const categoryTitle = postListResponse.data.category || '전체 인기글';
+  const categoryTitle = postListResponse.data.category || '전체글';
 
   return (
     <div>
