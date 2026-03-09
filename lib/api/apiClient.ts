@@ -5,7 +5,7 @@
  * - 재발급 실패 시 로그아웃 처리
  */
 
-import { refreshAccessToken } from './auth';
+import { refreshAccessToken } from './auth/auth.client';
 import { RequireAuthOptions } from '@/types/api/auth';
 import { ApiError } from '../error/api';
 import { useAuthStore } from '../store/authStore';

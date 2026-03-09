@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { fetchPostDetail } from '@/lib/api/post';
+import { fetchPostDetail } from '@/lib/api/post/post.client';
 
 // 글 상세 조회
 export function usePostDetailQuery(postId: number) {

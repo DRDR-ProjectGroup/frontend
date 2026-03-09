@@ -2,8 +2,43 @@ import Comments from '@/components/posts/detail/comment/Comments';
 import PostMeta from '@/components/posts/detail/contents/PostMeta';
 import PostLike from '@/components/posts/detail/like/PostLike';
 import PostListWrap from '@/components/posts/list/PostListWrap';
+import { fetchPostDetail } from '@/lib/api/post/post.server';
 import type { PostListSortType } from '@/types/api/postList';
+import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ postId: string }>;
+}): Promise<Metadata> {
+  const { postId } = await params;
+  const postDetailResponse = await fetchPostDetail(Number(postId));
+
+  if (!postDetailResponse.data || postDetailResponse.code !== 200) {
+    notFound();
+  }
+
+  const post = postDetailResponse.data;
+
+  const metadata = {
+    title: post.title,
+    description: post.title,
+    openGraph: {
+      title: post.title,
+      description: post.title,
+      images: post.mediaList?.map((m) => m.url) || [],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: post.title,
+      description: post.title,
+      images: post.mediaList?.map((m) => m.url) || [],
+    },
+  };
+
+  return metadata;
+}
 
 export default async function Page({
   params,

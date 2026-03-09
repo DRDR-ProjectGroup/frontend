@@ -1,6 +1,6 @@
 import { LoginRequest, LoginResponse, LogoutResponse } from '@/types/api/auth';
-import { apiRequest, getApiBaseUrl } from './apiClient';
-import { ApiError } from '../error/api';
+import { apiRequest, getApiBaseUrl } from '../apiClient';
+import { ApiError } from '../../error/api';
 
 // 로그인
 export async function login(
