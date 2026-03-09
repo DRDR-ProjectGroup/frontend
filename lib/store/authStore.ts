@@ -5,7 +5,7 @@ import {
   getUserIdFromToken,
   getUserRoleFromToken,
 } from '@/lib/utils/auth-token';
-import { refreshAccessToken } from '../api/auth';
+import { refreshAccessToken } from '../api/auth/auth.client';
 import { UserRole } from '@/types/api/auth';
 
 interface AuthState {
