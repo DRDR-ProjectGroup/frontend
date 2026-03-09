@@ -7,8 +7,15 @@ import {
   sendEmailAction,
   verifyCodeAction,
 } from '../../../../actions/auth/email.actions';
-import { useActionState, useEffect, useState, useTransition } from 'react';
+import {
+  useActionState,
+  useEffect,
+  useRef,
+  useState,
+  useTransition,
+} from 'react';
 import TermsAgreement from './TermsAgreement';
+import { formatTime } from '@/lib/utils/formatTime';
 
 export default function SignupForm() {
   const [isTermsAgreed, setIsTermsAgreed] = useState(false);
@@ -26,6 +33,21 @@ export default function SignupForm() {
   const [isEmailVerified, setIsEmailVerified] = useState(false);
   const [emailMessage, setEmailMessage] = useState('');
   const [codeMessage, setCodeMessage] = useState('');
+  const [emailVerifyingTime, setEmailVerifyingTime] = useState(300);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const startEmailVerifyingTimer = () => {
+    if (timerRef.current) clearInterval(timerRef.current);
+    setEmailVerifyingTime(300);
+    timerRef.current = setInterval(() => {
+      setEmailVerifyingTime((prev) => {
+        if (prev <= 1) {
+          clearInterval(timerRef.current!);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+  };
 
   // useTransition으로 서버 액션 호출 시 pending 상태 관리
   const [isSendingEmail, startSendingEmail] = useTransition();
@@ -64,6 +86,8 @@ export default function SignupForm() {
                   setEmailMessage(result.message);
                   if (result.ok) {
                     setIsEmailSent(true);
+                    setEmailVerifyingTime(60 * 5);
+                    startEmailVerifyingTimer();
                   }
                 });
               }}
@@ -91,7 +115,11 @@ export default function SignupForm() {
             <div className="flex gap-x-2 items-stretch h-[46px]">
               <InputText
                 name="code"
-                placeholder="인증번호 입력"
+                placeholder={
+                  emailVerifyingTime > 0
+                    ? formatTime(emailVerifyingTime)
+                    : '인증번호 만료'
+                }
                 className="flex-1"
                 value={code}
                 onChange={(e) => setCode(e.target.value)}
@@ -117,7 +145,7 @@ export default function SignupForm() {
                 }}
                 disabled={isVerifyingCode}
               >
-                {isVerifyingCode ? 'Verifying...' : 'Verify Code'}
+                {isVerifyingCode ? '인증번호 확인중...' : '인증번호 전송'}
               </Button>
             </div>
             {codeMessage && (

@@ -19,6 +19,8 @@ import { useRouter } from 'next/navigation';
 import SelectCategory from './SelectCategory';
 import type { CategoryData } from '@/types/api/category';
 import { buildEditMediaPayload } from './utils/mediaDiff';
+import { updatePostAction } from '@/actions/post/update.actions';
+import { useAuthStore } from '@/lib/store/authStore';
 
 type PostWriteFormProps = {
   mode: 'create' | 'edit';
@@ -59,7 +61,7 @@ export default function PostWriteForm({
   }, [mode, editor, initialData?.content]);
 
   // 글 작성 or 수정 api 호출
-  function submitPostMutation({
+  async function submitPostMutation({
     mode,
     postId,
     formData,
@@ -70,6 +72,12 @@ export default function PostWriteForm({
     formData: FormData;
     category: string;
   }) {
+    const accessToken = useAuthStore.getState().accessToken;
+    if (!accessToken) {
+      alert('로그인 후 이용해주세요.');
+      return;
+    }
+
     if (mode === 'create') {
       return createPostMutate.mutate(
         { formData, category },
@@ -94,20 +102,32 @@ export default function PostWriteForm({
         return;
       }
 
-      return updatePostMutate.mutate(
-        { postId, formData },
-        {
-          onSuccess: (data) => {
-            clearMedia();
-            alert('글 수정 완료!');
-            router.push(`/posts/${postId}`);
-          },
-          onError: (error) => {
-            console.error('글 수정 실패:', error);
-            alert('글 수정에 실패했습니다.');
-          },
-        },
-      );
+      // server side action
+      try {
+        await updatePostAction(accessToken, postId, formData);
+        clearMedia();
+        alert('글 수정 완료!');
+        router.push(`/posts/${postId}`);
+      } catch (error) {
+        console.error('글 수정 실패:', error);
+        alert('글 수정에 실패했습니다.');
+      }
+
+      // client side mutation
+      // return updatePostMutate.mutate(
+      //   { postId, formData },
+      //   {
+      //     onSuccess: (data) => {
+      //       clearMedia();
+      //       alert('글 수정 완료!');
+      //       router.push(`/posts/${postId}`);
+      //     },
+      //     onError: (error) => {
+      //       console.error('글 수정 실패:', error);
+      //       alert('글 수정에 실패했습니다.');
+      //     },
+      //   },
+      // );
     }
   }
 
@@ -160,7 +180,7 @@ export default function PostWriteForm({
       newImageFiles.forEach((file) => formData.append('files', file));
 
       // 4. submit 실행
-      submitPostMutation({ mode, postId, formData, category });
+      await submitPostMutation({ mode, postId, formData, category });
     } catch (error) {
       console.error('글 처리 실패:', error);
       alert('글 처리에 실패했습니다.');

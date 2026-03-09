@@ -1,5 +1,10 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { createPost, updatePost, deletePost, likePost } from '@/lib/api/post';
+import {
+  createPost,
+  updatePost,
+  deletePost,
+  likePost,
+} from '@/lib/api/post/post.client';
 
 // 글 작성 Mutation Hook
 export function useCreatePostMutation() {
