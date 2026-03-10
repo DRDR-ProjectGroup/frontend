@@ -14,19 +14,19 @@ https://github.com/DRDR-ProjectGroup/frontend
 
 ### 메인 페이지
 
-gif
+![메인페이지](docs/demo/main.gif)
 
 ### 게시글 작성
 
-gif
+![글작성](docs/demo/write.gif)
 
 ### 댓글 기능
 
-gif
+![댓글](docs/demo/comment.gif)
 
 ### 쪽지 기능
 
-gif
+![쪽지](docs/demo/message.gif)
 
 ---
 
@@ -86,16 +86,12 @@ Vercel
 
 ## 게시글 작성
 
-gif
-
 - Tiptap 기반 리치 텍스트 에디터 사용
 - 이미지, 동영상, 유튜브 iframe 업로드 지원
 
 ---
 
 ## 게시글 수정
-
-gif
 
 - 기존 이미지 유지
 - 신규 이미지 추가 가능
@@ -104,8 +100,6 @@ gif
 
 ## 댓글 및 대댓글
 
-gif
-
 - 댓글 작성
 - 대댓글 작성
 
@@ -113,16 +107,12 @@ gif
 
 ## 회원 간 쪽지 기능
 
-gif
-
 - 다른 회원에게 쪽지 전송
 - 받은 쪽지 / 보낸 쪽지 확인
 
 ---
 
 ## 관리자 페이지
-
-gif
 
 관리자는 관리자 페이지에서 다음 기능을 관리할 수 있습니다.
 
