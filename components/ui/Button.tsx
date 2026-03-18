@@ -33,7 +33,8 @@ export default function Button({
     lg: 'h-11 px-7 py-3 text-base',
   };
 
-  const disabledStyle = 'pointer-events-none opacity-50 cursor-not-allowed';
+  const disabledStyle =
+    'pointer-events-none cursor-not-allowed bg-primitive-grayPrimary';
 
   return (
     <button

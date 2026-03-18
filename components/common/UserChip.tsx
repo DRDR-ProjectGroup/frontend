@@ -14,6 +14,7 @@ interface UserChipProps {
   userId: string;
   name: string;
   className?: string;
+  textColor?: string;
 }
 
 export default function UserChip({
@@ -22,6 +23,7 @@ export default function UserChip({
   userId,
   name,
   className,
+  textColor = 'text-primitive-blackPrimary',
 }: UserChipProps) {
   const ref = useRef<HTMLDivElement | null>(null);
   const router = useRouter();
@@ -97,7 +99,8 @@ export default function UserChip({
       {icon}
       <span
         className={twMerge(
-          'text-sm font-medium text-text-third truncate hover:underline cursor-pointer',
+          'text-sm font-medium truncate hover:underline cursor-pointer',
+          textColor,
           className,
         )}
         onClick={() => setIsOpenPopover(true)}

@@ -5,7 +5,7 @@ import LinkButton from '@/components/ui/LinkButton';
 import { useLogoutMutation } from '@/query/auth/useAuthMutations';
 import { useRouter } from 'next/navigation';
 import { RiUser3Line, RiLogoutBoxLine } from 'react-icons/ri';
-import { HiOutlinePencilAlt } from 'react-icons/hi';
+import { HiOutlinePencilAlt, HiOutlineChatAlt2 } from 'react-icons/hi';
 
 export default function AfterLogin() {
   const router = useRouter();
@@ -25,6 +25,10 @@ export default function AfterLogin() {
 
   return (
     <div className="flex gap-1 items-center">
+      <LinkButton href="/chat" variant="icon" title="채팅방">
+        <HiOutlineChatAlt2 />
+        <span className="sr-only">채팅방</span>
+      </LinkButton>
       <LinkButton href="/posts/write" variant="icon" title="글쓰기">
         <HiOutlinePencilAlt />
         <span className="sr-only">글쓰기</span>
