@@ -2,12 +2,12 @@ import { useEffect, useState } from 'react';
 import { getStompClient } from '@/lib/socket/client';
 import type { ReceiveChatMessageResponse } from '@/types/socket/chat';
 
-// 채팅 hook
-export const useChat = () => {
-  // 채팅 상태
+// 채팅 메시지 hook
+export const useChatMessages = () => {
+  // 채팅 메시지 상태
   const [messages, setMessages] = useState<ReceiveChatMessageResponse[]>([]);
 
-  // 채팅 수신 subscribe 사이드 이펙트
+  // 채팅 메시지 수신 subscribe 사이드 이펙트
   useEffect(() => {
     const client = getStompClient();
 
@@ -22,7 +22,7 @@ export const useChat = () => {
     };
   }, []);
 
-  // 채팅 전송 행동 함수
+  // 채팅 메시지 전송 행동 함수
   const sendMessage = (chat: string) => {
     const client = getStompClient();
 

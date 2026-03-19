@@ -12,9 +12,10 @@ export type ReceiveChatMessageResponse = {
 };
 
 // 접속자 목록 수신
-export type ReceiveChatParticipantsResponse = {
-  users: {
-    memberId: string;
-    nickname: string;
-  }[];
+export type ChatUserInfo = {
+  memberId: string;
+  nickname: string;
+};
+export type ChatUsersResponse = {
+  users: ChatUserInfo[];
 };

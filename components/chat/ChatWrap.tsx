@@ -2,7 +2,7 @@
 
 import { getStompClient } from '@/lib/socket/client';
 import ChatPanel from './ChatPanel';
-import ParticipantPanel from './ParticipantPanel';
+import UserPanel from './UserPanel';
 import { useEffect } from 'react';
 
 export default function ChatWrap() {
@@ -16,9 +16,9 @@ export default function ChatWrap() {
   }, []);
 
   return (
-    <div className="mt-4 flex gap-3 h-150">
+    <div className="mt-4 flex gap-3 h-130">
       <ChatPanel />
-      <ParticipantPanel />
+      <UserPanel />
     </div>
   );
 }

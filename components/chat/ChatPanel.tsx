@@ -2,11 +2,11 @@ import { useState } from 'react';
 import Button from '../ui/Button';
 import InputText from '../ui/InputText';
 import MessageItem from './MessageItem';
-import { useChat } from '@/hooks/useChat';
+import { useChatMessages } from '@/hooks/chat/useChatMessages';
 
 export default function ChatPanel() {
   const [chat, setChat] = useState('');
-  const { messages, sendMessage } = useChat();
+  const { messages, sendMessage } = useChatMessages();
 
   return (
     <div className="flex-1 rounded-md border border-primitive-grayPrimary p-4 flex flex-col">
