@@ -72,9 +72,9 @@ import { HighlighterIcon } from '@/components/tiptap/tiptap-icons/highlighter-ic
 import { LinkIcon } from '@/components/tiptap/tiptap-icons/link-icon';
 
 // --- Hooks ---
-import { useIsBreakpoint } from '@/hooks/use-is-breakpoint';
-import { useWindowSize } from '@/hooks/use-window-size';
-import { useCursorVisibility } from '@/hooks/use-cursor-visibility';
+import { useIsBreakpoint } from '@/hooks/tiptap/use-is-breakpoint';
+import { useWindowSize } from '@/hooks/tiptap/use-window-size';
+import { useCursorVisibility } from '@/hooks/tiptap/use-cursor-visibility';
 
 // --- Components ---
 
