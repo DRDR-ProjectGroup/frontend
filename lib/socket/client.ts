@@ -5,19 +5,34 @@ import SockJS from 'sockjs-client';
 import { useAuthStore } from '../store/authStore';
 
 let client: Client | null = null;
+let currentToken: string | null = null;
 
-// websocket 연결을 위한 StompClient 객체 생성
+// 연결 성공 리스너 (subscribe 할 때 사용)
+const connectListeners: (() => void)[] = [];
+export const addOnConnectListener = (fn: () => void) => {
+  connectListeners.push(fn);
+};
+export const removeOnConnectListener = (fn: () => void) => {
+  const idx = connectListeners.indexOf(fn);
+  if (idx !== -1) connectListeners.splice(idx, 1);
+};
+
+// STOMP Client 생성 및 반환
 export const getStompClient = () => {
   const accessToken = useAuthStore.getState().accessToken;
-  if (!accessToken) {
-    throw new Error('accessToken 없음');
+  if (!accessToken) throw new Error('accessToken 없음');
+
+  const websocketUrl = process.env.NEXT_PUBLIC_WS_LOCAL_URL;
+  if (!websocketUrl) throw new Error('WebSocket URL 없음');
+
+  // 토큰 바뀌면 재생성 -> 연결 해제 후 재연결 ("WebSocket은 HTTP처럼 매 요청마다 인증하지 않는다" : 연결 시 1번 인증 -> 이후 계속 유지)
+  if (client && currentToken !== accessToken) {
+    client.deactivate();
+    client = null;
   }
   if (client) return client;
 
-  const websocketUrl = process.env.NEXT_PUBLIC_WS_LOCAL_URL;
-  if (!websocketUrl) {
-    throw new Error('WebSocket URL 없음');
-  }
+  currentToken = accessToken;
 
   client = new Client({
     webSocketFactory: () => new SockJS(websocketUrl),
@@ -25,6 +40,20 @@ export const getStompClient = () => {
       Authorization: `Bearer ${accessToken}`,
     },
     reconnectDelay: 5000,
+    onConnect: (frame) => {
+      console.log('✅ WebSocket 연결 성공 => ', frame.headers);
+      // 등록된 모든 리스너 실행
+      connectListeners.forEach((listener) => listener());
+    },
+    onStompError: (frame) => {
+      console.log('❌ STOMP 에러', frame.headers['message']);
+    },
+    onWebSocketError: (event) => {
+      console.log('❌ WebSocket 연결 실패', event);
+    },
+    onWebSocketClose: () => {
+      console.log('⚠️ WebSocket 연결 종료');
+    },
     debug: (str) => console.log(str),
   });
 
