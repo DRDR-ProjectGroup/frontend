@@ -94,7 +94,14 @@ export default function Page() {
           </div>
         </div>
         <div className="mt-6 flex justify-end gap-2">
-          <Button type="submit" disabled={isChangeNicknamePending}>
+          <Button
+            type="submit"
+            disabled={
+              !newNickname ||
+              currentNickname === newNickname ||
+              isChangeNicknamePending
+            }
+          >
             {isChangeNicknamePending ? '수정 중...' : '닉네임 수정'}
           </Button>
           <Button

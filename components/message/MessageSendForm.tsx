@@ -96,7 +96,11 @@ export default function MessageSendForm({
                   <Button variant="tertiary" type="button" onClick={onCancel}>
                     취소
                   </Button>
-                  <Button variant="primary" type="submit" disabled={isPending}>
+                  <Button
+                    variant="primary"
+                    type="submit"
+                    disabled={textareaValue.trim() === '' || isPending}
+                  >
                     {isPending ? '쪽지 보내는 중...' : '쪽지 보내기'}
                   </Button>
                 </>
