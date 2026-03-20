@@ -13,6 +13,7 @@ export const useStompSubscription = (
 ) => {
   useEffect(() => {
     const client = getStompClient();
+    if (!client) return;
     let subscription: StompSubscription | null = null;
 
     const subscribe = () => {
