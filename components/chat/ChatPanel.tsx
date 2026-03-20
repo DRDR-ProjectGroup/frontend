@@ -9,6 +9,9 @@ export default function ChatPanel() {
   const [chat, setChat] = useState('');
   const { messages, sendMessage } = useChatMessages();
 
+  // (mac환경) 한글 입력(IME) 조합 중인지 여부 (Enter 중복 전송 방지)
+  const [isComposing, setIsComposing] = useState(false);
+
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -34,9 +37,9 @@ export default function ChatPanel() {
       <div className="flex-1 h-full relative overflow-hidden">
         <div ref={containerRef} className="h-full overflow-y-auto">
           <div className="pb-4 pt-4 min-h-full flex flex-col gap-2 justify-end">
-            {messages.map((message) => (
+            {messages.map((message, index) => (
               <MessageItem
-                key={message.timestamp}
+                key={`${message.timestamp}-${index}`}
                 memberId={message.memberId}
                 nickname={message.nickname}
                 message={message.message}
@@ -55,7 +58,10 @@ export default function ChatPanel() {
           value={chat}
           autoComplete="off"
           onChange={(e) => setChat(e.target.value)}
+          onCompositionStart={() => setIsComposing(true)}
+          onCompositionEnd={() => setIsComposing(false)}
           onKeyDown={(e) => {
+            if (isComposing) return;
             if (e.key === 'Enter') {
               handleSendMessage();
             }
