@@ -1,48 +1,44 @@
-"use client"
+'use client';
 
-import { forwardRef, useCallback } from "react"
+import { forwardRef, useCallback } from 'react';
 
 // --- Lib ---
-import { parseShortcutKeys } from "@/lib/tiptap-utils"
+import { parseShortcutKeys } from '@/lib/tiptap-utils';
 
 // --- Hooks ---
-import { useTiptapEditor } from "@/hooks/use-tiptap-editor"
+import { useTiptapEditor } from '@/hooks/tiptap/use-tiptap-editor';
 
 // --- Tiptap UI ---
-import type { UseYoutubeConfig } from "@/components/tiptap/tiptap-ui/youtube-button"
+import type { UseYoutubeConfig } from '@/components/tiptap/tiptap-ui/youtube-button';
 import {
   YOUTUBE_SHORTCUT_KEY,
   useYoutube,
-} from "@/components/tiptap/tiptap-ui/youtube-button"
+} from '@/components/tiptap/tiptap-ui/youtube-button';
 
 // --- UI Primitives ---
-import type { ButtonProps } from "@/components/tiptap/tiptap-ui-primitive/button"
-import { Button } from "@/components/tiptap/tiptap-ui-primitive/button"
-import { Badge } from "@/components/tiptap/tiptap-ui-primitive/badge"
+import type { ButtonProps } from '@/components/tiptap/tiptap-ui-primitive/button';
+import { Button } from '@/components/tiptap/tiptap-ui-primitive/button';
+import { Badge } from '@/components/tiptap/tiptap-ui-primitive/badge';
 
-type IconProps = React.SVGProps<SVGSVGElement>
-type IconComponent = ({ className, ...props }: IconProps) => React.ReactElement
+type IconProps = React.SVGProps<SVGSVGElement>;
+type IconComponent = ({ className, ...props }: IconProps) => React.ReactElement;
 
 export interface YoutubeButtonProps
-  extends Omit<ButtonProps, "type">,
-    UseYoutubeConfig {
-  text?: string
-  showShortcut?: boolean
-  icon?: React.MemoExoticComponent<IconComponent> | React.FC<IconProps>
+  extends Omit<ButtonProps, 'type'>, UseYoutubeConfig {
+  text?: string;
+  showShortcut?: boolean;
+  icon?: React.MemoExoticComponent<IconComponent> | React.FC<IconProps>;
 }
 
 export function YoutubeShortcutBadge({
   shortcutKeys = YOUTUBE_SHORTCUT_KEY,
 }: {
-  shortcutKeys?: string
+  shortcutKeys?: string;
 }) {
-  return <Badge>{parseShortcutKeys({ shortcutKeys })}</Badge>
+  return <Badge>{parseShortcutKeys({ shortcutKeys })}</Badge>;
 }
 
-export const YoutubeButton = forwardRef<
-  HTMLButtonElement,
-  YoutubeButtonProps
->(
+export const YoutubeButton = forwardRef<HTMLButtonElement, YoutubeButtonProps>(
   (
     {
       editor: providedEditor,
@@ -55,9 +51,9 @@ export const YoutubeButton = forwardRef<
       children,
       ...buttonProps
     },
-    ref
+    ref,
   ) => {
-    const { editor } = useTiptapEditor(providedEditor)
+    const { editor } = useTiptapEditor(providedEditor);
     const {
       isVisible,
       canInsert,
@@ -70,28 +66,28 @@ export const YoutubeButton = forwardRef<
       editor,
       hideWhenUnavailable,
       onInserted,
-    })
+    });
 
     const handleClick = useCallback(
       (event: React.MouseEvent<HTMLButtonElement>) => {
-        onClick?.(event)
-        if (event.defaultPrevented) return
-        handleYoutube()
+        onClick?.(event);
+        if (event.defaultPrevented) return;
+        handleYoutube();
       },
-      [handleYoutube, onClick]
-    )
+      [handleYoutube, onClick],
+    );
 
     if (!isVisible) {
-      return null
+      return null;
     }
 
-    const RenderIcon = CustomIcon ?? Icon
+    const RenderIcon = CustomIcon ?? Icon;
 
     return (
       <Button
         type="button"
         data-style="ghost"
-        data-active-state={isActive ? "on" : "off"}
+        data-active-state={isActive ? 'on' : 'off'}
         role="button"
         tabIndex={-1}
         disabled={!canInsert}
@@ -107,12 +103,14 @@ export const YoutubeButton = forwardRef<
           <>
             <RenderIcon className="tiptap-button-icon" />
             {text && <span className="tiptap-button-text">{text}</span>}
-            {showShortcut && <YoutubeShortcutBadge shortcutKeys={shortcutKeys} />}
+            {showShortcut && (
+              <YoutubeShortcutBadge shortcutKeys={shortcutKeys} />
+            )}
           </>
         )}
       </Button>
-    )
-  }
-)
+    );
+  },
+);
 
-YoutubeButton.displayName = "YoutubeButton"
+YoutubeButton.displayName = 'YoutubeButton';

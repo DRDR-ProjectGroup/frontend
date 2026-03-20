@@ -69,7 +69,11 @@ export default function Page() {
           </div>
         </div>
         <div className="mt-6 flex justify-end gap-2">
-          <Button variant="warning" type="submit" disabled={isResignPending}>
+          <Button
+            variant="warning"
+            type="submit"
+            disabled={password.trim() === '' || isResignPending}
+          >
             {isResignPending ? '탈퇴 중...' : '회원 탈퇴'}
           </Button>
           <Button
