@@ -6,7 +6,7 @@
 
 이메일 인증 기반 회원가입 서비스이나,
 AWS 이메일 인증 서비스의 인증을 받지 못한 관계로,
-DM 로 직접 만든 테스트 ID로 테스트 부탁드립니다.
+DB 로 직접 만든 테스트 ID로 테스트 부탁드립니다.
 
 ### 일반 계정
 
@@ -44,7 +44,9 @@ https://github.com/DRDR-ProjectGroup/frontend
 
 ![쪽지](docs/demo/message.gif)
 
----
+### 채팅 기능
+
+![채팅](docs/demo/chat.gif)
 
 # 프로젝트 소개
 
@@ -78,6 +80,12 @@ Zustand
 
 Tiptap Editor  
 → 게시글 작성 시 리치 텍스트 에디터 구현
+
+STOMP (WebSocket)
+→ 실시간 채팅 기능 구현
+
+SockJS
+→ WebSocket fallback 지원 및 안정적인 연결 처리
 
 ---
 
@@ -134,6 +142,13 @@ Vercel
 
 - 카테고리 생성 / 수정 / 삭제
 - 회원 관리
+
+---
+
+## 채팅 기능
+
+- 페이지 단위 웹소켓 서버 (STOMP + sockJS) 연결,해제 관리
+- 실시간 채팅 메시지 송수신 (WebSocket 기반)
 
 ---
 
