@@ -96,7 +96,15 @@ export default function Page() {
           </div>
         </div>
         <div className="mt-6 flex justify-end gap-2">
-          <Button type="submit" disabled={isChangePasswordPending}>
+          <Button
+            type="submit"
+            disabled={
+              password.trim() === '' ||
+              newPassword.trim() === '' ||
+              newPassword2.trim() === '' ||
+              isChangePasswordPending
+            }
+          >
             {isChangePasswordPending ? '수정 중...' : '비밀번호 수정'}
           </Button>
           <Button

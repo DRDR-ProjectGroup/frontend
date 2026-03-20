@@ -15,7 +15,7 @@ import {
   useTransition,
 } from 'react';
 import TermsAgreement from './TermsAgreement';
-import { formatTime } from '@/lib/utils/formatTime';
+import { formatTimeMsToHHMMSS } from '@/lib/utils/formatTime';
 
 export default function SignupForm() {
   const [isTermsAgreed, setIsTermsAgreed] = useState(false);
@@ -117,7 +117,7 @@ export default function SignupForm() {
                 name="code"
                 placeholder={
                   emailVerifyingTime > 0
-                    ? formatTime(emailVerifyingTime)
+                    ? formatTimeMsToHHMMSS(emailVerifyingTime)
                     : '인증번호 만료'
                 }
                 className="flex-1"

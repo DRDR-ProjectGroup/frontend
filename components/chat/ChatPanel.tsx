@@ -4,6 +4,7 @@ import InputText from '../ui/InputText';
 import MessageItem from './MessageItem';
 import { useChatMessages } from '@/hooks/chat/useChatMessages';
 import BottomButton from '../common/BottomButton';
+import { DateDivider } from '@/lib/utils/DateDivider';
 
 export default function ChatPanel() {
   const [chat, setChat] = useState('');
@@ -36,16 +37,33 @@ export default function ChatPanel() {
     <div className="h-full relative flex-1 rounded-md border border-primitive-grayPrimary p-4 flex flex-col">
       <div className="flex-1 h-full relative overflow-hidden">
         <div ref={containerRef} className="h-full overflow-y-auto">
+          {/* 채팅 메시지 목록 : 날짜 구분 DateDivider 추가 */}
           <div className="pb-4 pt-4 min-h-full flex flex-col gap-2 justify-end">
-            {messages.map((message, index) => (
-              <MessageItem
-                key={`${message.timestamp}-${index}`}
-                memberId={message.memberId}
-                nickname={message.nickname}
-                message={message.message}
-                timestamp={message.timestamp}
-              />
-            ))}
+            {messages.map((message, index) => {
+              const currentDate = new Date(message.timestamp).toDateString();
+
+              const prevMessage = messages[index - 1];
+              const prevDate = prevMessage
+                ? new Date(prevMessage.timestamp).toDateString()
+                : null;
+
+              const showDateDivider = currentDate !== prevDate;
+
+              return (
+                <div key={`${message.timestamp}-${index}`}>
+                  {showDateDivider && (
+                    <DateDivider timestamp={message.timestamp} />
+                  )}
+
+                  <MessageItem
+                    memberId={message.memberId}
+                    nickname={message.nickname}
+                    message={message.message}
+                    timestamp={message.timestamp}
+                  />
+                </div>
+              );
+            })}
           </div>
         </div>
         <BottomButton containerRef={containerRef} />
