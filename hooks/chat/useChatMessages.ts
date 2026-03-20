@@ -15,7 +15,7 @@ export const useChatMessages = () => {
   // 채팅 메시지 전송 행동 함수
   const sendMessage = (chat: string) => {
     const client = getStompClient();
-
+    if (!client) return;
     client.publish({
       destination: '/pub/chat/message',
       body: JSON.stringify({ message: chat }),

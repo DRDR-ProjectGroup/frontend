@@ -19,6 +19,11 @@ export default function ChatWrap() {
       return;
     }
     const client = getStompClient(); // websocket 연결
+    if (!client) {
+      alert('WebSocket 연결 실패');
+      router.replace('/login');
+      return;
+    }
     return () => {
       client.deactivate(); // 페이지 나가거나, 토큰 변경 시 websocket 연결 해제 (disconnect)
     };
