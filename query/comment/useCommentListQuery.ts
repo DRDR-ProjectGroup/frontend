@@ -1,6 +1,9 @@
 import { CommentListParams } from '@/types/api/comment';
 import { useQuery } from '@tanstack/react-query';
-import { fetchCommentCount, fetchCommentList } from '@/lib/api/comment';
+import {
+  fetchCommentCount,
+  fetchCommentList,
+} from '@/lib/api/client/comment/comment';
 
 // 댓글 리스트 조회
 export function useCommentListQuery(params: CommentListParams) {

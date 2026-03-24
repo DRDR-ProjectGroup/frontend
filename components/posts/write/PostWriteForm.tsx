@@ -20,7 +20,6 @@ import SelectCategory from './SelectCategory';
 import type { CategoryData } from '@/types/api/category';
 import { buildEditMediaPayload } from './utils/mediaDiff';
 import { updatePostAction } from '@/actions/post/update.actions';
-import { useAuthStore } from '@/lib/store/authStore';
 
 type PostWriteFormProps = {
   mode: 'create' | 'edit';
@@ -72,12 +71,6 @@ export default function PostWriteForm({
     formData: FormData;
     category: string;
   }) {
-    const accessToken = useAuthStore.getState().accessToken;
-    if (!accessToken) {
-      alert('로그인 후 이용해주세요.');
-      return;
-    }
-
     if (mode === 'create') {
       return createPostMutate.mutate(
         { formData, category },
@@ -104,7 +97,7 @@ export default function PostWriteForm({
 
       // server side action
       try {
-        await updatePostAction(accessToken, postId, formData);
+        await updatePostAction(postId, formData);
         clearMedia();
         alert('글 수정 완료!');
         router.push(`/posts/${postId}`);

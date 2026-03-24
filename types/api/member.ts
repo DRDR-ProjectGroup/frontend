@@ -1,5 +1,6 @@
 import { ApiResponse, Pagination } from './common';
 import { PostItem } from './postList';
+import { UserRole } from './auth';
 
 /* 내 정보 */
 // 내 정보 아이템 타입
@@ -8,6 +9,7 @@ export interface MemberInfoData {
   username: string;
   nickname: string;
   email: string;
+  role: UserRole;
 }
 
 // 내 정보 조회 API response 타입

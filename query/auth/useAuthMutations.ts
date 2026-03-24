@@ -1,4 +1,4 @@
-import { login, logout } from '@/lib/api/auth/auth.client';
+import { login, logout } from '@/lib/api/client/auth/auth';
 import { useAuthStore } from '@/lib/store/authStore';
 import { LoginRequest } from '@/types/api/auth';
 import { useMutation, useQueryClient } from '@tanstack/react-query';

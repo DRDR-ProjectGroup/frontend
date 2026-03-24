@@ -1,4 +1,4 @@
-import { getLikeCount } from '@/lib/api/like';
+import { getLikeCount } from '@/lib/api/client/like/like';
 import { useQuery } from '@tanstack/react-query';
 
 interface UseLikeQueryProps {

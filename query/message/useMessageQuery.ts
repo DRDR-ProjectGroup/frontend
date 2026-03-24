@@ -1,6 +1,9 @@
 import { MessageDetailParams, MessageListParams } from '@/types/api/message';
 import { useQuery } from '@tanstack/react-query';
-import { fetchMessageDetail, fetchMessageList } from '@/lib/api/message';
+import {
+  fetchMessageDetail,
+  fetchMessageList,
+} from '@/lib/api/client/message/message';
 
 // 쪽지 List 조회
 export function useMessageListQuery(params: MessageListParams) {

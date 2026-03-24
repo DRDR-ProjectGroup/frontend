@@ -1,4 +1,9 @@
-import { apiDelete, apiGet, apiPost, apiPut } from '@/lib/api/apiClient';
+import {
+  apiDelete,
+  apiGet,
+  apiPost,
+  apiPut,
+} from '@/lib/api/client/apiHelpers';
 import { GroupAndCategoryResponse } from '@/types/api/category';
 import { ApiResponse } from '@/types/api/common';
 

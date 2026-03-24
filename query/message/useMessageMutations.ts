@@ -1,4 +1,4 @@
-import { deleteMessage, sendMessage } from '@/lib/api/message';
+import { deleteMessage, sendMessage } from '@/lib/api/client/message/message';
 import { DeleteMessageParams, SendMessageRequest } from '@/types/api/message';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 

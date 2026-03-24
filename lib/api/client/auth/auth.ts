@@ -1,11 +1,10 @@
 import { LoginRequest, LoginResponse, LogoutResponse } from '@/types/api/auth';
-import { apiRequest, getApiBaseUrl } from '../apiClient';
-import { ApiError } from '../../error/api';
+import { getApiBaseUrl } from '@/lib/api/client/apiHelpers';
+import { apiRequest } from '@/lib/api/client/apiRequest';
+import { ApiError } from '@/lib/error/api';
 
 // 로그인
-export async function login(
-  request: LoginRequest,
-): Promise<LoginResponse & { accessToken: string }> {
+export async function login(request: LoginRequest): Promise<LoginResponse> {
   const baseUrl = getApiBaseUrl();
   const response = await apiRequest(`${baseUrl}/members/login`, {
     method: 'POST',
@@ -18,19 +17,7 @@ export async function login(
   if (!response.ok) {
     throw new ApiError(data.message, data.code);
   }
-
-  // Response Header에서 accessToken 추출
-  const authHeader = response.headers.get('Authorization');
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    throw new ApiError('토큰을 받지 못했습니다.', data.code);
-  }
-  const accessToken = authHeader.replace('Bearer ', '');
-
-  // body + accessToken 반환
-  return {
-    ...data,
-    accessToken,
-  };
+  return data;
 }
 
 // 로그아웃
@@ -50,7 +37,7 @@ export async function logout(): Promise<LogoutResponse> {
 }
 
 // 토큰 재발급 API 호출
-export async function refreshAccessToken(): Promise<string | null> {
+export async function reissueAccessToken(): Promise<void> {
   try {
     const baseUrl = getApiBaseUrl();
     const res = await fetch(`${baseUrl}/auth/reissue`, {
@@ -63,13 +50,6 @@ export async function refreshAccessToken(): Promise<string | null> {
     if (!res.ok) {
       throw new ApiError(result.message, result.code);
     }
-
-    // 응답 헤더에서 새 액세스 토큰 추출
-    const authHeader = res.headers.get('Authorization');
-    if (!authHeader) throw new ApiError('Authorization 헤더 없음', result.code);
-
-    const newToken = authHeader.replace('Bearer ', '');
-    return newToken;
   } catch (error) {
     console.log('reissue failed: ', error);
     throw error;

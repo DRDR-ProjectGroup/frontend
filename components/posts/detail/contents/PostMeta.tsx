@@ -1,5 +1,5 @@
 import { replacePlaceholdersWithUrls } from '@/components/posts/write/utils/imageProcessor';
-import { fetchPostDetail } from '@/lib/api/post/post.server';
+import { fetchPostDetail } from '@/lib/api/server/post/post';
 import PostMetaClient from './PostMetaClient';
 import { notFound } from 'next/navigation';
 
