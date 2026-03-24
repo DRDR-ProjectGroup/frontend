@@ -23,9 +23,6 @@ export async function updatePost(
     `/posts/${postId}`,
     formData,
     {
-      options: {
-        method: 'PUT',
-      },
       errorMessage: '게시글 수정 실패',
       handle404: true,
     },
