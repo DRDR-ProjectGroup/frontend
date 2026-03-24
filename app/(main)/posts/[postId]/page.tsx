@@ -22,7 +22,7 @@ export async function generateMetadata({
   const post = postDetailResponse.data;
 
   const metadata = {
-    title: post.title,
+    title: `${post.title} - 도란도란`,
     description: post.title,
     openGraph: {
       title: post.title,
