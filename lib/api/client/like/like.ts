@@ -1,4 +1,4 @@
-import { apiGet, apiPost } from '@/lib/api/apiClient';
+import { apiGet, apiPost } from '@/lib/api/client/apiHelpers';
 
 // 좋아요 / 싫어요 등록
 export async function likePost(

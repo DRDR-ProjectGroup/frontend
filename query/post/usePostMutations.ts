@@ -4,7 +4,7 @@ import {
   updatePost,
   deletePost,
   likePost,
-} from '@/lib/api/post/post.client';
+} from '@/lib/api/client/post/post';
 
 // 글 작성 Mutation Hook
 export function useCreatePostMutation() {

@@ -1,4 +1,4 @@
-import { apiDelete, apiGet, apiPost } from '@/lib/api/apiClient';
+import { apiDelete, apiGet, apiPost } from '@/lib/api/client/apiHelpers';
 import {
   DeleteMessageParams,
   DeleteMessageResponse,
@@ -26,7 +26,7 @@ export async function fetchMessageList(
   request: MessageListParams,
 ): Promise<MessageListResponse> {
   return apiGet<MessageListResponse>(
-    `/messages?type=${request.type}&page=${request.page}&size=2`,
+    `/messages?type=${request.type}&page=${request.page}&size=10`,
     {
       errorMessage: '쪽지 목록 조회 실패',
       requireAuthOptions: { requireAuth: true },

@@ -16,7 +16,7 @@ export default function LoginForm() {
     isPending: isLoginPending,
     error: loginError,
   } = useLoginMutation();
-  const setAuth = useAuthStore((state) => state.setAuth);
+  const initAuth = useAuthStore((state) => state.initAuth);
 
   const [formValues, setFormValues] = useState({
     username: '',
@@ -40,8 +40,8 @@ export default function LoginForm() {
       },
       {
         onSuccess: (data) => {
+          initAuth();
           router.push(redirect);
-          setAuth(data.accessToken); // Zustand store에 저장
         },
       },
     );

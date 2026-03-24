@@ -1,4 +1,4 @@
-import { likePost } from '@/lib/api/like';
+import { likePost } from '@/lib/api/client/like/like';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 // 글 좋아요/싫어요 Mutation Hook

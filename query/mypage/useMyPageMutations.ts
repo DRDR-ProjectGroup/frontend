@@ -1,4 +1,8 @@
-import { changeNickname, changePassword, resign } from '@/lib/api/mypage';
+import {
+  changeNickname,
+  changePassword,
+  resign,
+} from '@/lib/api/client/mypage/mypage';
 import {
   NicknameRequest,
   PasswordRequest,

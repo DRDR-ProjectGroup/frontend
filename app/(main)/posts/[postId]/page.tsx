@@ -2,7 +2,7 @@ import Comments from '@/components/posts/detail/comment/Comments';
 import PostMeta from '@/components/posts/detail/contents/PostMeta';
 import PostLike from '@/components/posts/detail/like/PostLike';
 import PostListWrap from '@/components/posts/list/PostListWrap';
-import { fetchPostDetail } from '@/lib/api/post/post.server';
+import { fetchPostDetail } from '@/lib/api/server/post/post';
 import type { PostListSortType } from '@/types/api/postList';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';

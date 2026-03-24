@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
-import { fetchGroupAndCategory } from '@/lib/api/admin/category';
-import { fetchAdminMemberList } from '@/lib/api/admin/member';
+import { fetchGroupAndCategory } from '@/lib/api/client/admin/category';
+import { fetchAdminMemberList } from '@/lib/api/client/admin/member';
 import { AdminMemberListParams } from '@/types/api/adminMember';
 
 // 회원 리스트 조회

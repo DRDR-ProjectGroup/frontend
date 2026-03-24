@@ -1,4 +1,4 @@
-import { changeAdminMemberStatus } from '@/lib/api/admin/member';
+import { changeAdminMemberStatus } from '@/lib/api/client/admin/member';
 import { ChangeMemberStatusRequest } from '@/types/api/adminMember';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 

@@ -1,5 +1,5 @@
 import { ApiResponse } from '@/types/api/common';
-import { apiPost } from '../apiClient';
+import { apiPost } from '../apiHelpers';
 
 // 공지 등록
 export async function postNotice(postId: string): Promise<ApiResponse> {
