@@ -7,7 +7,6 @@ export async function apiRequest(
 ): Promise<Response> {
   const buildHeaders = async (): Promise<HeadersInit> => {
     const cookieStore = await cookies();
-    console.log('cookieStore : ', cookieStore.toString());
     return {
       ...options.headers,
       Cookie: cookieStore.toString(),
