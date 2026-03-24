@@ -5,7 +5,7 @@ import {
   deleteGroup,
   updateCategory,
   updateGroup,
-} from '@/lib/api/admin/category';
+} from '@/lib/api/client/admin/category';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 // 그룹 추가

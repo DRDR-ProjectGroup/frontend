@@ -6,7 +6,7 @@ import {
   apiDelete,
   apiPostFormData,
   apiPutFormData,
-} from '@/lib/api/apiClient';
+} from '@/lib/api/client/apiHelpers';
 
 // 글 리스트 조회용 쿼리 파라미터 생성
 function buildSearchParams(params: PostListParams) {

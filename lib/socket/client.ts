@@ -2,10 +2,8 @@
 // SockJS : 연결 방식 (WebSocket or HTTP fallback (long polling 등))
 import { Client } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
-import { useAuthStore } from '../store/authStore';
 
 let client: Client | null = null;
-let currentToken: string | null = null;
 
 // 연결 성공 리스너 (subscribe 할 때 사용)
 const connectListeners: (() => void)[] = [];
@@ -19,18 +17,11 @@ export const removeOnConnectListener = (fn: () => void) => {
 
 // STOMP Client 생성 및 반환
 export const getStompClient = () => {
-  const accessToken = useAuthStore.getState().accessToken;
-  if (!accessToken) return null;
-
   const websocketUrl = process.env.NEXT_PUBLIC_WS_URL;
   if (!websocketUrl) return null;
 
-  // 토큰 바뀌면 재생성 -> 연결 해제 후 재연결 ("WebSocket은 HTTP처럼 매 요청마다 인증하지 않는다" : 연결 시 1번 인증 -> 이후 계속 유지)
-  if (client && currentToken !== accessToken) {
-    console.log('🔥 CLIENT EXIST AND TOKEN CHANGED => client deactivate');
-    client.deactivate();
-    client = null;
-  }
+  // 활성 상태면 기존 client 재사용
+  if (client?.active) return client;
 
   // 연결 종료 시 재생성
   if (client && !client.active) {
@@ -38,16 +29,10 @@ export const getStompClient = () => {
     client = null;
   }
 
-  if (client) return client;
-
-  currentToken = accessToken;
-
+  // 새로운 client 생성 (웹소켓 연결 시도)
   console.log('🔥 NEW CLIENT CREATED');
   client = new Client({
     webSocketFactory: () => new SockJS(websocketUrl),
-    connectHeaders: {
-      Authorization: `Bearer ${accessToken}`,
-    },
     reconnectDelay: 5000,
     onConnect: (frame) => {
       console.log('✅ WebSocket 연결 성공 => ', frame.headers);

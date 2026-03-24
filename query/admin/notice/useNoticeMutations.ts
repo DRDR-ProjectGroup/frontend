@@ -1,4 +1,4 @@
-import { postNotice } from '@/lib/api/admin/notice';
+import { postNotice } from '@/lib/api/client/admin/notice';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 // 공지 등록

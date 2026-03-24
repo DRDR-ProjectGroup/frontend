@@ -9,14 +9,18 @@ import {
   ResignResponse,
   MyCommentListResponse,
 } from '@/types/api/member';
-import { apiDelete, apiGet, apiPatch } from './apiClient';
+import { apiDelete, apiGet, apiPatch } from '../apiHelpers';
 
 /* 내 정보 */
 // 내 정보 조회
-export async function fetchMemberInfo(): Promise<MemberInfoResponse> {
+export async function fetchMemberInfo({
+  replaceLoginPage = true,
+}: {
+  replaceLoginPage?: boolean;
+}): Promise<MemberInfoResponse> {
   return apiGet<MemberInfoResponse>(`/members/me`, {
     errorMessage: '내 정보 조회 실패',
-    requireAuthOptions: { requireAuth: true },
+    requireAuthOptions: { requireAuth: true, replaceLoginPage },
   });
 }
 

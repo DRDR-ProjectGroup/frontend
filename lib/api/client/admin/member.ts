@@ -4,7 +4,7 @@ import {
   ChangeMemberStatusRequest,
   ChangeMemberStatusResponse,
 } from '@/types/api/adminMember';
-import { apiGet, apiPatch } from '../apiClient';
+import { apiGet, apiPatch } from '../apiHelpers';
 
 // 회원 조회
 export async function fetchAdminMemberList(

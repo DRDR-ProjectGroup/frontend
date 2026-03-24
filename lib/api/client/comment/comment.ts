@@ -9,7 +9,7 @@ import {
   DeleteCommentResponse,
   CommentCountResponse,
 } from '@/types/api/comment';
-import { apiDelete, apiGet, apiPatch, apiPost } from './apiClient';
+import { apiDelete, apiGet, apiPatch, apiPost } from '../apiHelpers';
 
 // 댓글 리스트 조회
 export async function fetchCommentList(

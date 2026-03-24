@@ -28,6 +28,7 @@ export default function Providers({ children }: { children: ReactNode }) {
   // 인증 상태 초기화 여부
   const [isAuthReady, setIsAuthReady] = useState(false);
 
+  // StrictMode 중복 실행 방지 (useEffect 중복 실행 방지)
   const didInitRef = useRef(false);
 
   useEffect(() => {

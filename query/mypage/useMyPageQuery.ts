@@ -3,13 +3,13 @@ import {
   fetchMemberInfo,
   fetchMyComments,
   fetchMyPosts,
-} from '@/lib/api/mypage';
+} from '@/lib/api/client/mypage/mypage';
 
 // 내 정보 조회
 export function useMyInfoQuery() {
   return useQuery({
     queryKey: ['myPage', 'info'],
-    queryFn: () => fetchMemberInfo(),
+    queryFn: () => fetchMemberInfo({ replaceLoginPage: true }),
     staleTime: 30000,
     gcTime: 5 * 60000, // 5분
   });
