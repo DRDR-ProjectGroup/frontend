@@ -86,6 +86,7 @@ export default function PostList({
                     <Link
                       href={`/posts/${notice.postId}?category=${category}&page=${page}&sort=${sort}&currentPostId=${notice.postId}`}
                       className="truncate max-w-[calc(100%-16px)] hover:underline text-left"
+                      prefetch={false}
                     >
                       {notice.title}
                     </Link>
