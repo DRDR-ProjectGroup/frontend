@@ -6,20 +6,12 @@ import { Heading } from '@/components/ui/Heading';
 import InputText from '@/components/ui/InputText';
 import Button from '@/components/ui/Button';
 import { useState, useEffect, useRef } from 'react';
-import {
-  useCreatePostMutation,
-  useUpdatePostMutation,
-} from '@/query/post/usePostMutations';
-import {
-  replaceImagesWithPlaceholders,
-  getMediaCountInContent,
-} from './utils/imageProcessor';
+import { getMediaCountInContent } from './utils/imageProcessor';
 import { usePostMediaManager } from './hooks/usePostMediaManager';
-import { useRouter } from 'next/navigation';
 import SelectCategory from './SelectCategory';
 import type { CategoryData } from '@/types/api/category';
-import { buildEditMediaPayload } from './utils/mediaDiff';
-import { updatePostAction } from '@/actions/post/update.actions';
+import { usePostSubmit } from './hooks/usePostSubmit';
+import { buildPostFormData, buildPostPayload } from './utils/postSubmission';
 
 type PostWriteFormProps = {
   mode: 'create' | 'edit';
@@ -36,7 +28,6 @@ export default function PostWriteForm({
   initialData,
   postId,
 }: PostWriteFormProps) {
-  const router = useRouter();
   const [title, setTitle] = useState(initialData?.title || '');
   const [category, setCategory] = useState(
     initialData?.category?.categoryAddress || '',
@@ -49,8 +40,12 @@ export default function PostWriteForm({
   const { handleMediaUpload, getMediaFiles, clearMedia } = usePostMediaManager({
     getEditorHtml,
   });
-  const createPostMutate = useCreatePostMutation();
-  const updatePostMutate = useUpdatePostMutation();
+  const { submitPost, isPending, isSuccess } = usePostSubmit({ clearMedia });
+  const [canSubmit, setCanSubmit] = useState(title && category);
+
+  useEffect(() => {
+    setCanSubmit(title && category);
+  }, [title, category]);
 
   // (수정 모드) 에디터에 초기 콘텐츠 설정
   useEffect(() => {
@@ -58,71 +53,6 @@ export default function PostWriteForm({
       editor.commands.setContent(initialData.content);
     }
   }, [mode, editor, initialData?.content]);
-
-  // 글 작성 or 수정 api 호출
-  async function submitPostMutation({
-    mode,
-    postId,
-    formData,
-    category,
-  }: {
-    mode: 'create' | 'edit';
-    postId?: number;
-    formData: FormData;
-    category: string;
-  }) {
-    if (mode === 'create') {
-      return createPostMutate.mutate(
-        { formData, category },
-        {
-          onSuccess: (data) => {
-            clearMedia();
-            alert('글 작성 완료!');
-            if (data.code === 201 && data.data?.postId) {
-              router.push(`/posts/${data.data.postId}`);
-            }
-          },
-          onError: (error) => {
-            console.error('글 작성 실패:', error);
-          },
-        },
-      );
-    }
-
-    if (mode === 'edit') {
-      if (!postId) {
-        alert('글 ID가 없습니다.');
-        return;
-      }
-
-      // server side action
-      try {
-        await updatePostAction(postId, formData);
-        clearMedia();
-        alert('글 수정 완료!');
-        router.push(`/posts/${postId}`);
-      } catch (error) {
-        console.error('글 수정 실패:', error);
-        alert('글 수정에 실패했습니다.');
-      }
-
-      // client side mutation
-      // return updatePostMutate.mutate(
-      //   { postId, formData },
-      //   {
-      //     onSuccess: (data) => {
-      //       clearMedia();
-      //       alert('글 수정 완료!');
-      //       router.push(`/posts/${postId}`);
-      //     },
-      //     onError: (error) => {
-      //       console.error('글 수정 실패:', error);
-      //       alert('글 수정에 실패했습니다.');
-      //     },
-      //   },
-      // );
-    }
-  }
 
   // 글 작성 완료 시 수행
   const handleSubmit = async () => {
@@ -134,54 +64,21 @@ export default function PostWriteForm({
 
     try {
       const html = editor.getHTML();
-      const processedHtml = replaceImagesWithPlaceholders(html);
       const newImageFiles = getMediaFiles(html);
-
-      // 1. 기본 payload
-      let postPayload = {
+      const postPayload = buildPostPayload({
+        mode,
         title,
-        content: processedHtml,
-      };
+        initialContent: initialData?.content,
+        currentHtml: html,
+      });
+      const formData = buildPostFormData(postPayload, newImageFiles);
 
-      // 2. edit이면 mediaDiff (html 내 미디어 파일 변경 정보) 추가
-      if (mode === 'edit') {
-        if (!postId) {
-          alert('글 ID가 없습니다.');
-          return;
-        }
-
-        const mediaPayload = buildEditMediaPayload(
-          initialData?.content || '',
-          html,
-        );
-
-        postPayload = {
-          ...postPayload,
-          ...mediaPayload,
-        };
-      }
-
-      // 3. formData는 공통
-      const formData = new FormData();
-      formData.append(
-        'post',
-        new Blob([JSON.stringify(postPayload)], {
-          type: 'application/json',
-        }),
-      );
-
-      newImageFiles.forEach((file) => formData.append('files', file));
-
-      // 4. submit 실행
-      await submitPostMutation({ mode, postId, formData, category });
+      await submitPost({ mode, postId, formData, category });
     } catch (error) {
       console.error('글 처리 실패:', error);
       alert('글 처리에 실패했습니다.');
     }
   };
-
-  const isPending =
-    mode === 'create' ? createPostMutate.isPending : updatePostMutate.isPending;
 
   return (
     <div>
@@ -233,11 +130,13 @@ export default function PostWriteForm({
           <Button
             variant="primary"
             onClick={handleSubmit}
-            disabled={isPending || !title || !category}
+            disabled={!canSubmit || isPending || isSuccess}
           >
-            {isPending
-              ? `${mode === 'create' ? '작성' : '수정'} 중...`
-              : `${mode === 'create' ? '작성' : '수정'} 완료`}
+            {isPending && isSuccess
+              ? '제출 완료'
+              : isPending
+                ? '제출 중...'
+                : '제출하기'}
           </Button>
         </div>
       </div>
