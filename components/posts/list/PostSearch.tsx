@@ -30,6 +30,7 @@ export default function PostSearch({
 
   // url 이동
   const onSubmit = () => {
+    if (keyword.trim() === '') return;
     router.push(
       `/category/${category}?searchMode=true&searchTarget=${target}&searchKeyword=${keyword}&page=1&sort=LATEST`,
     );

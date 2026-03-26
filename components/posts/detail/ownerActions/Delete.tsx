@@ -1,24 +1,22 @@
 import Button from '@/components/ui/Button';
-import { useDeletePostMutation } from '@/query/post/usePostMutations';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import DeleteModal from '@/components/common/modal/DeleteModal';
+import { deletePostAction } from '@/actions/post/post.actions';
 
 export default function Delete({ postId }: { postId: number }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const router = useRouter();
-  const { mutate: deletePostMutation } = useDeletePostMutation();
 
-  const handleDelete = () => {
-    deletePostMutation(postId, {
-      onSuccess: () => {
-        router.push('/');
-      },
-      onError: (error) => {
-        alert('글 삭제에 실패하였습니다.');
-        console.error(error);
-      },
-    });
+  const handleDelete = async () => {
+    try {
+      await deletePostAction(postId);
+      alert('글 삭제에 성공하였습니다.');
+      router.push('/');
+    } catch (error) {
+      alert('글 삭제에 실패하였습니다.');
+      console.error(error);
+    }
   };
 
   return (

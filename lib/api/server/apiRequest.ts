@@ -15,9 +15,9 @@ export async function apiRequest(
     ...rest.headers,
   };
 
-  // ✅ 인증 필요할 때만 cookies 사용
+  // ✅ 인증 필요한 fetch 요청 시만 cookies 사용
   // Next.js에서 서버 fetch 내에 cookies 사용 시 => Next.js가 "이 요청은 사용자마다 결과가 달라질 수 있음" 라고 판단 => 캐시 비활성화
-  // 👉 인증 필수 api 요청 시 => 캐시 포기
+  // 👉 인증 필수 fetch 요청 시 => 캐시 포기
   if (withAuth) {
     const cookieStore = await cookies();
     headers = {
