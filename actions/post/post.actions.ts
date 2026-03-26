@@ -1,7 +1,18 @@
 'use server';
 
-import { updatePost } from '@/lib/api/server/post/post';
+import { createPost, updatePost } from '@/lib/api/server/post/post';
 import { revalidateTag } from 'next/cache';
+
+// 글 작성
+export async function createPostAction(formData: FormData, category: string) {
+  try {
+    const data = await createPost(formData, category);
+    return data;
+  } catch (error) {
+    console.error('게시글 작성 실패: ', error);
+    throw error;
+  }
+}
 
 // 글 수정
 export async function updatePostAction(postId: number, formData: FormData) {

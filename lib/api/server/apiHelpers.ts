@@ -6,7 +6,6 @@ interface ServerApiRequestOptionalParamsType {
   body?: any;
   options?: RequestInit;
   errorMessage?: string;
-  handle404?: boolean;
 }
 
 export function getServerApiBaseUrl(): string {
@@ -20,9 +19,8 @@ export function getServerApiBaseUrl(): string {
 async function handleServerResponse<T>(
   response: Response,
   errorMessage?: string,
-  handle404 = true,
 ): Promise<T> {
-  if (response.status === 404 && handle404) {
+  if (response.status === 404) {
     notFound();
   }
 
@@ -41,11 +39,7 @@ async function handleServerResponse<T>(
 
 export async function serverApiGet<T = any>(
   endpoint: string,
-  {
-    options,
-    errorMessage,
-    handle404 = true,
-  }: ServerApiRequestOptionalParamsType = {},
+  { options, errorMessage }: ServerApiRequestOptionalParamsType = {},
 ): Promise<T> {
   const baseUrl = getServerApiBaseUrl();
   const response = await apiRequest(`${baseUrl}${endpoint}`, {
@@ -57,17 +51,12 @@ export async function serverApiGet<T = any>(
     },
   });
 
-  return handleServerResponse<T>(response, errorMessage, handle404);
+  return handleServerResponse<T>(response, errorMessage);
 }
 
 export async function serverApiPost<T = any>(
   endpoint: string,
-  {
-    body,
-    options,
-    errorMessage,
-    handle404 = true,
-  }: ServerApiRequestOptionalParamsType = {},
+  { body, options, errorMessage }: ServerApiRequestOptionalParamsType = {},
 ): Promise<T> {
   const baseUrl = getServerApiBaseUrl();
   const response = await apiRequest(`${baseUrl}${endpoint}`, {
@@ -80,17 +69,12 @@ export async function serverApiPost<T = any>(
     body: body ? JSON.stringify(body) : undefined,
   });
 
-  return handleServerResponse<T>(response, errorMessage, handle404);
+  return handleServerResponse<T>(response, errorMessage);
 }
 
 export async function serverApiPut<T = any>(
   endpoint: string,
-  {
-    body,
-    options,
-    errorMessage,
-    handle404 = true,
-  }: ServerApiRequestOptionalParamsType = {},
+  { body, options, errorMessage }: ServerApiRequestOptionalParamsType = {},
 ): Promise<T> {
   const baseUrl = getServerApiBaseUrl();
   const response = await apiRequest(`${baseUrl}${endpoint}`, {
@@ -103,17 +87,12 @@ export async function serverApiPut<T = any>(
     body: body ? JSON.stringify(body) : undefined,
   });
 
-  return handleServerResponse<T>(response, errorMessage, handle404);
+  return handleServerResponse<T>(response, errorMessage);
 }
 
 export async function serverApiPatch<T = any>(
   endpoint: string,
-  {
-    body,
-    options,
-    errorMessage,
-    handle404 = true,
-  }: ServerApiRequestOptionalParamsType = {},
+  { body, options, errorMessage }: ServerApiRequestOptionalParamsType = {},
 ): Promise<T> {
   const baseUrl = getServerApiBaseUrl();
   const response = await apiRequest(`${baseUrl}${endpoint}`, {
@@ -126,17 +105,12 @@ export async function serverApiPatch<T = any>(
     body: body ? JSON.stringify(body) : undefined,
   });
 
-  return handleServerResponse<T>(response, errorMessage, handle404);
+  return handleServerResponse<T>(response, errorMessage);
 }
 
 export async function serverApiDelete<T = any>(
   endpoint: string,
-  {
-    body,
-    options,
-    errorMessage,
-    handle404 = true,
-  }: ServerApiRequestOptionalParamsType = {},
+  { body, options, errorMessage }: ServerApiRequestOptionalParamsType = {},
 ): Promise<T> {
   const baseUrl = getServerApiBaseUrl();
   const response = await apiRequest(`${baseUrl}${endpoint}`, {
@@ -149,17 +123,13 @@ export async function serverApiDelete<T = any>(
     body: body ? JSON.stringify(body) : undefined,
   });
 
-  return handleServerResponse<T>(response, errorMessage, handle404);
+  return handleServerResponse<T>(response, errorMessage);
 }
 
 export async function serverApiPostFormData<T = any>(
   endpoint: string,
   formData: FormData,
-  {
-    options,
-    errorMessage,
-    handle404 = true,
-  }: ServerApiRequestOptionalParamsType = {},
+  { options, errorMessage }: ServerApiRequestOptionalParamsType = {},
 ): Promise<T> {
   const baseUrl = getServerApiBaseUrl();
   const response = await apiRequest(`${baseUrl}${endpoint}`, {
@@ -168,17 +138,13 @@ export async function serverApiPostFormData<T = any>(
     body: formData,
   });
 
-  return handleServerResponse<T>(response, errorMessage, handle404);
+  return handleServerResponse<T>(response, errorMessage);
 }
 
 export async function serverApiPutFormData<T = any>(
   endpoint: string,
   formData: FormData,
-  {
-    options,
-    errorMessage,
-    handle404 = true,
-  }: ServerApiRequestOptionalParamsType = {},
+  { options, errorMessage }: ServerApiRequestOptionalParamsType = {},
 ): Promise<T> {
   const baseUrl = getServerApiBaseUrl();
   const response = await apiRequest(`${baseUrl}${endpoint}`, {
@@ -187,5 +153,5 @@ export async function serverApiPutFormData<T = any>(
     body: formData,
   });
 
-  return handleServerResponse<T>(response, errorMessage, handle404);
+  return handleServerResponse<T>(response, errorMessage);
 }

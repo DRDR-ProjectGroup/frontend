@@ -26,3 +26,6 @@ export interface MediaItem {
 
 // 게시글 상세 조회 API 응답 타입
 export type PostDetailResponse = ApiResponse<PostDetailData>;
+
+// 게시글 상세 데이터 타입
+export type PostData = NonNullable<PostDetailResponse['data']>;
