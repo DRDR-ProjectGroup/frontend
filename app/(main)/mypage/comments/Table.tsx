@@ -26,6 +26,7 @@ export default function Table({ comments }: { comments: MyCommentItem[] }) {
               <Link
                 href={`/posts/${comment.postId}`}
                 className="truncate max-w-[calc(100%-16px)] font-bold hover:underline text-left"
+                prefetch={false}
               >
                 {comment.content}
               </Link>

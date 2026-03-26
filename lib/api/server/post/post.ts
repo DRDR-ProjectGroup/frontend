@@ -14,7 +14,6 @@ export async function fetchPostList(
   params: PostListParams,
 ): Promise<PostListResponse> {
   const sp = buildSearchParams(params);
-  const category = params.category || 'all';
   return serverApiGet<PostListResponse>(`/posts?${sp.toString()}`, {
     options: {
       next: { revalidate: 60, tags: ['post-list'] },
