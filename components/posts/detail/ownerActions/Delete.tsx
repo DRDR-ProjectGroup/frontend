@@ -12,11 +12,11 @@ export default function Delete({ postId }: { postId: number }) {
   const handleDelete = async () => {
     try {
       await deletePostAction(postId);
-      alert('글 삭제에 성공하였습니다.');
+      console.log('글 삭제에 성공하였습니다.');
       router.push('/');
       router.refresh();
     } catch (error) {
-      console.log(getErrorMessage(error, '글 삭제에 실패하였습니다.'));
+      alert(getErrorMessage(error, '글 삭제에 실패하였습니다.'));
     }
   };
 

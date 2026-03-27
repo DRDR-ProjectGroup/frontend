@@ -30,17 +30,16 @@ export async function apiRequest(
   });
 
   if (response.status === 401 && withAuth) {
-    await reissueAccessToken();
-
-    const cookieStore = await cookies();
-    const retryHeaders = {
-      ...headers,
-      Cookie: cookieStore.toString(),
-    };
+    console.log('401 에러 발생');
+    const { cookieHeader } = await reissueAccessToken();
+    console.log('accessToken 재발급 성공');
 
     response = await fetch(url, {
       ...rest,
-      headers: retryHeaders,
+      headers: {
+        ...headers,
+        Cookie: cookieHeader,
+      },
     });
   }
 

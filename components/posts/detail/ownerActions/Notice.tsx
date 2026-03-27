@@ -17,11 +17,12 @@ export default function Notice({ postId, isNotice }: NoticeProps) {
   const handlePostNotice = async () => {
     try {
       const data = await createNoticeAction(postId);
-      setIsModalOpen(false);
       console.log(data.message || '공지 등록 성공');
       router.refresh();
     } catch (error) {
-      console.log(getErrorMessage(error, '공지 등록 실패'));
+      alert(getErrorMessage(error, '공지 등록 실패'));
+    } finally {
+      setIsModalOpen(false);
     }
   };
 
