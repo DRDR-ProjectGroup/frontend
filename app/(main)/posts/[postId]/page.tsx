@@ -2,7 +2,8 @@ import Comments from '@/components/posts/detail/comment/Comments';
 import PostMeta from '@/components/posts/detail/contents/PostMeta';
 import PostLike from '@/components/posts/detail/like/PostLike';
 import PostListWrap from '@/components/posts/list/PostListWrap';
-import { fetchPostDetail } from '@/lib/api/server/post/post';
+import { fetchPostDetail, fetchPostList } from '@/lib/api/server/post/post';
+import { getPostListParams } from '@/lib/utils/getPostListParams';
 import type { PostListSortType } from '@/types/api/postList';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
@@ -62,6 +63,20 @@ export default async function Page({
 
   const postIdNumber = Number(postId);
 
+  const postListParamsQuery = {
+    category: category,
+    page: page ? Number(page) : undefined,
+    sort: sort as PostListSortType | undefined,
+    currentPostId: currentPostId ? Number(currentPostId) : undefined,
+  };
+
+  const postListParams = getPostListParams(postListParamsQuery);
+  const postListResponse = await fetchPostList(postListParams);
+  if (!postListResponse.data || postListResponse.code !== 200) {
+    notFound();
+  }
+  const postListData = postListResponse.data;
+
   return (
     <div>
       <div>
@@ -76,12 +91,11 @@ export default async function Page({
       </div>
 
       {/* 이전에 보던 카테고리와 페이지 상태를 유지한 글 리스트 */}
-      {currentPostId && (
+      {postListParamsQuery.currentPostId && (
         <div className="mt-8">
           <PostListWrap
-            category={category}
-            page={page ? Number(page) : undefined}
-            sort={sort as PostListSortType | undefined}
+            postListParams={postListParams}
+            postListData={postListData}
           />
         </div>
       )}

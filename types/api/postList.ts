@@ -41,3 +41,9 @@ export type PostListSortType = 'POPULAR' | 'LATEST';
 
 // searchTarget
 export type PostListSearchTargetType = 'ALL' | 'TITLE' | 'CONTENT' | 'AUTHOR';
+
+// postListParamsQuery
+export interface PostListParamsQuery extends PostListParams {
+  currentPostId?: number;
+  searchMode?: boolean;
+}
