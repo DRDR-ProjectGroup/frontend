@@ -7,3 +7,12 @@ export class ApiError extends Error {
     this.code = code;
   }
 }
+
+export function getErrorMessage(
+  error: unknown,
+  fallback = '오류가 발생했습니다',
+): string {
+  if (error instanceof ApiError) return error.message;
+  if (error instanceof Error) return error.message;
+  return fallback;
+}

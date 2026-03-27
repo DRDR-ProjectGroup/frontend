@@ -1,6 +1,11 @@
 'use server';
 
-import { createPost, updatePost, deletePost } from '@/lib/api/server/post/post';
+import {
+  createPost,
+  updatePost,
+  deletePost,
+  createNotice,
+} from '@/lib/api/server/post/post';
 import { revalidateTag } from 'next/cache';
 
 // 글 작성
@@ -37,6 +42,19 @@ export async function deletePostAction(postId: number) {
     return data;
   } catch (error) {
     console.error('게시글 삭제 실패: ', error);
+    throw error;
+  }
+}
+
+// 공지 등록
+export async function createNoticeAction(postId: number) {
+  try {
+    const data = await createNotice(postId);
+    revalidateTag(`post-detail-${postId}`, 'max');
+    revalidateTag('post-list', 'max');
+    return data;
+  } catch (error) {
+    console.error('공지 등록 실패: ', error);
     throw error;
   }
 }

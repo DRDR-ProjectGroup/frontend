@@ -1,10 +1,10 @@
 import { notFound } from 'next/navigation';
-import { apiRequest } from './apiRequest';
+import { apiRequest, ApiRequestOptions } from './apiRequest';
 import { ApiError } from '@/lib/error/api';
 
 interface ServerApiRequestOptionalParamsType {
   body?: any;
-  options?: RequestInit;
+  options?: ApiRequestOptions;
   errorMessage?: string;
 }
 
