@@ -6,14 +6,15 @@ import {
   deletePost,
   createNotice,
 } from '@/lib/api/server/post/post';
-import { revalidateTag } from 'next/cache';
+import { revalidatePath, revalidateTag } from 'next/cache';
 
 // 글 작성
 export async function createPostAction(formData: FormData, category: string) {
   try {
-    const data = await createPost(formData, category);
+    const response = await createPost(formData, category);
     revalidateTag('post-list', 'max');
-    return data;
+    revalidatePath('/', 'page');
+    return response;
   } catch (error) {
     console.error('게시글 작성 실패: ', error);
     throw error;
@@ -23,10 +24,11 @@ export async function createPostAction(formData: FormData, category: string) {
 // 글 수정
 export async function updatePostAction(postId: number, formData: FormData) {
   try {
-    const data = await updatePost(postId, formData);
+    const response = await updatePost(postId, formData);
     revalidateTag(`post-detail-${postId}`, 'max');
     revalidateTag('post-list', 'max');
-    return data;
+    revalidatePath('/', 'page');
+    return response;
   } catch (error) {
     console.error('게시글 수정 실패: ', error);
     throw error;
@@ -36,10 +38,11 @@ export async function updatePostAction(postId: number, formData: FormData) {
 // 글 삭제
 export async function deletePostAction(postId: number) {
   try {
-    const data = await deletePost(postId);
+    const response = await deletePost(postId);
     revalidateTag(`post-detail-${postId}`, 'max');
     revalidateTag('post-list', 'max');
-    return data;
+    revalidatePath('/', 'page');
+    return response;
   } catch (error) {
     console.error('게시글 삭제 실패: ', error);
     throw error;
@@ -49,10 +52,11 @@ export async function deletePostAction(postId: number) {
 // 공지 등록
 export async function createNoticeAction(postId: number) {
   try {
-    const data = await createNotice(postId);
+    const response = await createNotice(postId);
     revalidateTag(`post-detail-${postId}`, 'max');
     revalidateTag('post-list', 'max');
-    return data;
+    revalidatePath('/', 'page');
+    return response;
   } catch (error) {
     console.error('공지 등록 실패: ', error);
     throw error;
