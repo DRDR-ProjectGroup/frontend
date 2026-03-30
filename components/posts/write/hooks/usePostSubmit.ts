@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   createPostAction,
@@ -21,45 +21,50 @@ export function usePostSubmit({ clearMedia }: UsePostSubmitOptions) {
   const [isPending, setIsPending] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
-  const submitPost = useCallback(
-    async ({ mode, postId, formData, category }: SubmitPostParams) => {
-      if (mode === 'create') {
-        try {
-          setIsPending(true);
-          const response = await createPostAction(formData, category);
-          clearMedia();
-          alert('글 작성 완료!');
-          setIsSuccess(true);
-          if (response.code === 201 && response.data?.postId) {
-            router.push(`/posts/${response.data.postId}`);
-          }
-        } catch (error) {
-          setIsPending(false);
-          setIsSuccess(false);
-          throw error;
-        }
-        return;
-      }
-
-      if (!postId) {
-        alert('글 ID가 없습니다.');
-        return;
-      }
-
+  const submitPost = async ({
+    mode,
+    postId,
+    formData,
+    category,
+  }: SubmitPostParams) => {
+    if (mode === 'create') {
       try {
         setIsPending(true);
-        await updatePostAction(postId, formData);
+        const response = await createPostAction(formData, category);
         clearMedia();
-        alert('글 수정 완료!');
-        router.push(`/posts/${postId}`);
+        setIsSuccess(true);
+        if (response.code === 201 && response.data?.postId) {
+          router.refresh();
+          router.push(`/posts/${response.data.postId}`);
+        }
       } catch (error) {
         setIsPending(false);
         setIsSuccess(false);
+        alert('글 작성 실패!');
         throw error;
       }
-    },
-    [clearMedia, router],
-  );
+      return;
+    }
+
+    if (!postId) {
+      alert('글 ID가 없습니다.');
+      return;
+    }
+
+    try {
+      setIsPending(true);
+      await updatePostAction(postId, formData);
+      clearMedia();
+      setIsSuccess(true);
+      router.refresh();
+      router.push(`/posts/${postId}`);
+    } catch (error) {
+      setIsPending(false);
+      setIsSuccess(false);
+      alert('글 수정 실패!');
+      throw error;
+    }
+  };
 
   return {
     submitPost,

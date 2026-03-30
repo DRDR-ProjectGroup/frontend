@@ -18,7 +18,8 @@ export async function fetchPostList(
   const sp = buildSearchParams(params);
   return serverApiGet<PostListResponse>(`/posts?${sp.toString()}`, {
     options: {
-      next: { revalidate: 60, tags: ['post-list'] },
+      // next: { revalidate: 60, tags: ['post-list'] },
+      cache: 'no-store',
       withAuth: false,
     },
   });
@@ -28,11 +29,7 @@ export async function fetchPostList(
 export async function fetchPostDetail(
   postId: number,
 ): Promise<PostDetailResponse> {
-  return serverApiGet<PostDetailResponse>(`/posts/${postId}`, {
-    options: {
-      next: { revalidate: 60, tags: [`post-detail-${postId}`] },
-    },
-  });
+  return serverApiGet<PostDetailResponse>(`/posts/${postId}`);
 }
 
 // 게시글 작성
