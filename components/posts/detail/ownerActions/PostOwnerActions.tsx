@@ -19,7 +19,9 @@ export default function PostOwnerActions({
   return (
     <div className="flex items-center gap-2">
       {userId === postAuthorId.toString() && <Edit postId={postId} />}
-      <Delete postId={postId} />
+      {(userId === postAuthorId.toString() || userRole === 'ROLE_ADMIN') && (
+        <Delete postId={postId} />
+      )}
       {userRole === 'ROLE_ADMIN' && (
         <Notice postId={postId} isNotice={isNotice} />
       )}

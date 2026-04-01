@@ -1,32 +1,45 @@
 import { cookies } from 'next/headers';
 import { reissueAccessToken } from './auth/auth';
 
+export interface ApiRequestOptions extends RequestInit {
+  withAuth?: boolean;
+}
+
 export async function apiRequest(
   url: string,
-  options: RequestInit = {},
+  options: ApiRequestOptions = {},
 ): Promise<Response> {
-  const buildHeaders = async (): Promise<HeadersInit> => {
-    const cookieStore = await cookies();
-    return {
-      ...options.headers,
-      Cookie: cookieStore.toString(),
-    };
+  const { withAuth = true, ...rest } = options;
+
+  let headers: HeadersInit = {
+    ...rest.headers,
   };
 
-  const headers = await buildHeaders();
+  // 인증 필수 fetch 요청 시 (cookie 사용) => 캐시 비활성화
+  if (withAuth) {
+    const cookieStore = await cookies();
+    headers = {
+      ...headers,
+      Cookie: cookieStore.toString(),
+    };
+  }
 
   let response = await fetch(url, {
-    ...options,
+    ...rest,
     headers,
   });
 
-  if (response.status === 401) {
-    await reissueAccessToken();
-    const retryHeaders = await buildHeaders();
+  if (response.status === 401 && withAuth) {
+    console.log('401 에러 발생');
+    const { cookieHeader } = await reissueAccessToken();
+    console.log('accessToken 재발급 성공');
 
     response = await fetch(url, {
-      ...options,
-      headers: retryHeaders,
+      ...rest,
+      headers: {
+        ...headers,
+        Cookie: cookieHeader,
+      },
     });
   }
 

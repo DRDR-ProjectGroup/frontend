@@ -1,7 +1,9 @@
 import Button from '@/components/ui/Button';
 import { useState } from 'react';
-import { usePostNoticeMutation } from '@/query/admin/notice/useNoticeMutations';
 import ConfirmModal from '@/components/common/modal/ConfirmModal';
+import { createNoticeAction } from '@/actions/post/post.actions';
+import { getErrorMessage } from '@/lib/error/api';
+import { useRouter } from 'next/navigation';
 
 interface NoticeProps {
   postId: number;
@@ -9,27 +11,19 @@ interface NoticeProps {
 }
 
 export default function Notice({ postId, isNotice }: NoticeProps) {
+  const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { mutate: postNoticeMutation } = usePostNoticeMutation();
 
-  const handlePostNotice = () => {
-    postNoticeMutation(
-      { postId: postId.toString() },
-      {
-        onSuccess: () => {
-          alert(isNotice ? '공지 해제 성공' : '공지 등록 성공');
-          setIsModalOpen(false);
-        },
-        onError: (error) => {
-          alert(
-            isNotice
-              ? '공지 해제에 실패하였습니다.'
-              : '공지 등록에 실패하였습니다.',
-          );
-          console.error(error);
-        },
-      },
-    );
+  const handlePostNotice = async () => {
+    try {
+      const data = await createNoticeAction(postId);
+      console.log(data.message || '공지 등록 성공');
+      router.refresh();
+    } catch (error) {
+      alert(getErrorMessage(error, '공지 등록 실패'));
+    } finally {
+      setIsModalOpen(false);
+    }
   };
 
   return (

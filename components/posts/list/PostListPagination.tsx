@@ -2,25 +2,20 @@
 
 import Pagination from '@/components/common/Pagination';
 import { useRouter } from 'next/navigation';
-import { PostListParams } from '@/types/api/postList';
+import { PostListParamsQuery } from '@/types/api/postList';
 
-interface PostListPaginationProps extends PostListParams {
-  searchMode: boolean;
+interface PostListPaginationProps extends PostListParamsQuery {
   totalPages: number;
-  isLoading: boolean;
-  isError: boolean;
 }
 
 export default function PostListPagination({
   searchMode,
-  category = 'all',
+  category,
   page,
   sort,
-  totalPages,
-  isLoading,
-  isError,
   searchTarget,
   searchKeyword,
+  totalPages,
 }: PostListPaginationProps) {
   const router = useRouter();
 
@@ -38,7 +33,6 @@ export default function PostListPagination({
       currentPage={page ?? 1}
       totalPages={totalPages}
       onPageChange={onPageChange}
-      disabled={isLoading || isError}
       showEllipsis={true} // 게시글이 많을 때 ellipsis 사용
       hideOnSinglePage={true} // 페이지가 1개면 숨김
       className="mt-6"
