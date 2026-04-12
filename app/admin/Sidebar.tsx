@@ -1,7 +1,7 @@
 import Logo from '@/components/common/Logo';
 import Button from '@/components/ui/Button';
 import { RiMenuFold2Line, RiMenuFoldLine } from 'react-icons/ri';
-import { NavMenu } from '@/app/admin/layout';
+import type { NavMenu } from '@/app/admin/types';
 import Link from 'next/link';
 import { twMerge } from 'tailwind-merge';
 import { useState } from 'react';

@@ -1,5 +1,5 @@
 import { Heading } from '@/components/ui/Heading';
-import { NavMenu } from './layout';
+import type { NavMenu } from './types';
 
 interface MainProps {
   children: React.ReactNode;

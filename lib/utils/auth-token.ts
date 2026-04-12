@@ -1,5 +1,4 @@
 import { UserRole } from '@/types/api/auth';
-import { useAuthStore } from '../store/authStore';
 
 // JWT 토큰 관련 유틸리티 함수
 interface JWTPayload {
