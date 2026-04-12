@@ -1,65 +1,30 @@
-'use client';
+import type { ReactNode } from 'react';
+import { redirect } from 'next/navigation';
+import { serverApiGet } from '@/lib/api/server/apiHelpers';
+import { ApiError } from '@/lib/error/api';
+import type { MemberInfoResponse } from '@/types/api/member';
+import AdminLayoutClient from './AdminLayoutClient';
 
-import { useEffect } from 'react';
-import Main from './Main';
-import Sidebar from './Sidebar';
-import { BiCategory } from 'react-icons/bi';
-import { FiUser } from 'react-icons/fi';
-import { usePathname, useRouter } from 'next/navigation';
-import { useAuthStore } from '@/lib/store/authStore';
+export type { NavMenu } from './types';
 
-export interface NavMenu {
-  name: string;
-  href: string;
-  icon: React.ReactNode;
-}
-
-export default function AdminLayout({
+export default async function AdminLayout({
   children,
 }: {
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
-  const pathname = usePathname();
-  const router = useRouter();
-
-  const isInitialized = useAuthStore((state) => state.isInitialized);
-  const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
-  const role = useAuthStore((state) => state.role);
-
-  useEffect(() => {
-    if (!isInitialized) return;
-    if (!isLoggedIn) {
-      alert('로그인이 필요합니다.');
-      router.push('/login');
-      return;
-    } else if (role !== 'ROLE_ADMIN') {
-      alert('관리자 권한이 필요합니다.');
-      router.push('/');
-      return;
+  try {
+    const res = await serverApiGet<MemberInfoResponse>('/members/me', {
+      errorMessage: '내 정보 조회 실패',
+    });
+    if (res.data?.role !== 'ROLE_ADMIN') {
+      redirect('/');
     }
-  }, [isInitialized, isLoggedIn, role, router]);
+  } catch (e) {
+    if (e instanceof ApiError && e.code === 401) {
+      redirect('/login');
+    }
+    throw e;
+  }
 
-  const navMenus: NavMenu[] = [
-    {
-      name: '카테고리 관리',
-      href: '/admin/category',
-      icon: <BiCategory />,
-    },
-    {
-      name: '회원 관리',
-      href: '/admin/member',
-      icon: <FiUser />,
-    },
-  ];
-
-  return (
-    <div className="fixed left-0 right-0 top-0 bottom-0 flex">
-      {/* 사이드바 */}
-      <Sidebar navMenus={navMenus} currentPath={pathname} />
-      {/* 메인 */}
-      <Main navMenus={navMenus} currentPath={pathname}>
-        {children}
-      </Main>
-    </div>
-  );
+  return <AdminLayoutClient>{children}</AdminLayoutClient>;
 }
