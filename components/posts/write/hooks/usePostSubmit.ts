@@ -4,6 +4,7 @@ import {
   createPostAction,
   updatePostAction,
 } from '@/actions/post/post.actions';
+import { useQueryClient } from '@tanstack/react-query';
 
 type SubmitPostParams = {
   mode: 'create' | 'edit';
@@ -20,6 +21,16 @@ export function usePostSubmit({ clearMedia }: UsePostSubmitOptions) {
   const router = useRouter();
   const [isPending, setIsPending] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const queryClient = useQueryClient();
+
+  const syncCachesAndNavigate = async (targetPostId: number | string) => {
+    await Promise.all([
+      queryClient.invalidateQueries({ queryKey: ['myPage', 'posts'] }),
+      queryClient.invalidateQueries({ queryKey: ['myPage', 'comments'] }),
+    ]);
+    router.refresh();
+    router.push(`/posts/${targetPostId}`);
+  };
 
   const submitPost = async ({
     mode,
@@ -27,42 +38,45 @@ export function usePostSubmit({ clearMedia }: UsePostSubmitOptions) {
     formData,
     category,
   }: SubmitPostParams) => {
+    setIsPending(true);
+    setIsSuccess(false);
+
     if (mode === 'create') {
       try {
-        setIsPending(true);
         const response = await createPostAction(formData, category);
+        if (response.code !== 201 || !response.data?.postId) {
+          throw new Error('createPostAction failed');
+        }
         clearMedia();
         setIsSuccess(true);
-        if (response.code === 201 && response.data?.postId) {
-          router.refresh();
-          router.push(`/posts/${response.data.postId}`);
-        }
+        await syncCachesAndNavigate(response.data.postId);
       } catch (error) {
-        setIsPending(false);
         setIsSuccess(false);
         alert('글 작성 실패!');
         throw error;
+      } finally {
+        setIsPending(false);
       }
       return;
     }
 
     if (!postId) {
+      setIsPending(false);
       alert('글 ID가 없습니다.');
       return;
     }
 
     try {
-      setIsPending(true);
       await updatePostAction(postId, formData);
       clearMedia();
       setIsSuccess(true);
-      router.refresh();
-      router.push(`/posts/${postId}`);
+      await syncCachesAndNavigate(postId);
     } catch (error) {
-      setIsPending(false);
       setIsSuccess(false);
       alert('글 수정 실패!');
       throw error;
+    } finally {
+      setIsPending(false);
     }
   };
 
