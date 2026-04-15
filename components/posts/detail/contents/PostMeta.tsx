@@ -11,7 +11,7 @@ export default async function PostMeta({ postId }: { postId: number }) {
   }
 
   const post = postDetailResponse.data;
-
+  console.log('post=====================', post);
   // placeholder를 실제 이미지 URL로 교체
   const displayContent = replacePlaceholdersWithUrls(
     post.content,

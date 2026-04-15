@@ -7,6 +7,7 @@ import { Button } from "@/components/tiptap/tiptap-ui-primitive/button"
 import { CloseIcon } from "@/components/tiptap/tiptap-icons/close-icon"
 import "@/components/tiptap/tiptap-node/image-upload-node/image-upload-node.scss"
 import { focusNextNode, isValidPosition } from "@/lib/tiptap-utils"
+import { getImageDimensions } from "@/components/posts/write/utils/mediaDimensions"
 
 export interface FileItem {
   /**
@@ -457,21 +458,27 @@ export const ImageUploadNode: React.FC<NodeViewProps> = (props) => {
       const pos = props.getPos()
 
       if (isValidPosition(pos)) {
-        const imageNodes = urls.map((url, index) => {
-          const filename =
-            files[index]?.name.replace(/\.[^/.]+$/, "") || "unknown"
-          const fullName = files[index]?.name ?? undefined
-          return {
-            type: extension.options.type,
-            attrs: {
-              ...extension.options,
-              src: url,
-              alt: filename,
-              title: filename,
-              ...(fullName && { dataFilename: fullName }),
-            },
-          }
-        })
+        const imageNodes = await Promise.all(
+          urls.map(async (url, index) => {
+            const file = files[index]
+            const filename = file?.name.replace(/\.[^/.]+$/, "") || "unknown"
+            const fullName = file?.name ?? undefined
+            const dims = file ? await getImageDimensions(file) : null
+
+            return {
+              type: extension.options.type,
+              attrs: {
+                ...extension.options,
+                src: url,
+                alt: filename,
+                title: filename,
+                ...(fullName && { dataFilename: fullName }),
+                ...(dims?.width ? { width: dims.width } : {}),
+                ...(dims?.height ? { height: dims.height } : {}),
+              },
+            }
+          })
+        )
 
         props.editor
           .chain()

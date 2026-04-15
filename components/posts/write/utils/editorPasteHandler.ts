@@ -1,4 +1,5 @@
 import type { Editor } from '@tiptap/react';
+import { getImageDimensions } from './mediaDimensions';
 
 // ---------------------------------------------------------------------------
 // 타입
@@ -182,16 +183,19 @@ export function createPasteHandler(options: PasteHandlerOptions) {
               type: file.type,
               lastModified: file.lastModified,
             });
-            return onMediaUpload(file).then((insertUrl) => ({
-              insertUrl,
-              isVideo,
-              dataFilename: safeName,
-            }));
+            return Promise.all([onMediaUpload(file), getImageDimensions(file)]).then(
+              ([insertUrl, imageDimensions]) => ({
+                insertUrl,
+                isVideo,
+                dataFilename: safeName,
+                imageDimensions,
+              }),
+            );
           }),
       ),
     )
       .then((results) => {
-        results.forEach(({ insertUrl, isVideo, dataFilename }) => {
+        results.forEach(({ insertUrl, isVideo, dataFilename, imageDimensions }) => {
           editorRef.current
             ?.chain()
             .focus()
@@ -210,6 +214,12 @@ export function createPasteHandler(options: PasteHandlerOptions) {
                     attrs: {
                       src: insertUrl,
                       ...(dataFilename && { dataFilename }),
+                      ...(imageDimensions?.width
+                        ? { width: imageDimensions.width }
+                        : {}),
+                      ...(imageDimensions?.height
+                        ? { height: imageDimensions.height }
+                        : {}),
                     },
                   },
             )

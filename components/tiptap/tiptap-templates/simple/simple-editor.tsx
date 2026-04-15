@@ -81,6 +81,7 @@ import { useCursorVisibility } from '@/hooks/tiptap/use-cursor-visibility';
 // --- Lib ---
 import { MAX_FILE_SIZE } from '@/lib/tiptap-utils';
 import { createPasteHandler } from '@/components/posts/write/utils/editorPasteHandler';
+import { getImageDimensions } from '@/components/posts/write/utils/mediaDimensions';
 
 // --- Styles ---
 import '@/components/tiptap/tiptap-templates/simple/simple-editor.scss';
@@ -274,29 +275,40 @@ export function SimpleEditor({
         ],
         onPaste: (currentEditor, files) => {
           Promise.all(
-            files.map((file) => {
+            files.map(async (file) => {
               const isVideo = file.type.startsWith('video/');
-              return onMediaUpload(file).then((url) => {
-                currentEditor
-                  .chain()
-                  .focus()
-                  .insertContent(
-                    isVideo
-                      ? {
-                          type: 'video',
-                          attrs: {
-                            src: url,
-                            controls: true,
-                            dataFilename: file.name,
-                          },
-                        }
-                      : {
-                          type: 'image',
-                          attrs: { src: url, dataFilename: file.name },
+              const imageDimensions = isVideo
+                ? null
+                : await getImageDimensions(file);
+              const url = await onMediaUpload(file);
+              currentEditor
+                .chain()
+                .focus()
+                .insertContent(
+                  isVideo
+                    ? {
+                        type: 'video',
+                        attrs: {
+                          src: url,
+                          controls: true,
+                          dataFilename: file.name,
                         },
-                  )
-                  .run();
-              });
+                      }
+                    : {
+                        type: 'image',
+                        attrs: {
+                          src: url,
+                          dataFilename: file.name,
+                          ...(imageDimensions?.width
+                            ? { width: imageDimensions.width }
+                            : {}),
+                          ...(imageDimensions?.height
+                            ? { height: imageDimensions.height }
+                            : {}),
+                        },
+                      },
+                )
+                .run();
             }),
           ).catch((err) => {
             console.error('Paste upload failed:', err);
@@ -305,14 +317,27 @@ export function SimpleEditor({
         },
         onDrop: (currentEditor, files, pos) => {
           Promise.all(
-            files.map((file) => {
+            files.map(async (file) => {
               const isVideo = file.type.startsWith('video/');
-              return onMediaUpload(file).then((url) => ({
+              const imageDimensions = isVideo
+                ? null
+                : await getImageDimensions(file);
+              const url = await onMediaUpload(file);
+              return {
                 type: isVideo ? 'video' : 'image',
                 attrs: isVideo
                   ? { src: url, controls: true, dataFilename: file.name }
-                  : { src: url, dataFilename: file.name },
-              }));
+                  : {
+                      src: url,
+                      dataFilename: file.name,
+                      ...(imageDimensions?.width
+                        ? { width: imageDimensions.width }
+                        : {}),
+                      ...(imageDimensions?.height
+                        ? { height: imageDimensions.height }
+                        : {}),
+                    },
+              };
             }),
           )
             .then((nodes) => {
