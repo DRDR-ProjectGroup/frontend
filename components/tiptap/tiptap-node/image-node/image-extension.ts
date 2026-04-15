@@ -8,6 +8,28 @@ export const Image = BaseImage.extend({
   addAttributes() {
     return {
       ...(this.parent?.() ?? {}),
+      width: {
+        default: null,
+        parseHTML: (element) => {
+          const value = element.getAttribute('width');
+          if (!value) return null;
+          const parsed = Number.parseInt(value, 10);
+          return Number.isFinite(parsed) && parsed > 0 ? parsed : null;
+        },
+        renderHTML: (attributes) =>
+          attributes.width ? { width: String(attributes.width) } : {},
+      },
+      height: {
+        default: null,
+        parseHTML: (element) => {
+          const value = element.getAttribute('height');
+          if (!value) return null;
+          const parsed = Number.parseInt(value, 10);
+          return Number.isFinite(parsed) && parsed > 0 ? parsed : null;
+        },
+        renderHTML: (attributes) =>
+          attributes.height ? { height: String(attributes.height) } : {},
+      },
       // 처음 수정되는 대상에 data-media-id 추가 -> new 미디어와 구분짓기 위함
       dataMediaId: {
         default: null,
